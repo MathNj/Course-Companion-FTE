@@ -110,9 +110,27 @@ async def _fetch_chapter_from_storage(chapter_id: str) -> Optional[Dict[str, Any
     Returns:
         Chapter content dictionary, or None if not found
     """
-    # TODO: Implement local file fallback for development
-    # For now, this is a placeholder that will be implemented with content seeding
-    logger.warning(f"Chapter storage not yet implemented for {chapter_id}")
+    # Try local files first (for development)
+    from pathlib import Path
+
+    content_dir = Path(__file__).parent.parent.parent / "content" / "chapters"
+    chapter_file = content_dir / f"{chapter_id}.json"
+
+    if chapter_file.exists():
+        try:
+            import json
+            with open(chapter_file, 'r', encoding='utf-8') as f:
+                chapter_content = json.load(f)
+            logger.info(f"Loaded chapter {chapter_id} from local storage")
+            return chapter_content
+        except Exception as e:
+            logger.error(f"Error loading chapter {chapter_id} from local file: {e}")
+
+    # TODO: Fallback to R2 if local file not found
+    # if settings.content_source == "r2":
+    #     return await r2_client.get_chapter(chapter_id)
+
+    logger.warning(f"Chapter {chapter_id} not found in storage")
     return None
 
 
@@ -126,9 +144,27 @@ async def _fetch_quiz_from_storage(quiz_id: str) -> Optional[Dict[str, Any]]:
     Returns:
         Quiz content dictionary, or None if not found
     """
-    # TODO: Implement local file fallback for development
-    # For now, this is a placeholder that will be implemented with content seeding
-    logger.warning(f"Quiz storage not yet implemented for {quiz_id}")
+    # Try local files first (for development)
+    from pathlib import Path
+
+    content_dir = Path(__file__).parent.parent.parent / "content" / "quizzes"
+    quiz_file = content_dir / f"{quiz_id}.json"
+
+    if quiz_file.exists():
+        try:
+            import json
+            with open(quiz_file, 'r', encoding='utf-8') as f:
+                quiz_content = json.load(f)
+            logger.info(f"Loaded quiz {quiz_id} from local storage")
+            return quiz_content
+        except Exception as e:
+            logger.error(f"Error loading quiz {quiz_id} from local file: {e}")
+
+    # TODO: Fallback to R2 if local file not found
+    # if settings.content_source == "r2":
+    #     return await r2_client.get_quiz(quiz_id)
+
+    logger.warning(f"Quiz {quiz_id} not found in storage")
     return None
 
 

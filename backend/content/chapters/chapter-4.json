@@ -1,0 +1,26 @@
+{
+  "id": "chapter-4",
+  "title": "Advanced Prompting Techniques",
+  "description": "Master advanced techniques like chain-of-thought and prompt chaining.",
+  "access_tier": "premium",
+  "estimated_time_minutes": 60,
+  "difficulty": "intermediate",
+  "learning_objectives": [
+    "Apply chain-of-thought prompting",
+    "Use prompt chaining"
+  ],
+  "prerequisites": [
+    "chapter-3"
+  ],
+  "sections": [
+    {
+      "id": "section-4-1",
+      "title": "Chain-of-Thought",
+      "order": 1,
+      "content_type": "text",
+      "content": "# Chain-of-Thought Prompting\n\nEncourage step-by-step reasoning."
+    }
+  ],
+  "summary": "You've mastered advanced prompting.",
+  "next_steps": "Next: AI safety and ethics."
+}

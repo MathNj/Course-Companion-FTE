@@ -1,0 +1,141 @@
+{
+  "id": "chapter-2-quiz",
+  "chapter_id": "chapter-2",
+  "title": "How LLMs Work - Quiz",
+  "description": "Test your understanding of LLM architecture and training",
+  "total_questions": 10,
+  "passing_score": 70,
+  "time_limit_minutes": 20,
+  "questions": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "order": 1,
+      "points": 10,
+      "question": "What does the 'T' in ChatGPT stand for?",
+      "options": [
+        {"id": "option_a", "text": "Training"},
+        {"id": "option_b", "text": "Transformer"},
+        {"id": "option_c", "text": "Technology"},
+        {"id": "option_d", "text": "Testing"}
+      ],
+      "answer_key": "option_b",
+      "explanation_correct": "Correct! GPT stands for Generative Pre-trained Transformer. The Transformer is the neural network architecture that powers modern LLMs.",
+      "explanation_incorrect": "The 'T' stands for Transformer - the revolutionary architecture introduced in 2017 that enables modern LLMs like ChatGPT."
+    },
+    {
+      "id": "q2",
+      "type": "true_false",
+      "order": 2,
+      "points": 10,
+      "question": "The attention mechanism allows Transformers to process all words in a sequence in parallel, not one at a time.",
+      "answer_key": true,
+      "explanation_correct": "Exactly! Unlike previous sequential models (like RNNs), Transformers can process all positions simultaneously thanks to the attention mechanism, making them much faster to train.",
+      "explanation_incorrect": "This is actually true! The attention mechanism enables parallel processing of all words, which is a key advantage of Transformers over older sequential architectures."
+    },
+    {
+      "id": "q3",
+      "type": "multiple_choice",
+      "order": 3,
+      "points": 10,
+      "question": "What is the first stage of LLM training called?",
+      "options": [
+        {"id": "option_a", "text": "Fine-tuning"},
+        {"id": "option_b", "text": "Pre-training"},
+        {"id": "option_c", "text": "Reinforcement learning"},
+        {"id": "option_d", "text": "Instruction tuning"}
+      ],
+      "answer_key": "option_b",
+      "explanation_correct": "Correct! Pre-training is the first stage where the model learns language patterns from massive datasets in an unsupervised way.",
+      "explanation_incorrect": "The first stage is pre-training, where the model learns general language patterns from huge amounts of text data."
+    },
+    {
+      "id": "q4",
+      "type": "short_answer",
+      "order": 4,
+      "points": 10,
+      "question": "What does RLHF stand for in the context of LLM training?",
+      "keywords": ["reinforcement", "learning", "human", "feedback"],
+      "min_keywords": 2,
+      "explanation": "RLHF stands for **Reinforcement Learning from Human Feedback**. It's a technique used in the fine-tuning stage where human labelers provide feedback on model outputs, and the model learns to generate responses that align better with human preferences."
+    },
+    {
+      "id": "q5",
+      "type": "multiple_choice",
+      "order": 5,
+      "points": 10,
+      "question": "Approximately how many words does 1 token represent in English?",
+      "options": [
+        {"id": "option_a", "text": "Exactly 1 word"},
+        {"id": "option_b", "text": "About 0.75 words"},
+        {"id": "option_c", "text": "About 2 words"},
+        {"id": "option_d", "text": "About 0.5 words"}
+      ],
+      "answer_key": "option_b",
+      "explanation_correct": "Spot on! On average, 1 token is about 0.75 words in English. Common words are 1 token, while rare or complex words may be multiple tokens.",
+      "explanation_incorrect": "The answer is about 0.75 words per token. This varies - common words are 1 token, but uncommon words like 'unhappiness' might be split into multiple tokens."
+    },
+    {
+      "id": "q6",
+      "type": "true_false",
+      "order": 6,
+      "points": 10,
+      "question": "Embeddings convert tokens into high-dimensional vectors that capture semantic meaning.",
+      "answer_key": true,
+      "explanation_correct": "Absolutely! Embeddings transform tokens into numerical vectors (typically hundreds of dimensions) where similar words have similar vectors, enabling mathematical operations on meaning.",
+      "explanation_incorrect": "This is true! Embeddings are the mathematical representation of tokens as vectors, allowing the model to work with meaning mathematically."
+    },
+    {
+      "id": "q7",
+      "type": "multiple_choice",
+      "order": 7,
+      "points": 10,
+      "question": "In embedding space, which mathematical operation can be used to find relationships between words?",
+      "options": [
+        {"id": "option_a", "text": "Vector arithmetic (addition and subtraction)"},
+        {"id": "option_b", "text": "Multiplication only"},
+        {"id": "option_c", "text": "Division only"},
+        {"id": "option_d", "text": "No mathematical operations work"}
+      ],
+      "answer_key": "option_a",
+      "explanation_correct": "Correct! You can perform vector arithmetic on embeddings. For example: 'king' - 'man' + 'woman' ≈ 'queen' in embedding space.",
+      "explanation_incorrect": "Vector arithmetic works in embedding space! You can add and subtract word vectors to find relationships, like 'king' - 'man' + 'woman' ≈ 'queen'."
+    },
+    {
+      "id": "q8",
+      "type": "short_answer",
+      "order": 8,
+      "points": 10,
+      "question": "Name one advantage of the attention mechanism in Transformers.",
+      "keywords": ["parallel", "long", "range", "dependencies", "context", "simultaneous", "focus"],
+      "min_keywords": 1,
+      "explanation": "Key advantages of attention include: **Parallel processing** (can handle all words simultaneously), **Long-range dependencies** (can connect distant words), **Context awareness** (understands relationships between words), and **Focus** (can weight importance of different parts of input)."
+    },
+    {
+      "id": "q9",
+      "type": "true_false",
+      "order": 9,
+      "points": 10,
+      "question": "Token limits are important because they determine the maximum context window size an LLM can process.",
+      "answer_key": true,
+      "explanation_correct": "Exactly! Token limits define the context window - how much text the model can consider at once. A 4K token limit means the model can only process about 3,000 words total (input + output).",
+      "explanation_incorrect": "This is true! Token limits directly determine context window size. If a model has a 128K token limit, it can process roughly 96,000 words at once."
+    },
+    {
+      "id": "q10",
+      "type": "multiple_choice",
+      "order": 10,
+      "points": 10,
+      "question": "What is the main objective during the pre-training stage of LLM training?",
+      "options": [
+        {"id": "option_a", "text": "Learn to follow human instructions"},
+        {"id": "option_b", "text": "Learn to predict the next word in sequences"},
+        {"id": "option_c", "text": "Learn to be helpful and harmless"},
+        {"id": "option_d", "text": "Learn to pass the Turing test"}
+      ],
+      "answer_key": "option_b",
+      "explanation_correct": "Perfect! During pre-training, the model learns to predict the next word given previous words. This unsupervised learning on massive datasets teaches the model grammar, facts, and reasoning patterns.",
+      "explanation_incorrect": "The main goal of pre-training is to predict the next word. Through this simple objective applied to billions of words, the model learns language structure, knowledge, and reasoning."
+    }
+  ]
+}

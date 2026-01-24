@@ -1,0 +1,33 @@
+{
+  "id": "chapter-3",
+  "title": "Prompt Engineering Basics",
+  "description": "Learn essential techniques for writing effective prompts to get better results from LLMs.",
+  "access_tier": "free",
+  "estimated_time_minutes": 55,
+  "difficulty": "beginner",
+  "learning_objectives": [
+    "Write clear and specific prompts",
+    "Use few-shot learning effectively",
+    "Understand prompt structure and formatting",
+    "Apply basic prompting patterns"
+  ],
+  "prerequisites": ["chapter-1", "chapter-2"],
+  "sections": [
+    {
+      "id": "section-3-1",
+      "title": "Principles of Good Prompts",
+      "order": 1,
+      "content_type": "text",
+      "content": "# Principles of Good Prompts\n\n## Be Clear and Specific\n\nVague: 'Write about AI'\nBetter: 'Write a 200-word explanation of how neural networks learn, suitable for high school students'\n\n## Provide Context\n\nInclude background information the model needs to understand your request.\n\n## Specify Format\n\nTell the model what format you want (bullet points, essay, code, etc.)"
+    },
+    {
+      "id": "section-3-2",
+      "title": "Few-Shot Learning",
+      "order": 2,
+      "content_type": "text",
+      "content": "# Few-Shot Learning\n\nProvide examples to show the model what you want.\n\nExample:\n'Translate to French:\nHello -> Bonjour\nGoodbye -> Au revoir\nThank you -> '\n\nThe model learns the pattern from examples."
+    }
+  ],
+  "summary": "You've learned the fundamentals of prompt engineering.",
+  "next_steps": "Next, we'll explore advanced prompting techniques."
+}

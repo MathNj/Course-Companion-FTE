@@ -1,0 +1,40 @@
+{
+  "id": "chapter-2",
+  "title": "How Large Language Models Work",
+  "description": "Understand the architecture, training process, and inner workings of LLMs like ChatGPT and Claude.",
+  "access_tier": "free",
+  "estimated_time_minutes": 50,
+  "difficulty": "intermediate",
+  "learning_objectives": [
+    "Understand the Transformer architecture and attention mechanism",
+    "Learn how LLMs are trained (pre-training and fine-tuning)",
+    "Recognize the role of tokens and embeddings",
+    "Understand model parameters and their significance"
+  ],
+  "prerequisites": ["chapter-1"],
+  "sections": [
+    {
+      "id": "section-2-1",
+      "title": "The Transformer Architecture",
+      "order": 1,
+      "content_type": "text",
+      "content": "# The Transformer Architecture\n\nThe Transformer architecture, introduced in 2017, revolutionized natural language processing. Let's break down how it works.\n\n## Core Components\n\n**Input Embedding**: Converts words into numerical vectors that capture meaning\n\n**Positional Encoding**: Adds information about word position in the sequence\n\n**Multi-Head Attention**: Allows the model to focus on different parts of the input simultaneously\n\n**Feed-Forward Networks**: Process information from attention layers\n\n**Output Generation**: Produces probability distributions over possible next tokens\n\n## The Attention Mechanism\n\nAttention allows the model to weigh the importance of different words:\n- When processing \"The cat sat on the mat\", it knows \"sat\" relates to \"cat\"\n- Can handle long-range dependencies better than previous approaches\n- Processes all positions in parallel (not sequential)"
+    },
+    {
+      "id": "section-2-2",
+      "title": "Training Process",
+      "order": 2,
+      "content_type": "text",
+      "content": "# How LLMs Are Trained\n\n## Stage 1: Pre-training (Unsupervised Learning)\n\n**Objective**: Learn language patterns from massive text datasets\n\n**Process**:\n- Train on billions of words from books, websites, code\n- Learn to predict the next word in sequences\n- Develop understanding of grammar, facts, reasoning patterns\n\n**Scale**: Requires weeks/months on thousands of GPUs\n\n## Stage 2: Fine-Tuning (Supervised Learning)\n\n**Objective**: Align model behavior with human preferences\n\n**Process**:\n- Human labelers create example conversations\n- Model learns to follow instructions\n- RLHF (Reinforcement Learning from Human Feedback) improves responses\n\n## The Result\n\nA model that can:\n- Answer questions\n- Follow complex instructions\n- Engage in multi-turn conversations\n- Adapt its style and tone"
+    },
+    {
+      "id": "section-2-3",
+      "title": "Tokens and Embeddings",
+      "order": 3,
+      "content_type": "text",
+      "content": "# Understanding Tokens and Embeddings\n\n## What Are Tokens?\n\nTokens are the building blocks of LLM processing:\n- Not always whole words: \"unhappiness\" → [\"un\", \"happiness\"]\n- Common words = 1 token, rare words = multiple tokens\n- Typical: 1 token ≈ 0.75 words (in English)\n\n## What Are Embeddings?\n\nEmbeddings convert tokens into high-dimensional vectors:\n- Each token becomes a list of numbers (e.g., 768 dimensions)\n- Similar words have similar embeddings\n- Captures semantic meaning mathematically\n\n**Example**:\n- \"king\" and \"queen\" have similar embeddings\n- \"king\" - \"man\" + \"woman\" ≈ \"queen\" (in embedding space)\n\n## Why This Matters\n\n- Token limits affect context window size\n- Embeddings enable semantic search and similarity\n- Understanding tokens helps optimize API costs"
+    }
+  ],
+  "summary": "You now understand how LLMs work under the hood—from the Transformer architecture and attention mechanisms to the training process and tokenization. This knowledge will help you use LLMs more effectively.",
+  "next_steps": "Next, we'll learn practical prompt engineering techniques to get better results from LLMs."
+}

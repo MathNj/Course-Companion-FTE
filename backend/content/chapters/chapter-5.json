@@ -1,0 +1,26 @@
+{
+  "id": "chapter-5",
+  "title": "AI Safety and Ethics",
+  "description": "Understand ethical implications and safety considerations.",
+  "access_tier": "premium",
+  "estimated_time_minutes": 50,
+  "difficulty": "intermediate",
+  "learning_objectives": [
+    "Recognize bias in AI",
+    "Apply responsible AI practices"
+  ],
+  "prerequisites": [
+    "chapter-4"
+  ],
+  "sections": [
+    {
+      "id": "section-5-1",
+      "title": "Bias and Fairness",
+      "order": 1,
+      "content_type": "text",
+      "content": "# Bias and Fairness\n\nAI can perpetuate biases from training data."
+    }
+  ],
+  "summary": "You understand AI safety and ethics.",
+  "next_steps": "Finally: real-world applications."
+}

@@ -1,0 +1,26 @@
+{
+  "id": "chapter-6",
+  "title": "Real-World AI Applications",
+  "description": "Explore practical AI applications across industries.",
+  "access_tier": "premium",
+  "estimated_time_minutes": 55,
+  "difficulty": "advanced",
+  "learning_objectives": [
+    "Identify AI opportunities",
+    "Design AI workflows"
+  ],
+  "prerequisites": [
+    "chapter-5"
+  ],
+  "sections": [
+    {
+      "id": "section-6-1",
+      "title": "Industry Applications",
+      "order": 1,
+      "content_type": "text",
+      "content": "# Industry Applications\n\nAI is transforming healthcare, finance, education..."
+    }
+  ],
+  "summary": "Course complete! You have comprehensive AI knowledge.",
+  "next_steps": "Start applying these skills!"
+}

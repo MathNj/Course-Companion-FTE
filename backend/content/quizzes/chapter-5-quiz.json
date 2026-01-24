@@ -1,0 +1,198 @@
+{
+  "id": "chapter-5-quiz",
+  "chapter_id": "chapter-5",
+  "title": "Chapter 5 - Quiz",
+  "description": "Test your understanding of chapter 5",
+  "total_questions": 10,
+  "passing_score": 70,
+  "time_limit_minutes": 15,
+  "questions": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "order": 1,
+      "points": 10,
+      "question": "Sample question 1 for chapter 5",
+      "options": [
+        {
+          "id": "option_a",
+          "text": "Option A"
+        },
+        {
+          "id": "option_b",
+          "text": "Option B"
+        },
+        {
+          "id": "option_c",
+          "text": "Option C"
+        }
+      ],
+      "answer_key": "option_a",
+      "explanation_correct": "Correct!",
+      "explanation_incorrect": "Not quite."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "order": 2,
+      "points": 10,
+      "question": "Sample question 2 for chapter 5",
+      "options": [
+        {
+          "id": "option_a",
+          "text": "Option A"
+        },
+        {
+          "id": "option_b",
+          "text": "Option B"
+        },
+        {
+          "id": "option_c",
+          "text": "Option C"
+        }
+      ],
+      "answer_key": "option_a",
+      "explanation_correct": "Correct!",
+      "explanation_incorrect": "Not quite."
+    },
+    {
+      "id": "q3",
+      "type": "multiple_choice",
+      "order": 3,
+      "points": 10,
+      "question": "Sample question 3 for chapter 5",
+      "options": [
+        {
+          "id": "option_a",
+          "text": "Option A"
+        },
+        {
+          "id": "option_b",
+          "text": "Option B"
+        },
+        {
+          "id": "option_c",
+          "text": "Option C"
+        }
+      ],
+      "answer_key": "option_a",
+      "explanation_correct": "Correct!",
+      "explanation_incorrect": "Not quite."
+    },
+    {
+      "id": "q4",
+      "type": "multiple_choice",
+      "order": 4,
+      "points": 10,
+      "question": "Sample question 4 for chapter 5",
+      "options": [
+        {
+          "id": "option_a",
+          "text": "Option A"
+        },
+        {
+          "id": "option_b",
+          "text": "Option B"
+        },
+        {
+          "id": "option_c",
+          "text": "Option C"
+        }
+      ],
+      "answer_key": "option_a",
+      "explanation_correct": "Correct!",
+      "explanation_incorrect": "Not quite."
+    },
+    {
+      "id": "q5",
+      "type": "multiple_choice",
+      "order": 5,
+      "points": 10,
+      "question": "Sample question 5 for chapter 5",
+      "options": [
+        {
+          "id": "option_a",
+          "text": "Option A"
+        },
+        {
+          "id": "option_b",
+          "text": "Option B"
+        },
+        {
+          "id": "option_c",
+          "text": "Option C"
+        }
+      ],
+      "answer_key": "option_a",
+      "explanation_correct": "Correct!",
+      "explanation_incorrect": "Not quite."
+    },
+    {
+      "id": "q6",
+      "type": "multiple_choice",
+      "order": 6,
+      "points": 10,
+      "question": "Sample question 6 for chapter 5",
+      "options": [
+        {
+          "id": "option_a",
+          "text": "Option A"
+        },
+        {
+          "id": "option_b",
+          "text": "Option B"
+        },
+        {
+          "id": "option_c",
+          "text": "Option C"
+        }
+      ],
+      "answer_key": "option_a",
+      "explanation_correct": "Correct!",
+      "explanation_incorrect": "Not quite."
+    },
+    {
+      "id": "q7",
+      "type": "true_false",
+      "order": 7,
+      "points": 10,
+      "question": "Sample question 7 for chapter 5",
+      "answer_key": true,
+      "explanation_correct": "Correct!",
+      "explanation_incorrect": "Not quite."
+    },
+    {
+      "id": "q8",
+      "type": "true_false",
+      "order": 8,
+      "points": 10,
+      "question": "Sample question 8 for chapter 5",
+      "answer_key": true,
+      "explanation_correct": "Correct!",
+      "explanation_incorrect": "Not quite."
+    },
+    {
+      "id": "q9",
+      "type": "true_false",
+      "order": 9,
+      "points": 10,
+      "question": "Sample question 9 for chapter 5",
+      "answer_key": true,
+      "explanation_correct": "Correct!",
+      "explanation_incorrect": "Not quite."
+    },
+    {
+      "id": "q10",
+      "type": "short_answer",
+      "order": 10,
+      "points": 10,
+      "question": "Sample question 10 for chapter 5",
+      "keywords": [
+        "test",
+        "sample"
+      ],
+      "min_keywords": 1,
+      "explanation": "Sample answer."
+    }
+  ]
+}

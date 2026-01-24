@@ -1,0 +1,201 @@
+{
+  "id": "chapter-1-quiz",
+  "chapter_id": "chapter-1",
+  "title": "Introduction to Generative AI - Quiz",
+  "description": "Test your understanding of generative AI fundamentals",
+  "total_questions": 10,
+  "passing_score": 70,
+  "time_limit_minutes": 15,
+  "questions": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "order": 1,
+      "points": 10,
+      "question": "What is the main difference between generative AI and traditional AI?",
+      "options": [
+        {
+          "id": "option_a",
+          "text": "Generative AI creates new content, while traditional AI classifies or predicts"
+        },
+        {
+          "id": "option_b",
+          "text": "Generative AI is faster than traditional AI"
+        },
+        {
+          "id": "option_c",
+          "text": "Generative AI is cheaper to run than traditional AI"
+        },
+        {
+          "id": "option_d",
+          "text": "Generative AI only works with text data"
+        }
+      ],
+      "answer_key": "option_a",
+      "explanation_correct": "Correct! Generative AI's defining characteristic is its ability to create new, original content (text, images, code, etc.), whereas traditional AI focuses on tasks like classification, prediction, and recognition of existing data.",
+      "explanation_incorrect": "Not quite. The key distinction is that generative AI **creates** new content, while traditional AI **analyzes** existing data. Think: generating a new image vs. identifying what's in an existing image."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "order": 2,
+      "points": 10,
+      "question": "Which of the following is an example of a Large Language Model (LLM)?",
+      "options": [
+        {
+          "id": "option_a",
+          "text": "DALL-E (image generation)"
+        },
+        {
+          "id": "option_b",
+          "text": "ChatGPT"
+        },
+        {
+          "id": "option_c",
+          "text": "Midjourney (image generation)"
+        },
+        {
+          "id": "option_d",
+          "text": "Stable Diffusion (image generation)"
+        }
+      ],
+      "answer_key": "option_b",
+      "explanation_correct": "Exactly! ChatGPT is a Large Language Model designed for text generation and conversation. The other options are image generation models, not LLMs.",
+      "explanation_incorrect": "Remember, LLMs work with **text**, not images. DALL-E, Midjourney, and Stable Diffusion are image generation models. ChatGPT is the text-based LLM in this list."
+    },
+    {
+      "id": "q3",
+      "type": "true_false",
+      "order": 3,
+      "points": 10,
+      "question": "Generative AI always picks the single most likely next word when generating text.",
+      "answer_key": false,
+      "explanation_correct": "Correct! Generative AI uses sampling strategies with 'temperature' settings. It doesn't always pick the most likely word, which would make outputs too predictable. Higher temperature adds more randomness and creativity.",
+      "explanation_incorrect": "Actually, this is false. If AI always picked the most likely word, outputs would be boring and repetitive. Instead, it uses 'temperature' to balance predictability and creativity, sometimes choosing less likely words for variety."
+    },
+    {
+      "id": "q4",
+      "type": "multiple_choice",
+      "order": 4,
+      "points": 10,
+      "question": "What technological breakthrough in 2017 significantly advanced generative AI capabilities?",
+      "options": [
+        {
+          "id": "option_a",
+          "text": "The invention of neural networks"
+        },
+        {
+          "id": "option_b",
+          "text": "The Transformer architecture"
+        },
+        {
+          "id": "option_c",
+          "text": "The creation of the internet"
+        },
+        {
+          "id": "option_d",
+          "text": "The first chatbot"
+        }
+      ],
+      "answer_key": "option_b",
+      "explanation_correct": "Spot on! The Transformer architecture (introduced in the 2017 paper 'Attention Is All You Need') revolutionized AI by enabling models to process sequences in parallel and use attention mechanisms. This is the 'T' in ChatGPT!",
+      "explanation_incorrect": "The answer is the Transformer architecture (2017). This breakthrough introduced attention mechanisms and parallel processing, enabling modern LLMs like ChatGPT (GPT = Generative Pre-trained Transformer)."
+    },
+    {
+      "id": "q5",
+      "type": "multiple_choice",
+      "order": 5,
+      "points": 10,
+      "question": "What is a 'hallucination' in the context of generative AI?",
+      "options": [
+        {
+          "id": "option_a",
+          "text": "When the AI generates creative fictional stories"
+        },
+        {
+          "id": "option_b",
+          "text": "When the AI confidently states false information as fact"
+        },
+        {
+          "id": "option_c",
+          "text": "When the AI generates images of things that don't exist"
+        },
+        {
+          "id": "option_d",
+          "text": "When the AI makes spelling mistakes"
+        }
+      ],
+      "answer_key": "option_b",
+      "explanation_correct": "Exactly! A hallucination is when AI generates plausible-sounding but incorrect or fabricated information, often stated with high confidence. This is why fact-checking AI outputs is crucial for important information.",
+      "explanation_incorrect": "Hallucinations specifically refer to AI **confidently stating false information as fact**. It's not about creativity or typos—it's about generating convincing but incorrect 'facts' that sound real but aren't."
+    },
+    {
+      "id": "q6",
+      "type": "true_false",
+      "order": 6,
+      "points": 10,
+      "question": "You should share sensitive personal or confidential business information with AI chatbots without concerns.",
+      "answer_key": false,
+      "explanation_correct": "Correct! You should NOT share sensitive information with AI systems. Training data may be stored, and privacy cannot be guaranteed. Always be cautious with personal, confidential, or proprietary information.",
+      "explanation_incorrect": "This is false and important! You should avoid sharing sensitive personal information or confidential business data with AI systems. Information may be stored, logged, or used in training, posing privacy and security risks."
+    },
+    {
+      "id": "q7",
+      "type": "short_answer",
+      "order": 7,
+      "points": 10,
+      "question": "Name two real-world applications of generative AI in software development.",
+      "keywords": ["code", "generation", "debug", "test", "autocomplete", "copilot", "bug", "fixing", "completion"],
+      "min_keywords": 1,
+      "explanation": "Common applications in software development include: **Code generation** (writing boilerplate or implementing functions), **Debugging** (explaining errors and suggesting fixes), **Test generation** (creating unit tests), **Code completion** (autocomplete like GitHub Copilot), and **Code translation** (converting between programming languages). Any two of these or similar valid applications would be correct."
+    },
+    {
+      "id": "q8",
+      "type": "true_false",
+      "order": 8,
+      "points": 10,
+      "question": "The Transformer architecture uses an 'attention mechanism' to focus on relevant parts of the input and understand context.",
+      "answer_key": true,
+      "explanation_correct": "Absolutely! The attention mechanism is the key innovation of Transformers. It allows the model to weigh the importance of different words, understand long-range dependencies, and maintain context—this is why modern AI can have coherent long conversations.",
+      "explanation_incorrect": "Actually, this is true! Attention mechanisms are the core of the Transformer architecture. They enable the model to focus on relevant context, understand relationships between words, and process sequences effectively."
+    },
+    {
+      "id": "q9",
+      "type": "multiple_choice",
+      "order": 9,
+      "points": 10,
+      "question": "According to the chapter, what is the best way to use generative AI in professional contexts?",
+      "options": [
+        {
+          "id": "option_a",
+          "text": "Replace all human workers with AI to save costs"
+        },
+        {
+          "id": "option_b",
+          "text": "Use AI to augment human capabilities, with human oversight for final outputs"
+        },
+        {
+          "id": "option_c",
+          "text": "Only use AI for entertainment purposes"
+        },
+        {
+          "id": "option_d",
+          "text": "Trust AI outputs completely without verification"
+        }
+      ],
+      "answer_key": "option_b",
+      "explanation_correct": "Perfect! The most effective approach is to use AI to **augment** human capabilities—leveraging AI's speed for drafts and ideas, while maintaining human judgment, expertise, and accountability for final outputs. This collaborative approach yields the best results.",
+      "explanation_incorrect": "The best practice is to use AI to **augment human capabilities**, not replace humans. Use AI for initial drafts and speed, but maintain human oversight for refinement, fact-checking, and final accountability."
+    },
+    {
+      "id": "q10",
+      "type": "short_answer",
+      "order": 10,
+      "points": 10,
+      "question": "What is one ethical consideration when using generative AI that was mentioned in the chapter?",
+      "keywords": ["bias", "privacy", "misinformation", "deepfake", "stereotype", "fairness", "environment", "carbon", "energy"],
+      "min_keywords": 1,
+      "explanation": "The chapter discussed several ethical considerations: **Bias and fairness** (models can perpetuate stereotypes from training data), **Privacy concerns** (don't input sensitive information), **Misinformation potential** (AI can generate convincing fake content), and **Environmental impact** (training models requires massive energy). Any of these or similar valid concerns would be correct."
+    }
+  ]
+}
