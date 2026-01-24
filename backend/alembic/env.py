@@ -21,7 +21,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app.config import settings
-from app.models.base import Base  # Will create this in Phase 2
+from app.models.base import Base
+# Import all models so Alembic can detect them
+import app.models  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
