@@ -44,7 +44,7 @@ services:
       - DATABASE_URL=postgresql+asyncpg://course_companion:devpassword@postgres:5432/course_companion
       - REDIS_URL=redis://redis:6379/0
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - ./backend:/app
     depends_on:
