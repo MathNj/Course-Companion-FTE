@@ -12,6 +12,7 @@ from fastapi.responses import JSONResponse
 
 from app.config import settings
 from app.routers import auth_router
+from app.routers.chapters import router as chapters_router
 from app.utils.cache import cache_client
 
 # Configure logging
@@ -123,6 +124,7 @@ async def health_check():
 
 # Include routers
 app.include_router(auth_router, prefix=settings.api_v1_prefix)
+app.include_router(chapters_router, prefix=settings.api_v1_prefix)
 
 
 # Global exception handler
