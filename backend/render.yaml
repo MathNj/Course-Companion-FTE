@@ -1,0 +1,53 @@
+# render.yaml - Render Blueprint configuration
+# Deploy with: Link repo to Render and it will auto-detect this file
+
+services:
+  # Web Service
+  - type: web
+    name: course-companion-api
+    env: docker
+    dockerfilePath: ./backend/Dockerfile.production
+    region: oregon
+    plan: free
+    branch: master
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: API_HOST
+        value: 0.0.0.0
+      - key: API_PORT
+        value: 8000
+      - key: LOG_LEVEL
+        value: INFO
+      - key: CORS_ORIGINS
+        value: https://chat.openai.com,https://chatgpt.com
+      - key: JWT_SECRET_KEY
+        generateValue: true
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: course-companion-db
+          property: connectionString
+      - key: REDIS_URL
+        sync: false
+        # Set manually to Upstash Redis URL
+
+databases:
+  # PostgreSQL Database
+  - name: course-companion-db
+    databaseName: course_companion
+    user: course_companion
+    plan: free
+    region: oregon
+
+# Note: Render doesn't offer free Redis
+# Use Upstash Redis and set REDIS_URL manually in dashboard
+
+# Deployment:
+# 1. Push to GitHub
+# 2. In Render dashboard: New Blueprint
+# 3. Connect GitHub repo
+# 4. Render will read this render.yaml
+# 5. Set REDIS_URL to Upstash URL
+# 6. Deploy!
