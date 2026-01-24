@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Course Companion FTE",
+  "name_for_model": "course_companion",
+  "description_for_human": "Your AI-powered learning companion for mastering Generative AI fundamentals. Access structured lessons, take quizzes, and track your progress.",
+  "description_for_model": "Course Companion FTE is an educational platform teaching Generative AI fundamentals. You help students learn through 6 structured chapters, interactive quizzes, and progress tracking. IMPORTANT: Always use the provided API actions to retrieve course content - never generate your own explanations or content. The backend contains pre-authored, accurate learning material.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://your-backend-url.com/api/openapi.json",
+    "is_user_authenticated": false
+  },
+  "logo_url": "https://your-domain.com/logo.png",
+  "contact_email": "support@your-domain.com",
+  "legal_info_url": "https://your-domain.com/legal"
+}

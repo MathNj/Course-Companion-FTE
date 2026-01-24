@@ -1,0 +1,370 @@
+openapi: 3.1.0
+info:
+  title: Course Companion FTE API
+  description: Backend API for Course Companion FTE - Learn Generative AI Fundamentals
+  version: 1.0.0
+servers:
+  - url: http://localhost:8001/api/v1
+    description: Local development server
+  - url: https://your-production-url.com/api/v1
+    description: Production server
+
+paths:
+  /chapters:
+    get:
+      operationId: get_chapters
+      summary: List all available chapters
+      description: Retrieve all course chapters with metadata, access status, and user progress. Use this to show students what chapters are available and which they can access.
+      responses:
+        '200':
+          description: List of chapters with access status
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "chapter-1"
+                    title:
+                      type: string
+                      example: "Introduction to Generative AI"
+                    description:
+                      type: string
+                    access_tier:
+                      type: string
+                      enum: [free, premium]
+                    difficulty:
+                      type: string
+                      enum: [beginner, intermediate, advanced]
+                    estimated_time_minutes:
+                      type: integer
+                    user_has_access:
+                      type: boolean
+                    user_progress:
+                      type: object
+                      properties:
+                        completion_status:
+                          type: string
+                          enum: [not_started, in_progress, completed]
+                        completion_percentage:
+                          type: integer
+
+  /chapters/{chapter_id}:
+    get:
+      operationId: get_chapter
+      summary: Get chapter content
+      description: Retrieve full chapter content including all sections. IMPORTANT - Always use this to get course material, never generate your own explanations.
+      parameters:
+        - name: chapter_id
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [chapter-1, chapter-2, chapter-3, chapter-4, chapter-5, chapter-6]
+          description: Chapter identifier (e.g. "chapter-1")
+      responses:
+        '200':
+          description: Chapter content with sections
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  learning_objectives:
+                    type: array
+                    items:
+                      type: string
+                  sections:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        title:
+                          type: string
+                        content:
+                          type: string
+                          description: Full section content in markdown format
+                  summary:
+                    type: string
+                  next_steps:
+                    type: string
+        '403':
+          description: Premium content requires subscription
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  upgrade_benefits:
+                    type: array
+                    items:
+                      type: string
+
+  /quizzes/{quiz_id}:
+    get:
+      operationId: get_quiz
+      summary: Get quiz questions
+      description: Retrieve quiz questions for a chapter. Answer keys are NOT included - use submit_quiz to grade answers.
+      parameters:
+        - name: quiz_id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^chapter-[1-6]-quiz$"
+          description: Quiz identifier (e.g. "chapter-1-quiz")
+      responses:
+        '200':
+          description: Quiz questions (without answer keys)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  total_questions:
+                    type: integer
+                  passing_score:
+                    type: integer
+                    description: Percentage needed to pass (typically 70)
+                  time_limit_minutes:
+                    type: integer
+                  questions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                          enum: [multiple_choice, true_false, short_answer]
+                        question:
+                          type: string
+                        options:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              text:
+                                type: string
+                  user_attempts:
+                    type: object
+                    description: User's previous quiz attempts summary
+                    properties:
+                      total_attempts:
+                        type: integer
+                      best_score:
+                        type: number
+                      has_passed:
+                        type: boolean
+
+  /quizzes/{quiz_id}/submit:
+    post:
+      operationId: submit_quiz
+      summary: Submit quiz answers for grading
+      description: Submit student answers and receive graded results with explanations. Also updates chapter progress if quiz is passed (>= 70%).
+      parameters:
+        - name: quiz_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Quiz identifier (e.g. "chapter-1-quiz")
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quiz_id:
+                  type: string
+                  description: Must match the quiz_id in path
+                answers:
+                  type: object
+                  description: Map of question_id to answer value
+                  additionalProperties: true
+                  example:
+                    q1: "option_a"
+                    q2: "option_b"
+                    q3: true
+                    q4: "My answer text"
+      responses:
+        '200':
+          description: Graded quiz results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  quiz_id:
+                    type: string
+                  chapter_id:
+                    type: string
+                  attempt_number:
+                    type: integer
+                  score_percentage:
+                    type: number
+                    description: Score as percentage (0-100)
+                  total_questions:
+                    type: integer
+                  correct_answers:
+                    type: integer
+                  passed:
+                    type: boolean
+                    description: True if score >= 70%
+                  grading_details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        question_id:
+                          type: string
+                        is_correct:
+                          type: boolean
+                        points_earned:
+                          type: number
+                        points_possible:
+                          type: number
+                        explanation:
+                          type: string
+                          description: Explanation of the correct answer
+                        student_answer:
+                          description: What the student answered
+                        correct_answer:
+                          description: The correct answer
+                  feedback:
+                    type: string
+                    description: Encouraging feedback based on score
+                  chapter_completed:
+                    type: boolean
+                    description: True if chapter was marked completed due to passing quiz
+
+  /progress:
+    get:
+      operationId: get_progress
+      summary: Get comprehensive progress summary
+      description: Retrieve student's complete progress including chapters completed, current streak, milestones achieved, and quiz statistics.
+      responses:
+        '200':
+          description: Complete progress summary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_chapters:
+                    type: integer
+                    example: 6
+                  completed_chapters:
+                    type: integer
+                  in_progress_chapters:
+                    type: integer
+                  overall_completion_percentage:
+                    type: integer
+                    description: Overall course completion (0-100)
+                  total_time_spent_seconds:
+                    type: integer
+                  chapters:
+                    type: array
+                    description: Progress for each chapter
+                    items:
+                      type: object
+                      properties:
+                        chapter_id:
+                          type: string
+                        completion_percentage:
+                          type: integer
+                        is_completed:
+                          type: boolean
+                        time_spent_seconds:
+                          type: integer
+                  streak:
+                    type: object
+                    description: Learning streak information
+                    properties:
+                      current_streak:
+                        type: integer
+                        description: Current consecutive days of activity
+                      longest_streak:
+                        type: integer
+                        description: Best streak ever achieved
+                      total_active_days:
+                        type: integer
+                      last_activity_date:
+                        type: string
+                        format: date
+                      is_active:
+                        type: boolean
+                        description: True if streak is currently active
+                  milestones:
+                    type: object
+                    description: Achievement milestones
+                    properties:
+                      current_streak:
+                        type: integer
+                      achieved_milestones:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: "3-Day Streak"
+                            days:
+                              type: integer
+                            message:
+                              type: string
+                      next_milestone:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          days:
+                            type: integer
+                          days_remaining:
+                            type: integer
+                          progress_percentage:
+                            type: integer
+                  quiz_stats:
+                    type: object
+                    properties:
+                      total_attempts:
+                        type: integer
+                      quizzes_passed:
+                        type: integer
+                      pass_rate:
+                        type: integer
+                        description: Percentage of quizzes passed
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT authentication token obtained from /auth/login
+
+security:
+  - BearerAuth: []
