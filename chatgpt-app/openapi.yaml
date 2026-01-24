@@ -113,6 +113,73 @@ paths:
                     items:
                       type: string
 
+  /chapters/search:
+    get:
+      operationId: search_chapters
+      summary: Search chapter content (Grounded Q&A)
+      description: Search through all accessible chapter content to find relevant sections. Use this to answer student questions using ONLY course material (zero-hallucination). Returns matching sections with snippets and relevance scores.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 2
+          description: Search query (minimum 2 characters)
+          example: "what is generative AI"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Maximum number of results to return
+        - name: chapter_id
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [chapter-1, chapter-2, chapter-3, chapter-4, chapter-5, chapter-6]
+          description: Optional - limit search to specific chapter
+      responses:
+        '200':
+          description: Search results with relevant content snippets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    chapter_id:
+                      type: string
+                      example: "chapter-1"
+                    chapter_title:
+                      type: string
+                      example: "Introduction to Generative AI"
+                    section_id:
+                      type: string
+                      example: "section-1-1"
+                    section_title:
+                      type: string
+                      example: "What is Generative AI?"
+                    snippet:
+                      type: string
+                      description: Text excerpt containing the match (with context)
+                      example: "...Generative AI refers to artificial intelligence systems that can create new content - including text, images, audio, and code..."
+                    relevance_score:
+                      type: number
+                      description: How well this result matches the query (higher is better)
+                      example: 85.5
+                    match_count:
+                      type: integer
+                      description: Number of times query terms appear in this section
+                      example: 3
+        '403':
+          description: Access denied - premium content requires subscription
+
   /quizzes/{quiz_id}:
     get:
       operationId: get_quiz

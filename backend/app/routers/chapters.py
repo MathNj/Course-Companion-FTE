@@ -14,6 +14,7 @@ from app.models.user import User
 from app.models.progress import ChapterProgress
 from app.dependencies import get_current_user
 from app.services.content import get_chapter_with_cache
+from app.services.search import search_chapters as search_chapters_service
 
 router = APIRouter(prefix="/chapters", tags=["Chapters"])
 
@@ -204,12 +205,14 @@ async def search_chapters(
     q: str = Query(..., min_length=2, description="Search query"),
     limit: int = Query(20, ge=1, le=100, description="Maximum results to return"),
     chapter_id: Optional[str] = Query(None, description="Limit search to specific chapter"),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
 ):
     """
-    Search across chapter content.
+    Search across chapter content (Grounded Q&A).
 
-    Performs keyword search across all accessible chapters.
+    Performs keyword search across all accessible chapters and returns relevant sections.
+    This enables ChatGPT to answer questions using only course material (zero-hallucination).
 
     Query parameters:
     - **q**: Search query (minimum 2 characters)
@@ -218,16 +221,56 @@ async def search_chapters(
 
     Returns search results with:
     - chapter_id: Which chapter the result is from
+    - chapter_title: Chapter title for context
     - section_id: Which section contains the match
-    - snippet: Text excerpt with highlighted match
-    - relevance_score: How well it matches the query
+    - section_title: Section title for context
+    - snippet: Text excerpt with the matched content
+    - relevance_score: How well it matches the query (higher is better)
+    - match_count: Number of times query terms appear in this section
 
-    Only searches chapters the user has access to.
+    Access Control:
+    - Only searches chapters the user has access to
+    - Free users: chapters 1-3
+    - Premium users: all chapters 1-6
 
     Requires authentication.
     """
-    # TODO: Implement full-text search
-    # For now, return empty results placeholder
-    # This will be implemented when content is seeded
+    # Determine which chapters user has access to
+    accessible_chapters = []
+    for chapter_meta in CHAPTER_METADATA:
+        user_has_access = (
+            chapter_meta["access_tier"] == "free" or
+            current_user.subscription_tier in ("premium", "pro")
+        )
+        if user_has_access:
+            accessible_chapters.append(chapter_meta["id"])
 
-    return []
+    # If specific chapter requested, verify access
+    if chapter_id:
+        chapter_meta = next((c for c in CHAPTER_METADATA if c["id"] == chapter_id), None)
+        if not chapter_meta:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Chapter {chapter_id} not found"
+            )
+
+        # Check access
+        user_has_access = (
+            chapter_meta["access_tier"] == "free" or
+            current_user.subscription_tier in ("premium", "pro")
+        )
+        if not user_has_access:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Chapter {chapter_id} requires premium subscription"
+            )
+
+    # Perform search using search service
+    results = await search_chapters_service(
+        query=q,
+        accessible_chapter_ids=accessible_chapters,
+        limit=limit,
+        chapter_id=chapter_id
+    )
+
+    return results
