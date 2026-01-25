@@ -23,17 +23,16 @@ RUN apt-get update && apt-get install -y \
 COPY pyproject.toml ./
 
 # Install dependencies - asyncpg MUST be installed separately first
-RUN pip install --upgrade pip && \
-    pip install asyncpg sqlalchemy[asyncio] && \
-    pip install fastapi[standard] && \
-    pip install uvicorn[standard] && \
-    pip install pydantic pydantic-settings && \
-    pip install httpx python-jose[cryptography] && \
-    pip install passlib[bcrypt] bcrypt && \
-    pip install python-multipart && \
-    pip install alembic pytz && \
-    pip install -e . && \
-    pip cache purge
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir asyncpg sqlalchemy[asyncio] && \
+    pip install --no-cache-dir fastapi[standard] && \
+    pip install --no-cache-dir uvicorn[standard] && \
+    pip install --no-cache-dir pydantic pydantic-settings && \
+    pip install --no-cache-dir httpx python-jose[cryptography] && \
+    pip install --no-cache-dir passlib[bcrypt] bcrypt && \
+    pip install --no-cache-dir python-multipart && \
+    pip install --no-cache-dir alembic pytz && \
+    pip install --no-cache-dir -e .
 
 # Copy application code
 COPY app ./app

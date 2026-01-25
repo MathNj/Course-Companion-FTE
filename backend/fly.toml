@@ -7,7 +7,7 @@ app = 'course-companion-fte'
 primary_region = 'iad'
 
 [build]
-  dockerfile = 'Dockerfile'
+  dockerfile = 'Dockerfile.fly'
 
 [env]
   API_HOST = '0.0.0.0'
