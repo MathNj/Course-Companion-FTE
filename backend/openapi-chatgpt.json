@@ -1,0 +1,372 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Course Companion FTE",
+    "description": "Generative AI Fundamentals Course Companion API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://course-companion-fte.fly.dev"
+    }
+  ],
+  "paths": {
+    "/api/v1/auth/register": {
+      "post": {
+        "summary": "Register new user",
+        "operationId": "register",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {"type": "string", "format": "email"},
+                  "password": {"type": "string", "minLength": 8},
+                  "full_name": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {"type": "string"},
+                    "refresh_token": {"type": "string"},
+                    "token_type": {"type": "string"},
+                    "expires_in": {"type": "integer"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "summary": "Login user",
+        "operationId": "login",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "username": {"type": "string", "format": "email"},
+                  "password": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {"type": "string"},
+                    "refresh_token": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "summary": "Get current user",
+        "operationId": "get_user",
+        "tags": ["Authentication"],
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "User profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {"type": "string"},
+                    "email": {"type": "string"},
+                    "full_name": {"type": "string"},
+                    "is_premium": {"type": "boolean"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update user profile",
+        "operationId": "update_user",
+        "tags": ["Authentication"],
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "full_name": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated"
+          }
+        }
+      }
+    },
+    "/api/v1/chapters": {
+      "get": {
+        "summary": "List all chapters",
+        "operationId": "list_chapters",
+        "tags": ["Chapters"],
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Chapter list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {"type": "string"},
+                      "title": {"type": "string"},
+                      "user_has_access": {"type": "boolean"}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/chapters/{chapter_id}": {
+      "get": {
+        "summary": "Get chapter content",
+        "operationId": "get_chapter",
+        "tags": ["Chapters"],
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {
+            "name": "chapter_id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chapter content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {"type": "string"},
+                    "title": {"type": "string"},
+                    "content": {"type": "object"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/chapters/search": {
+      "get": {
+        "summary": "Search chapters",
+        "operationId": "search_chapters",
+        "tags": ["Chapters"],
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "chapter_id": {"type": "string"},
+                      "section_title": {"type": "string"},
+                      "snippet": {"type": "string"}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/quizzes/{quiz_id}": {
+      "get": {
+        "summary": "Get quiz",
+        "operationId": "get_quiz",
+        "tags": ["Quizzes"],
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {
+            "name": "quiz_id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quiz questions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {"type": "string"},
+                    "questions": {"type": "array"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Submit quiz answers",
+        "operationId": "submit_quiz",
+        "tags": ["Quizzes"],
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {
+            "name": "quiz_id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["answers"],
+                "properties": {
+                  "answers": {"type": "object"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Quiz graded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "score": {"type": "number"},
+                    "feedback": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/progress": {
+      "get": {
+        "summary": "Get user progress",
+        "operationId": "get_progress",
+        "tags": ["Progress"],
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Progress data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "completed_chapters": {"type": "integer"},
+                    "quiz_score_average": {"type": "number"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/progress/streak": {
+      "get": {
+        "summary": "Get streak details",
+        "operationId": "get_streak",
+        "tags": ["Progress"],
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Streak data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "current_streak": {"type": "integer"},
+                    "longest_streak": {"type": "integer"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
