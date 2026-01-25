@@ -1,17 +1,15 @@
-# Production Dockerfile - Fixed with pip
+# Railway Dockerfile - Use psycopg instead of asyncpg
 FROM python:3.11-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1
+    PYTHONUNBUFFERED=1
 
 # Set work directory
 WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    gcc \
     postgresql-client \
     curl \
     && rm -rf /var/lib/apt/lists/*
@@ -19,11 +17,9 @@ RUN apt-get update && apt-get install -y \
 # Copy dependency files
 COPY pyproject.toml ./
 
-# Install dependencies - asyncpg needs gcc to build - v2
-RUN pip install --upgrade pip && \
-    pip install asyncpg && \
-    pip install -e . && \
-    pip cache purge
+# Install all dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -e ".[dev]"
 
 # Copy application code
 COPY app ./app

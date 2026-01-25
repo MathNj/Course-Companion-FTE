@@ -1,5 +1,8 @@
-# Production Dockerfile - Fixed with pip
+# Fly.io Production Dockerfile - Clean build
 FROM python:3.11-slim
+
+# Cache busting arg
+ARG CACHEBUST=1
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -19,9 +22,16 @@ RUN apt-get update && apt-get install -y \
 # Copy dependency files
 COPY pyproject.toml ./
 
-# Install dependencies - asyncpg needs gcc to build - v2
+# Install dependencies - asyncpg MUST be installed separately first
 RUN pip install --upgrade pip && \
-    pip install asyncpg && \
+    pip install asyncpg sqlalchemy[asyncio] && \
+    pip install fastapi[standard] && \
+    pip install uvicorn[standard] && \
+    pip install pydantic pydantic-settings && \
+    pip install httpx python-jose[cryptography] && \
+    pip install passlib[bcrypt] bcrypt && \
+    pip install python-multipart && \
+    pip install alembic pytz && \
     pip install -e . && \
     pip cache purge
 
