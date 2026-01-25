@@ -112,11 +112,14 @@ async def health_check():
     }
 
     # Determine overall status
+    # API is operational even if optional cache is degraded
     if health_status["components"]["cache"] == "degraded":
         health_status["status"] = "degraded"
-
-    # Return 200 for healthy, 503 for degraded
-    status_code = 200 if health_status["status"] == "healthy" else 503
+        # But still return 200 OK since API is working
+        # Cache is optional for functionality
+        status_code = 200
+    else:
+        status_code = 200
 
     return JSONResponse(
         status_code=status_code,
