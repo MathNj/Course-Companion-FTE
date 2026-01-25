@@ -66,6 +66,16 @@ app = FastAPI(
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json",
     lifespan=lifespan,
+    servers=[
+        {
+            "url": "https://course-companion-fte.fly.dev",
+            "description": "Production server (Fly.io)"
+        },
+        {
+            "url": "http://localhost:8000",
+            "description": "Local development server"
+        }
+    ],
 )
 
 # Configure CORS
