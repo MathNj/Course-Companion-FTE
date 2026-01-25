@@ -69,11 +69,7 @@ app = FastAPI(
     servers=[
         {
             "url": "https://course-companion-fte.fly.dev",
-            "description": "Production server (Fly.io)"
-        },
-        {
-            "url": "http://localhost:8000",
-            "description": "Local development server"
+            "description": "Production server"
         }
     ],
 )
