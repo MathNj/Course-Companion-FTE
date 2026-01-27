@@ -13,6 +13,7 @@ from app.database import get_db
 from app.dependencies import get_current_user
 from app.models.user import User
 from app.models.usage import PremiumUsageQuota, LLMUsageLog
+from app.services.rate_limiter import RateLimiter
 
 router = APIRouter(prefix="/usage", tags=["Usage Tracking"])
 
@@ -74,4 +75,53 @@ async def get_usage_quota(
         "assessments_used": quota.assessments_used,
         "assessments_limit": quota.assessments_limit,
         "assessments_remaining": assessments_remaining
+    }
+
+
+@router.get("/quota/status")
+async def get_quota_status(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Get comprehensive quota status with real-time enforcement data.
+
+    Uses RateLimiter service to get:
+    - Real-time usage (from Redis)
+    - Remaining quota for each feature
+    - Reset date (first of next month)
+    - Total usage across features
+
+    Returns 429 error when quota exceeded.
+    """
+    # Create rate limiter instance
+    rate_limiter = RateLimiter(db=db)
+
+    # Get comprehensive status
+    status = await rate_limiter.get_quota_status(str(current_user.id))
+
+    return {
+        "student_id": str(current_user.id),
+        "student_email": current_user.email,
+        "subscription_tier": getattr(current_user, 'subscription_tier', 'free'),
+        "current_month": status["month"],
+        "features": {
+            "adaptive-paths": {
+                "used": status["features"]["adaptive-path"]["used"],
+                "limit": status["features"]["adaptive-path"]["limit"],
+                "remaining": status["features"]["adaptive-path"]["remaining"],
+                "resets_at": status["features"]["adaptive-path"]["resets_at"]
+            },
+            "assessments": {
+                "used": status["features"]["assessment"]["used"],
+                "limit": status["features"]["assessment"]["limit"],
+                "remaining": status["features"]["assessment"]["remaining"],
+                "resets_at": status["features"]["assessment"]["resets_at"]
+            }
+        },
+        "total_usage": status["total_usage"],
+        "total_limit": status["total_limit"],
+        "utilization_percent": round(
+            (status["total_usage"] / status["total_limit"]) * 100, 1
+        ) if status["total_limit"] > 0 else 0
     }

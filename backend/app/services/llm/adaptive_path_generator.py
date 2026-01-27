@@ -15,7 +15,7 @@ from app.services.llm.client import get_openai_client
 from app.services.llm.cost_tracker import CostTracker
 from app.models.llm import AdaptivePath
 from app.models.user import User
-from app.models.progress import QuizResult
+from app.models.quiz import QuizAttempt
 from app.models.progress import ChapterProgress
 
 logger = logging.getLogger(__name__)
@@ -50,12 +50,12 @@ class AdaptivePathGenerator:
         # Get quiz results
         quiz_result = await db.execute(
             select(
-                QuizResult.chapter_id,
-                func.avg(QuizResult.score).label("avg_score"),
-                func.count(QuizResult.id).label("attempt_count")
+                QuizAttempt.chapter_id,
+                func.avg(QuizAttempt.score).label("avg_score"),
+                func.count(QuizAttempt.id).label("attempt_count")
             )
-            .where(QuizResult.student_id == student_id)
-            .group_by(QuizResult.chapter_id)
+            .where(QuizAttempt.student_id == student_id)
+            .group_by(QuizAttempt.chapter_id)
         )
 
         quiz_data = quiz_result.all()
@@ -320,26 +320,34 @@ Recommendations are prioritized by impact on your learning progression."""
         db: AsyncSession,
         student_id: str
     ) -> Dict[str, Any] | None:
-        """Check Redis cache for existing adaptive path."""
-        from app.utils.redis_client import cache_client
+        """
+        Check Redis cache for existing adaptive path (24-hour TTL).
+
+        Returns cached path if valid and not expired, None otherwise.
+        """
+        from app.utils.redis_client import cache_client, ADAPTIVE_PATH_TTL
 
         try:
             cache_key = f"adaptive_path:{student_id}"
-            cached = await cache_client.get(cache_key)
+            path_data = await cache_client.get_json(cache_key)
 
-            if cached:
-                import json
-                path_data = json.loads(cached)
-
+            if path_data:
                 # Check if still valid (not expired)
                 expires_at = datetime.fromisoformat(path_data["expires_at"])
                 if expires_at > datetime.now():
+                    logger.info(f"Cache HIT for student {student_id[:8]}... (TTL: {ADAPTIVE_PATH_TTL}s)")
                     # Add cached flag
                     path_data["metadata"]["cached"] = True
                     return path_data
+                else:
+                    # Cache expired, delete it
+                    await cache_client.delete(cache_key)
+                    logger.info(f"Cache expired for student {student_id[:8]}...")
+            else:
+                logger.debug(f"Cache MISS for student {student_id[:8]}...")
 
         except Exception as e:
-            logger.warning(f"Cache check failed: {str(e)}")
+            logger.warning(f"Cache check failed for student {student_id[:8]}...: {str(e)}")
 
         return None
 
@@ -349,9 +357,12 @@ Recommendations are prioritized by impact on your learning progression."""
         student_id: str,
         path: AdaptivePath
     ) -> None:
-        """Cache adaptive path in Redis for 24 hours."""
-        from app.utils.redis_client import cache_client
-        import json
+        """
+        Cache adaptive path in Redis with 24-hour TTL.
+
+        Uses JSON serialization for structured data and 86400s (24h) expiration.
+        """
+        from app.utils.redis_client import cache_client, ADAPTIVE_PATH_TTL
 
         try:
             cache_key = f"adaptive_path:{student_id}"
@@ -364,18 +375,107 @@ Recommendations are prioritized by impact on your learning progression."""
                 "reasoning": path.reasoning,
                 "metadata": {
                     "total_recommendations": len(path.recommendations_json),
+                    "high_priority_count": sum(1 for r in path.recommendations_json if r.get("priority") == 1),
+                    "estimated_total_time_minutes": sum(r.get("estimated_time_minutes", 0) for r in path.recommendations_json),
                     "cached": True
                 }
             }
 
             # Cache for 24 hours (86400 seconds)
-            await cache_client.setex(
+            success = await cache_client.set_json(
                 cache_key,
-                86400,
-                json.dumps(cache_data)
+                cache_data,
+                ttl=ADAPTIVE_PATH_TTL
             )
 
-            logger.info(f"Cached adaptive path for student {student_id[:8]}...")
+            if success:
+                logger.info(f"Cached adaptive path for student {student_id[:8]}... (TTL: {ADAPTIVE_PATH_TTL}s = 24h)")
+            else:
+                logger.warning(f"Failed to cache adaptive path for student {student_id[:8]}...")
 
         except Exception as e:
-            logger.warning(f"Failed to cache path: {str(e)}")
+            logger.warning(f"Failed to cache path for student {student_id[:8]}...: {str(e)}")
+
+    @staticmethod
+    async def invalidate_cache(
+        db: AsyncSession,
+        student_id: str
+    ) -> bool:
+        """
+        Invalidate cached adaptive path for a student.
+
+        Call this when student completes a new quiz or significantly changes performance.
+
+        Args:
+            db: Database session
+            student_id: Student UUID
+
+        Returns:
+            True if cache was invalidated, False otherwise
+        """
+        from app.utils.redis_client import cache_client
+
+        try:
+            cache_key = f"adaptive_path:{student_id}"
+            success = await cache_client.delete(cache_key)
+
+            if success:
+                logger.info(f"Invalidated cache for student {student_id[:8]}...")
+
+            return success
+
+        except Exception as e:
+            logger.warning(f"Failed to invalidate cache for student {student_id[:8]}...: {str(e)}")
+            return False
+
+    @staticmethod
+    async def get_cache_stats(
+        db: AsyncSession,
+        student_id: str
+    ) -> Dict[str, Any]:
+        """
+        Get cache statistics for a student's adaptive path.
+
+        Args:
+            db: Database session
+            student_id: Student UUID
+
+        Returns:
+            Dictionary with cache stats (exists, ttl, age_hours)
+        """
+        from app.utils.redis_client import cache_client, ADAPTIVE_PATH_TTL
+
+        try:
+            cache_key = f"adaptive_path:{student_id}"
+            exists = await cache_client.exists(cache_key)
+
+            if not exists:
+                return {
+                    "cached": False,
+                    "ttl_seconds": None,
+                    "age_hours": None
+                }
+
+            ttl = await cache_client.ttl(cache_key)
+
+            # Calculate age: 24h - ttl_remaining
+            if ttl > 0:
+                age_seconds = ADAPTIVE_PATH_TTL - ttl
+                age_hours = age_seconds / 3600
+            else:
+                age_hours = None
+
+            return {
+                "cached": True,
+                "ttl_seconds": ttl if ttl > 0 else 0,
+                "age_hours": round(age_hours, 2) if age_hours else None,
+                "ttl_hours": round(ttl / 3600, 2) if ttl > 0 else 0
+            }
+
+        except Exception as e:
+            logger.warning(f"Failed to get cache stats for student {student_id[:8]}...: {str(e)}")
+            return {
+                "cached": False,
+                "error": str(e)
+            }
+

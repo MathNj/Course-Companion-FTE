@@ -4,10 +4,13 @@ Adaptive Learning Path Router
 API endpoints for generating personalized learning recommendations.
 """
 
+import logging
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import ValidationError
+
+logger = logging.getLogger(__name__)
 
 from app.database import get_db
 from app.dependencies import get_current_user, verify_premium, verify_quota
@@ -151,4 +154,62 @@ async def get_latest_adaptive_path(
             "estimated_total_time_minutes": sum(r.get("estimated_time_minutes", 0) for r in path.recommendations_json),
             "cached": True  # Latest path from database is considered cached
         }
+    }
+
+
+@router.get("/path/cache/stats")
+async def get_adaptive_path_cache_stats(
+    current_user: User = Depends(get_current_user),
+    _premium_verified = Depends(verify_premium),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Get cache statistics for current user's adaptive path.
+
+    Returns information about:
+    - Whether a cached path exists
+    - Remaining TTL (time to live)
+    - Cache age (hours since generation)
+    - Recommendation count
+
+    Useful for displaying cache status to users.
+    """
+    stats = await AdaptivePathGenerator.get_cache_stats(
+        db=db,
+        student_id=str(current_user.id)
+    )
+
+    return {
+        "student_id": str(current_user.id),
+        "cache_stats": stats,
+        "cache_ttl_hours": 24  # Fixed 24-hour TTL for all adaptive paths
+    }
+
+
+@router.post("/path/cache/invalidate")
+async def invalidate_adaptive_path_cache(
+    current_user: User = Depends(get_current_user),
+    _premium_verified = Depends(verify_premium),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Manually invalidate cached adaptive path for current user.
+
+    Use this endpoint when:
+    - User completes a new quiz
+    - User wants to force fresh recommendations
+    - Performance data significantly changes
+
+    Returns success status and confirms invalidation.
+    """
+    success = await AdaptivePathGenerator.invalidate_cache(
+        db=db,
+        student_id=str(current_user.id)
+    )
+
+    return {
+        "student_id": str(current_user.id),
+        "invalidated": success,
+        "message": "Cache invalidated successfully" if success else "Cache not found or already invalid",
+        "next_step": "Generate a new adaptive path with POST /api/v2/adaptive/path"
     }

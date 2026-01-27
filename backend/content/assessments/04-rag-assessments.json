@@ -1,0 +1,41 @@
+{
+  "chapter_id": "04-rag",
+  "questions": [
+    {
+      "question_id": "04-rag-q1",
+      "question_text": "Compare and contrast RAG (Retrieval-Augmented Generation) versus fine-tuning for domain-specific AI applications. When would you choose one approach over the other, and what are the key tradeoffs?",
+      "evaluation_criteria": [
+        "Understanding of RAG architecture (retrieval + generation)",
+        "Understanding of fine-tuning (model weight updates)",
+        "Comparison of accuracy, cost, and maintenance",
+        "Real-world use cases for each approach"
+      ],
+      "example_excellent_answer": "RAG combines retrieval systems with LLMs by fetching relevant context before generation, while fine-tuning updates model weights on training data. I'd choose RAG when accuracy on specific documents is critical but the model has general reasoning capabilities - it's cheaper, more maintainable, and reduces hallucinations. For example, customer support bots benefit from RAG's ability to cite exact policy documents. Fine-tuning is better when domain-specific patterns or writing styles need to be learned, like medical terminology or code style guides. However, fine-tuning costs $10-100K in compute and requires weekly retraining as documents change, whereas RAG simply updates the vector database. The best approach depends on whether the problem requires knowledge retrieval (RAG) or pattern learning (fine-tuning).",
+      "example_poor_answer": "RAG is better because it's newer. Fine-tuning is old technology that's too expensive. You should always use RAG for everything because it uses embeddings."
+    },
+    {
+      "question_id": "04-rag-q2",
+      "question_text": "Design the vector database architecture for a RAG system serving 1 million documents. What embedding model would you use, what metadata should you store, and how would you optimize retrieval performance?",
+      "evaluation_criteria": [
+        "Embedding model selection (dimensionality, performance)",
+        "Index structure and partitioning strategy",
+        "Metadata filtering and hybrid search",
+        "Performance optimization (caching, batching)"
+      ],
+      "example_excellent_answer": "For 1M documents, I'd use OpenAI's text-embedding-3-small (1536 dimensions) which balances cost ($0.02/1M tokens) and quality. The vector database would use Pinecone or pgvector with HNSW indexing for approximate nearest neighbor search. Each vector stores metadata: document_id, created_at (for temporal filtering), category, and a 200-character chunk summary for hybrid search. Architecture includes: (1) Embeddings pre-computed and batch-uploaded, (2) Namespace partitioning by document type, (3) Hybrid search combining vector similarity with metadata filters (e.g., 'get docs from last 30 days about security'), (4) Two-tier caching: Redis for frequent queries (1 hour TTL) and CDN for document content. For optimization, I'd implement retrieval batching (fetch top-50 candidates, re-rank with cross-encoder), use quantized vectors to reduce memory by 50%, and deploy read replicas for query scaling. This architecture achieves <100ms p95 latency at 1000 QPS.",
+      "example_poor_answer": "I would use a big database with all the documents. Store them as text and search with keywords. Use SQL for everything. It will be fast enough."
+    },
+    {
+      "question_id": "04-rag-q3",
+      "question_text": "A RAG system is returning irrelevant documents despite using semantic search. Identify 3 potential root causes and explain how to diagnose and fix each one.",
+      "evaluation_criteria": [
+        "Root cause analysis (embedding quality, chunking, queries)",
+        "Diagnostic methods (logging, testing, metrics)",
+        "Specific solutions for each cause",
+        "Understanding of retrieval-precision tradeoffs"
+      ],
+      "example_excellent_answer": "Root Cause 1: Poor chunking strategy. If documents are chunked too large (2000+ tokens), embeddings lose specificity; too small (<100 tokens) lacks context. Diagnosis: Plot retrieval precision vs. chunk size on test set. Fix: Use sliding window chunks of 300-500 tokens with 20% overlap, preserving paragraph boundaries. Root Cause 2: Embedding model mismatch. General models like ada-002 may not capture domain-specific terminology (e.g., medical/legal). Diagnosis: Test domain-specific embeddings on labeled relevance set. Fix: Fine-tune embeddings or switch to domain model like MedEmbed for medical content. Root Cause 3: Weak query formulation. User queries like 'help with error' are too vague. Diagnosis: Log retrieval scores and human relevance feedback. Fix: Implement query expansion (add synonyms), re-ranking with cross-encoder, or prompt users for clarifying details. Monitoring recall@k and precision@k on evaluation set guides which fix to prioritize.",
+      "example_poor_answer": "The system is probably broken or the database is too small. You should just add more documents or get a better AI model. Try restarting the server."
+    }
+  ]
+}

@@ -216,15 +216,15 @@ class R2StorageClient:
             logger.error(f"Failed to list objects with prefix '{prefix}': {e}")
             return []
 
-    def get_markdown_file(self, object_key: str) -> Optional[str]:
+    def get_file(self, object_key: str) -> Optional[str]:
         """
-        Fetch a markdown file from R2 and return its content as string.
+        Fetch a file from R2 and return its content as string.
 
         Args:
-            object_key: Object key/path in R2 (e.g., 'Generative AI Fundamentals/Chapter 1 — The Age of Synthesis_ An Introduction to Generative AI.md')
+            object_key: Object key/path in R2
 
         Returns:
-            Markdown content as string, or None if not found
+            File content as string, or None if not found
         """
         if not self.is_configured():
             logger.error("R2 storage not configured")
@@ -237,16 +237,29 @@ class R2StorageClient:
             )
 
             content = response['Body'].read().decode('utf-8')
-            logger.info(f"Successfully fetched markdown file: {object_key}")
+            logger.info(f"Successfully fetched file: {object_key}")
 
             return content
 
         except self.client.exceptions.NoSuchKey:
-            logger.warning(f"Markdown file not found: {object_key}")
+            logger.warning(f"File not found: {object_key}")
             return None
         except ClientError as e:
-            logger.error(f"Failed to fetch markdown file {object_key}: {e}")
+            logger.error(f"Failed to fetch file {object_key}: {e}")
             return None
+
+    def get_markdown_file(self, object_key: str) -> Optional[str]:
+        """
+        Fetch a markdown file from R2 and return its content as string.
+
+        Args:
+            object_key: Object key/path in R2 (e.g., 'Generative AI Fundamentals/Chapter 1 — The Age of Synthesis_ An Introduction to Generative AI.md')
+
+        Returns:
+            Markdown content as string, or None if not found
+        """
+        # Alias to get_file for backward compatibility
+        return self.get_file(object_key)
 
     def list_chapters(self, prefix: str = "Generative AI Fundamentals/") -> list[dict]:
         """

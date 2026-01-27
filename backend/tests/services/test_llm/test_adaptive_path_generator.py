@@ -73,10 +73,10 @@ class TestPerformanceDataAggregation:
             if score < 60
         ]
 
-        # Identify struggling with time
+        # Identify struggling with time (>= 1.5x average)
         struggling = [
             chapter for chapter, time in time_spent.items()
-            if time > avg_time * 1.5
+            if time >= avg_time * 1.5
         ]
 
         assert "02-llms" in weak_areas
@@ -122,10 +122,13 @@ class TestPromptTemplate:
     def test_prompt_template_exists(self):
         """Test that prompt template file exists and is not empty."""
         import os
+        from pathlib import Path
 
-        prompt_path = "backend/app/prompts/adaptive_path.txt"
+        # Use absolute path from test file location
+        test_dir = Path(__file__).parent.parent.parent.parent
+        prompt_path = test_dir / "app" / "prompts" / "adaptive_path.txt"
 
-        assert os.path.exists(prompt_path), f"Prompt template not found: {prompt_path}"
+        assert prompt_path.exists(), f"Prompt template not found: {prompt_path}"
 
         with open(prompt_path, 'r') as f:
             content = f.read()

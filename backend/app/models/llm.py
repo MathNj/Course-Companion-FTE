@@ -11,7 +11,7 @@ from sqlalchemy.sql import func
 import enum
 import datetime
 
-from app.database import Base
+from app.models.base import Base
 
 
 class AdaptivePathStatus(str, enum.Enum):
@@ -63,8 +63,7 @@ class AdaptivePath(Base):
     status = Column(
         String(20),
         nullable=False,
-        default=AdaptivePathStatus.ACTIVE,
-        CheckConstraint("status IN ('active', 'expired', 'superseded')")
+        default=AdaptivePathStatus.ACTIVE
     )
 
     followed_at = Column(DateTime(timezone=True), nullable=True)
@@ -78,7 +77,8 @@ class AdaptivePath(Base):
         Index("idx_adaptive_paths_expires_at", "expires_at"),
         # Composite index for cache lookups
         Index("idx_adaptive_paths_student_active", "student_id", "status", "expires_at"),
-        # Validation
+        # Validation constraints
+        CheckConstraint("status IN ('active', 'expired', 'superseded')", name="check_status_values"),
         CheckConstraint("expires_at > generated_at", name="valid_expiration"),
     )
 
@@ -108,21 +108,20 @@ class AssessmentSubmission(Base):
     previous_submission_id = Column(UUID(as_uuid=True), ForeignKey("assessment_submissions.submission_id"), nullable=True)
 
     # Submission Data
-    answer_text = Column(Text, nullable=False, CheckConstraint("LENGTH(answer_text) BETWEEN 50 AND 5000"))
+    answer_text = Column(Text, nullable=False)
     submitted_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
     # Grading Status
     grading_status = Column(
         String(20),
         nullable=False,
-        default=AssessmentSubmissionStatus.PENDING,
-        CheckConstraint("grading_status IN ('pending', 'processing', 'completed', 'failed')")
+        default=AssessmentSubmissionStatus.PENDING
     )
     grading_started_at = Column(DateTime(timezone=True), nullable=True)
     grading_completed_at = Column(DateTime(timezone=True), nullable=True)
 
     # Retry Tracking
-    attempt_number = Column(Integer, nullable=False, default=1, CheckConstraint("attempt_number BETWEEN 1 AND 3"))
+    attempt_number = Column(Integer, nullable=False, default=1)
 
     # Error Handling
     error_message = Column(Text, nullable=True)
@@ -135,7 +134,10 @@ class AssessmentSubmission(Base):
         Index("idx_submissions_submitted_at", "submitted_at"),
         # Composite index for student submission history
         Index("idx_submissions_student_question", "student_id", "question_id", "submitted_at"),
-        # Validation
+        # Validation constraints
+        CheckConstraint("LENGTH(answer_text) BETWEEN 50 AND 5000", name="check_answer_length"),
+        CheckConstraint("grading_status IN ('pending', 'processing', 'completed', 'failed')", name="check_grading_status"),
+        CheckConstraint("attempt_number BETWEEN 1 AND 3", name="check_attempt_range"),
         CheckConstraint(
             "grading_completed_at IS NULL OR grading_started_at IS NULL OR grading_completed_at >= grading_started_at",
             name="valid_grading_timeline"
@@ -159,7 +161,7 @@ class AssessmentFeedback(Base):
     human_reviewer_id = Column(UUID(as_uuid=True), ForeignKey("students.student_id"), nullable=True)
 
     # Grading Results
-    quality_score = Column(Numeric(3, 1), nullable=False, CheckConstraint("quality_score BETWEEN 0 AND 10"))
+    quality_score = Column(Numeric(3, 1), nullable=False)
 
     # Structured Feedback (JSONB)
     strengths_json = Column(JSONB, nullable=False)
@@ -196,7 +198,8 @@ class AssessmentFeedback(Base):
         Index("idx_feedback_score", "quality_score"),
         # Index for quality monitoring
         Index("idx_feedback_unreviewed", "human_reviewed", "generated_at"),
-        # Validation
+        # Validation constraints
+        CheckConstraint("quality_score BETWEEN 0 AND 10", name="check_quality_score_range"),
         CheckConstraint("jsonb_array_length(strengths_json) BETWEEN 1 AND 5", name="valid_strengths"),
         CheckConstraint("jsonb_array_length(improvements_json) BETWEEN 1 AND 5", name="valid_improvements"),
     )

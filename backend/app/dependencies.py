@@ -204,70 +204,77 @@ async def verify_quota(
     """
     Dependency to enforce monthly rate limits for premium features.
 
-    Checks Redis quota counter (or PostgreSQL fallback) to enforce:
+    Checks and increments quota counter for:
     - 10 adaptive paths per premium user per month
     - 20 assessments per premium user per month
+
+    Raises:
+        HTTPException: 429 if user has exceeded monthly quota
 
     Args:
         current_user: Current authenticated user
         feature: Feature being accessed ("adaptive-path" or "assessment")
-
-    Raises:
-        HTTPException: 429 if user has exceeded monthly quota
     """
-    from app.utils.redis_client import cache_client
-    import os
+    from app.services.rate_limiter import RateLimiter, RateLimitExceededError
 
-    # Get monthly limits from environment
-    adaptive_limit = int(os.getenv("PREMIUM_ADAPTIVE_PATHS_LIMIT", "10"))
-    assessment_limit = int(os.getenv("PREMIUM_ASSESSMENTS_LIMIT", "20"))
+    # Create rate limiter instance
+    rate_limiter = RateLimiter(db=None)  # We'll set db in a moment
 
-    limits = {
-        "adaptive-path": adaptive_limit,
-        "assessment": assessment_limit
-    }
+    # Import get_db function (circular import avoidance)
+    from app.database import get_db
 
-    limit = limits.get(feature, 10)  # Default to 10 if feature not found
-    month_key = datetime.now().strftime("%Y-%m")
+    # Get database session
+    async def get_db_session():
+        async for session in get_db():
+            yield session
+            break
 
-    # Check Redis quota counter
+    # Get database session
+    async for db in get_db_session():
+        rate_limiter.db = db
+        break
+
     try:
-        redis_key = f"quota:{current_user.id}:{month_key}:{feature}"
-        current = await cache_client.get(redis_key)
+        # Check and increment quota
+        usage = await rate_limiter.check_and_increment(
+            student_id=str(current_user.id),
+            feature=feature
+        )
 
-        if current is None:
-            # Fallback: create new quota record
-            current = 0
-            await cache_client.setex(redis_key, 2678400, "0")  # 31 days TTL
-        else:
-            current = int(current)
+        logger.info(
+            f"Quota check passed for student {current_user.id[:8]}... "
+            f"feature={feature} used={usage['used']}/{usage['limit']}"
+        )
 
-        if current >= limit:
-            # Calculate reset date (first day of next month)
-            next_month = datetime.now().replace(day=1) + datetime.timedelta(days=32)
-            next_month = next_month.replace(day=1)
+        return None
 
-            raise HTTPException(
-                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail={
-                    "code": "RATE_LIMIT_EXCEEDED",
-                    "message": f"You have exceeded your monthly quota for this feature.",
-                    "quota": {
-                        "feature": feature,
-                        "used": current,
-                        "limit": limit,
-                        "resets_at": next_month.isoformat()
-                    },
-                    "upgrade_option": {
-                        "tier": "pro",
-                        "benefit": "Unlimited adaptive paths and assessments",
-                        "price_monthly": 19.99
-                    }
+    except RateLimitExceededError as e:
+        # Calculate reset date
+        next_month = datetime.now().replace(day=1) + timedelta(days=32)
+        next_month = next_month.replace(day=1)
+
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail={
+                "code": "RATE_LIMIT_EXCEEDED",
+                "message": f"You have exceeded your monthly quota for {e.feature}s.",
+                "quota": {
+                    "feature": e.feature,
+                    "used": e.used,
+                    "limit": e.limit,
+                    "resets_at": e.resets_at.isoformat()
+                },
+                "upgrade_option": {
+                    "tier": "pro",
+                    "benefit": f"Unlimited {e.feature}s and AI features",
+                    "price_monthly": 19.99,
+                    "upgrade_url": "/api/v1/payments/create-checkout-session"
                 }
-            )
-    except Exception as e:
-        # Log error but don't block request if Redis is unavailable
-        # You'll want to implement proper logging here
-        pass
+            }
+        )
 
-    return None
+    except Exception as ex:
+        # Log error but don't block request if rate limiting fails
+        logger.error(f"Rate limiter error for student {current_user.id[:8]}...: {str(ex)}")
+        # Allow request to proceed (fail open)
+        return None

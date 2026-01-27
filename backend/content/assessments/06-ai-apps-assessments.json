@@ -1,0 +1,41 @@
+{
+  "chapter_id": "06-ai-apps",
+  "questions": [
+    {
+      "question_id": "06-apps-q1",
+      "question_text": "Design a production architecture for an AI-powered customer support chatbot serving 10,000 concurrent users. Include components for request routing, rate limiting, caching, and monitoring. How do you ensure sub-second response times?",
+      "evaluation_criteria": [
+        "Architecture components and their roles",
+        "Scalability and load balancing strategy",
+        "Performance optimization (caching, batching)",
+        "Monitoring and observability"
+      ],
+      "example_excellent_answer": "Architecture: (1) API Gateway (Kong/AWS API Gateway) for rate limiting (100 req/min per user), auth, and request routing, (2) Load balancer (ALB) distributing across N application servers, (3) Application layer (FastAPI/Node.js) stateless services running on Kubernetes with HPA (horizontal pod autoscaling), (4) LLM layer: OpenAI API via async client with 3-second timeout, circuit breaker to fallback if API degraded, (5) Message queue (Redis SQS) for async tasks like email follow-ups. Caching strategy: Redis cache for similar questions (1 hour TTL, cache key = question embedding). Cache hit rate of 30% reduces LLM calls by 30%. For sub-second latency: (1) Pre-compute embeddings for FAQ, (2) Stream responses (server-sent events) so user sees first token in <200ms, (3) Use GPT-4o-mini (faster) for initial response, upgrade to GPT-4o only if user asks complex follow-up, (4) Geography: deploy to 3 regions (us-east, eu-west, ap-southeast) with CloudFront routing. Monitoring: Prometheus + Grafana for metrics (p50/p95/p99 latency, error rates), Datadog for alerting (p99 > 2s triggers incident), LLM-specific dashboards (tokens/second, cost per request). This architecture achieves 800ms p95 latency at 10K concurrent users with 99.9% uptime.",
+      "example_poor_answer": "Use a big server with lots of RAM. Connect directly to OpenAI API. Add a load balancer. Make sure to cache everything. Use nginx for routing."
+    },
+    {
+      "question_id": "06-apps-q2",
+      "question_text": "What safety guardrails should be implemented for an AI application that generates content for children? Describe specific technical controls and how to validate their effectiveness.",
+      "evaluation_criteria": [
+        "Identification of safety risks for children's content",
+        "Technical guardrails and implementation",
+        "Validation and testing methods",
+        "Age-appropriate content considerations"
+      ],
+      "example_excellent_answer": "Guardrails: (1) Output filtering - Llama Guard or Perspective API to detect inappropriate content (violence, sexual content, profanity). Block responses with confidence >80% and flag for human review. (2) Input filtering - Detect and block prompts attempting jailbreaks ('ignore previous instructions', 'DAN mode'). Use adversarial testing to validate. (3) Content moderation - After LLM generation, run through safety classifier before showing to user. If unsafe, return fallback response. (4) Context constraints - System prompt limits topics to age-appropriate subjects (e.g., 'You are a helpful tutor for ages 8-12. Answer only educational questions. Refuse inappropriate topics'). (5) Parental controls - Admin dashboard where parents can review child's conversation history and set topic restrictions. Validation: (1) Red team testing - Hire testers to attempt bypasses, fix issues found, (2) Synthetic test set - 1K known-bad prompts, verify 100% blocked, (3) Human review - Sample 1% of conversations weekly for safety audit, (4) A/B testing - Compare guardrail-on vs. guardrail-off (synthetic) to measure false positive rate (target <5%). For children specifically, also validate: reading level (Flesch-Kincaid grade 3-5), no external links, no requests for personal info, and content aligned with educational standards. Log all blocked content for continuous improvement.",
+      "example_poor_answer": "Just put a content filter and make sure the AI knows it's for kids. Have parents monitor what their kids see. Use a bad word filter."
+    },
+    {
+      "question_id": "06-apps-q3",
+      "question_text": "Your AI application's LLM costs are $10,000/month. You need to reduce costs by 80% while maintaining user experience. Describe your optimization strategy with specific techniques and expected savings.",
+      "evaluation_criteria": [
+        "Cost optimization techniques specific to LLMs",
+        "Expected savings calculations",
+        "User experience impact assessment",
+        "Prioritization and implementation strategy"
+      ],
+      "example_excellent_answer": "Optimization Strategy (target $2,000/month, 80% reduction): 1. Model switching (60% savings): GPT-4o → GPT-4o-mini for 70% of requests (simple queries). Cost per 1M tokens: $30 → $2.50. Impact on quality: <5% for FAQ-type queries. Monthly savings: $6,000. 2. Caching (15% savings): Redis cache for similar questions. 30% cache hit rate on high-volume queries. Savings: $1,500/month. 3. Prompt optimization (10% savings): Reduce system prompt from 1500 to 500 tokens by removing redundant instructions. Fewer input tokens = lower cost. Savings: $1,000/month. 4. Semantic routing (5% savings): Use classifier to route simple questions to cheaper models or even deterministic responses. 20% of queries to GPT-3.5-tier model. Savings: $500/month. 5. Batching: Combine non-urgent tasks (daily summaries) into batch API calls (50% discount). Savings: $500/month. Total: $9,500 savings (95% reduction) leaving $500/month. User experience: Maintain quality by measuring CSAT before/after, A/B test cached vs. fresh responses, and keep GPT-4o for complex queries (identified by routing classifier). Implementation priority: Model switch (highest ROI, immediate), then caching (requires engineering), then prompts (ongoing optimization). Monitor cost per user and CSAT weekly.",
+      "example_poor_answer": "Just use a cheaper model like GPT-3.5. Cache everything. Reduce the number of API calls. Make users pay more if they use it too much."
+    }
+  ]
+}

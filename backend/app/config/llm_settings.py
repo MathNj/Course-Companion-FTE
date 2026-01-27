@@ -4,7 +4,8 @@ LLM Configuration Settings
 Loads OpenAI API configuration from environment variables using pydantic-settings.
 """
 
-from pydantic_settings import BaseSettings, Field
+from pydantic_settings import BaseSettings
+from pydantic import Field
 from typing import Optional
 
 
@@ -32,10 +33,12 @@ class LLMSettings(BaseSettings):
     PREMIUM_ADAPTIVE_PATHS_LIMIT: int = Field(default=10, description="Monthly adaptive path quota")
     PREMIUM_ASSESSMENTS_LIMIT: int = Field(default=20, description="Monthly assessment quota")
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = False
+    model_config = {
+        "env_file": ".env",
+        "env_file_encoding": "utf-8",
+        "case_sensitive": False,
+        "extra": "ignore"
+    }
 
 
 # Global settings instance (singleton pattern)

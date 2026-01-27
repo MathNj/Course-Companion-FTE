@@ -145,9 +145,11 @@ app.include_router(payments_router, prefix=settings.api_v1_prefix)
 from app.api.v2.adaptive import router as adaptive_router
 from app.api.v2.admin import router as admin_router
 from app.api.v2.usage import router as usage_router
+from app.api.v2.assessments import router as assessments_router
 app.include_router(adaptive_router, prefix="/api/v2")
 app.include_router(admin_router, prefix="/api/v2")
 app.include_router(usage_router, prefix="/api/v2")
+app.include_router(assessments_router, prefix="/api/v2")
 
 
 # Global exception handler

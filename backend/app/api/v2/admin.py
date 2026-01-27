@@ -5,16 +5,17 @@ Cost tracking, usage metrics, and system health for administrators.
 """
 
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, List, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_
+from sqlalchemy import select, func, and_, desc
 
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.models.user import User
-from app.models.usage import LLMUsageLog
+from app.models.usage import LLMUsageLog, PremiumUsageQuota
 from app.models.llm import AdaptivePath, AssessmentSubmission
+from app.config.llm_settings import get_llm_settings
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
@@ -156,7 +157,7 @@ async def get_cost_metrics(
 @router.get("/health")
 async def get_llm_health(
     current_user: User = Depends(get_current_user),
-    db: AsyncSession = AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """
     Check health of LLM services (OpenAI API availability).
@@ -252,3 +253,297 @@ async def get_quota_usage(
         "average_paths_per_student": round((row.total_paths_used or 0) / row.total_students, 2) if row.total_students > 0 else 0,
         "average_assessments_per_student": round((row.total_assessments_used or 0) / row.total_students, 2) if row.total_students > 0 else 0
     }
+
+
+@router.get("/alerts")
+async def get_cost_alerts(
+    threshold: float = Query(0.50, description="Cost alert threshold (default $0.50)"),
+    limit: int = Query(50, description="Maximum alerts to return"),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Get cost alerts for students exceeding monthly threshold.
+
+    This is FR-026: Cost alert system.
+
+    Args:
+        threshold: Cost threshold in USD (default $0.50)
+        limit: Maximum number of alerts to return
+
+    Returns:
+        - List of students exceeding threshold
+        - Total alerts in period
+        - Average cost per student
+        - Recommended actions
+    """
+    # Default to current month
+    start_date = datetime.now().replace(day=1).strftime("%Y-%m-%d")
+    end_date = datetime.now().strftime("%Y-%m-%d")
+
+    start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+    end_dt = datetime.strptime(end_date, "%Y-%m-%d") + timedelta(days=1)
+
+    # Query students exceeding threshold
+    result = await db.execute(
+        select(
+            LLMUsageLog.student_id,
+            func.sum(LLMUsageLog.cost_usd).label("monthly_cost"),
+            func.count(LLMUsageLog.log_id).label("request_count")
+        ).where(
+            LLMUsageLog.request_timestamp >= start_dt,
+            LLMUsageLog.request_timestamp < end_dt,
+            LLMUsageLog.success == True,
+            LLMUsageLog.deleted_at.is_(None)
+        )
+        .group_by(LLMUsageLog.student_id)
+        .having(func.sum(LLMUsageLog.cost_usd) > threshold)
+        .order_by(desc("monthly_cost"))
+        .limit(limit)
+    )
+
+    alerts = []
+    for row in result:
+        alerts.append({
+            "student_id": str(row.student_id),
+            "monthly_cost_usd": float(row.monthly_cost),
+            "request_count": row.request_count,
+            "threshold_usd": threshold,
+            "excess_amount": float(row.monthly_cost) - threshold
+        })
+
+    # Get summary statistics
+    stats_result = await db.execute(
+        select(
+            func.count(func.distinct(LLMUsageLog.student_id))
+        ).where(
+            LLMUsageLog.request_timestamp >= start_dt,
+            LLMUsageLog.request_timestamp < end_dt,
+            LLMUsageLog.success == True,
+            LLMUsageLog.deleted_at.is_(None)
+        )
+    )
+    total_students = stats_result.scalar() or 0
+
+    cost_result = await db.execute(
+        select(func.sum(LLMUsageLog.cost_usd)).where(
+            LLMUsageLog.request_timestamp >= start_dt,
+            LLMUsageLog.request_timestamp < end_dt,
+            LLMUsageLog.success == True,
+            LLMUsageLog.deleted_at.is_(None)
+        )
+    )
+    total_cost = float(cost_result.scalar() or 0)
+
+    # Get settings for comparison
+    settings = get_llm_settings()
+    configured_threshold = settings.LLM_COST_ALERT_THRESHOLD
+
+    return {
+        "period": {"start_date": start_date, "end_date": end_date},
+        "threshold_used": threshold,
+        "configured_threshold": configured_threshold,
+        "total_students": total_students,
+        "total_cost_usd": total_cost,
+        "average_cost_per_student": total_cost / total_students if total_students > 0 else 0,
+        "alert_count": len(alerts),
+        "alerts": alerts,
+        "recommended_actions": _generate_alert_recommendations(len(alerts), threshold, total_cost)
+    }
+
+
+@router.get("/dashboard")
+async def get_cost_dashboard(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Comprehensive cost monitoring dashboard (FR-027).
+
+    Returns:
+    - Current month costs (adaptive paths, assessments, total)
+    - Cost trends (daily breakdown)
+    - Top users by cost
+    - Cost alerts
+    - Budget utilization
+    - Projected monthly cost
+
+    Use for real-time cost monitoring and optimization.
+    """
+    current_month = datetime.now().replace(day=1)
+
+    # Get current month costs by feature
+    start_dt = current_month
+    end_dt = datetime.now() + timedelta(days=1)
+
+    # Feature breakdown
+    feature_result = await db.execute(
+        select(
+            LLMUsageLog.feature,
+            func.count(LLMUsageLog.log_id).label("total_requests"),
+            func.sum(LLMUsageLog.cost_usd).label("total_cost"),
+            func.sum(LLMUsageLog.tokens_input).label("total_input_tokens"),
+            func.sum(LLMUsageLog.tokens_output).label("total_output_tokens")
+        ).where(
+            LLMUsageLog.request_timestamp >= start_dt,
+            LLMUsageLog.request_timestamp < end_dt,
+            LLMUsageLog.success == True,
+            LLMUsageLog.deleted_at.is_(None)
+        )
+        .group_by(LLMUsageLog.feature)
+    )
+
+    features = {}
+    total_cost = 0.0
+    total_requests = 0
+
+    for row in feature_result.all():
+        feature_cost = float(row.total_cost) if row.total_cost else 0.0
+        features[row.feature] = {
+            "requests": row.total_requests,
+            "cost_usd": feature_cost,
+            "average_tokens_per_request": (row.total_input_tokens + row.total_output_tokens) / row.total_requests if row.total_requests > 0 else 0
+        }
+        total_cost += feature_cost
+        total_requests += row.total_requests
+
+    # Daily trend (last 30 days)
+    daily_trend_result = await db.execute(
+        select(
+            func.date(LLMUsageLog.request_timestamp).label("date"),
+            func.sum(LLMUsageLog.cost_usd).label("daily_cost"),
+            func.count(LLMUsageLog.log_id).label("daily_requests")
+        ).where(
+            LLMUsageLog.request_timestamp >= datetime.now() - timedelta(days=30),
+            LLMUsageLog.success == True,
+            LLMUsageLog.deleted_at.is_(None)
+        )
+        .group_by(func.date(LLMUsageLog.request_timestamp))
+        .order_by(func.date(LLMUsageLog.request_timestamp))
+    )
+
+    daily_trend = []
+    for row in daily_trend_result.all():
+        daily_trend.append({
+            "date": str(row.date),
+            "cost_usd": float(row.daily_cost) if row.daily_cost else 0.0,
+            "requests": row.daily_requests
+        })
+
+    # Top users by cost
+    top_users_result = await db.execute(
+        select(
+            LLMUsageLog.student_id,
+            func.sum(LLMUsageLog.cost_usd).label("monthly_cost"),
+            func.count(LLMUsageLog.log_id).label("request_count")
+        ).where(
+            LLMUsageLog.request_timestamp >= start_dt,
+            LLMUsageLog.request_timestamp < end_dt,
+            LLMUsageLog.success == True,
+            LLMUsageLog.deleted_at.is_(None)
+        )
+        .group_by(LLMUsageLog.student_id)
+        .order_by(desc("monthly_cost"))
+        .limit(10)
+    )
+
+    top_users = []
+    for row in top_users_result.all():
+        top_users.append({
+            "student_id": str(row.student_id),
+            "monthly_cost_usd": float(row.monthly_cost) if row.monthly_cost else 0.0,
+            "request_count": row.request_count
+        })
+
+    # Get cost threshold alerts
+    settings = get_llm_settings()
+    threshold = settings.LLM_COST_ALERT_THRESHOLD
+
+    alert_result = await db.execute(
+        select(func.count(func.distinct(LLMUsageLog.student_id)))
+        .where(
+            LLMUsageLog.request_timestamp >= start_dt,
+            LLMUsageLog.request_timestamp < end_dt,
+            LLMUsageLog.success == True,
+            LLMUsageLog.deleted_at.is_(None)
+        )
+    )
+    total_students = alert_result.scalar() or 0
+
+    high_cost_students_result = await db.execute(
+        select(func.count(func.distinct(LLMUsageLog.student_id)))
+        .where(
+            LLMUsageLog.request_timestamp >= start_dt,
+            LLMUsageLog.request_timestamp < end_dt,
+            LLMUsageLog.success == True,
+            LLMUsageLog.deleted_at.is_(None)
+        )
+    )
+    active_students = high_cost_students_result.scalar() or 0
+
+    # Project monthly cost (extrapolate current month to full month)
+    days_in_month = (current_month.replace(month=12, year=current_month.year + 1, day=1) - timedelta(days=1)).day
+    days_elapsed = (datetime.now() - current_month).days + 1
+    projected_monthly_cost = total_cost / days_elapsed * days_in_month if days_elapsed > 0 else total_cost
+
+    return {
+        "dashboard_timestamp": datetime.now().isoformat(),
+        "current_month": current_month.strftime("%Y-%m"),
+        "period": {
+            "start_date": current_month.strftime("%Y-%m-%d"),
+            "end_date": datetime.now().strftime("%Y-%m-%d"),
+            "days_elapsed": days_elapsed,
+            "days_total": days_in_month
+        },
+        "summary": {
+            "total_cost_usd": round(total_cost, 4),
+            "total_requests": total_requests,
+            "total_students": total_students,
+            "active_students": active_students,
+            "average_cost_per_student": round(total_cost / total_students, 4) if total_students > 0 else 0.0,
+            "average_cost_per_request": round(total_cost / total_requests, 6) if total_requests > 0 else 0.0
+        },
+        "by_feature": features,
+        "daily_trend": daily_trend[-7:],  # Last 7 days
+        "top_users_by_cost": top_users,
+        "alerts": {
+            "cost_threshold_usd": threshold,
+            "students_exceeding_threshold": len([u for u in top_users if u["monthly_cost_usd"] > threshold]),
+            "projected_monthly_cost_usd": round(projected_monthly_cost, 2)
+        },
+        "budget_utilization": {
+            "budget_per_student_usd": 0.50,  # From requirements
+            "total_budget_usd": 0.50 * total_students,
+            "actual_cost_usd": total_cost,
+            "budget_remaining_usd": max(0, (0.50 * total_students) - total_cost),
+            "utilization_percent": round((total_cost / (0.50 * total_students)) * 100, 1) if total_students > 0 else 0
+        }
+    }
+
+
+def _generate_alert_recommendations(alert_count: int, threshold: float, total_cost: float) -> List[str]:
+    """Generate actionable recommendations based on alert metrics."""
+    recommendations = []
+
+    if alert_count > 10:
+        recommendations.append(
+            f"Consider implementing usage caps to prevent cost overruns. "
+            f"{alert_count} students have exceeded ${threshold:.2f} threshold."
+        )
+
+    if total_cost > 100:
+        recommendations.append(
+            f"Monthly cost (${total_cost:.2f}) exceeds $100 budget. "
+            "Review pricing model or consider increasing subscription tiers."
+        )
+
+    if alert_count > 0:
+        recommendations.append(
+            "Reach out to high-usage students to understand their use patterns "
+            "and suggest more efficient learning strategies."
+        )
+
+    if not recommendations:
+        recommendations.append("Cost levels are within acceptable ranges. Continue monitoring.")
+
+    return recommendations
