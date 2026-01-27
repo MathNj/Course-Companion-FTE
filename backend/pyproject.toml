@@ -21,6 +21,7 @@ dependencies = [
     "asyncpg>=0.29.0",
     "uvicorn[standard]>=0.24.0",
     "pytz>=2024.1",
+    "stripe>=8.0.0",
 ]
 
 [project.optional-dependencies]
@@ -58,4 +59,4 @@ python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
 addopts = "--cov=app --cov-report=html --cov-report=term-missing"
-# Cache bust 1769339795
+# Cache bust 1769339795 - Added stripe dependency
