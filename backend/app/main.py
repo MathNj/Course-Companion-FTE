@@ -141,6 +141,10 @@ app.include_router(quizzes_router, prefix=settings.api_v1_prefix)
 app.include_router(progress_router, prefix=settings.api_v1_prefix)
 app.include_router(payments_router, prefix=settings.api_v1_prefix)
 
+# Phase 2: Hybrid Intelligence (v2 routers)
+from app.api.v2.adaptive import router as adaptive_router
+app.include_router(adaptive_router, prefix="/api/v2")
+
 
 # Global exception handler
 @app.exception_handler(Exception)
