@@ -281,6 +281,21 @@ class CacheKeys:
         """Cache key for rate limiting."""
         return f"ratelimit:{identifier}"
 
+    # Phase 2: Hybrid Intelligence cache keys
+
+    @staticmethod
+    def adaptive_path(student_id: str) -> str:
+        """Cache key for adaptive learning path (24h TTL)."""
+        return f"adaptive_path:{student_id}"
+
+    @staticmethod
+    def adaptive_path_version(student_id: str, last_quiz_timestamp: str) -> str:
+        """Generate cache version key based on last quiz time (for invalidation)."""
+        # Version changes daily or when new quiz data exists
+        import hashlib
+        date_hash = hashlib.md5(last_quiz_timestamp[:10].encode()).hexdigest()[:8]
+        return f"{CacheKeys.adaptive_path(student_id)}:v{date_hash}"
+
 
 # Global cache client instance
 cache_client = CacheClient()
