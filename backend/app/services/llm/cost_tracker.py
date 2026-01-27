@@ -15,9 +15,9 @@ from app.models.llm import AdaptivePath, AssessmentFeedback
 logger = logging.getLogger(__name__)
 
 
-# Pricing (Claude Sonnet 4.5 as of 2026-01-27)
-INPUT_COST_PER_1M_TOKENS = 3.0  # $3 per million input tokens
-OUTPUT_COST_PER_1M_TOKENS = 15.0  # $15 per million output tokens
+# Pricing (GPT-4o-mini as of 2026-01-27)
+INPUT_COST_PER_1M_TOKENS = 0.15  # $0.15 per million input tokens
+OUTPUT_COST_PER_1M_TOKENS = 0.60  # $0.60 per million output tokens
 
 
 class CostTracker:

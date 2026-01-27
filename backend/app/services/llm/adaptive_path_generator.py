@@ -11,7 +11,7 @@ from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 
-from app.services.llm.client import get_anthropic_client
+from app.services.llm.client import get_openai_client
 from app.services.llm.cost_tracker import CostTracker
 from app.models.llm import AdaptivePath
 from app.models.user import User
@@ -224,13 +224,14 @@ Generate 3-5 prioritized recommendations in JSON format following the system pro
         # Build prompt
         system_prompt, user_message = AdaptivePathGenerator.build_adaptive_path_prompt(performance_data)
 
-        # Call Claude API
-        client = get_anthropic_client()
+        # Call OpenAI API with JSON mode for structured output
+        client = get_openai_client()
         response = await client.create_message(
             system_prompt=system_prompt,
             user_message=user_message,
             max_tokens=500,
-            temperature=0.3  # Low temperature for consistent recommendations
+            temperature=0.3,  # Low temperature for consistent recommendations
+            response_format={"type": "json_object"}  # Enable JSON mode
         )
 
         # Parse JSON response

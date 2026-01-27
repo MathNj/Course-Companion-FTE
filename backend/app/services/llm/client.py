@@ -1,5 +1,5 @@
 """
-Anthropic Claude Sonnet 4.5 Client Wrapper
+OpenAI GPT-4o-mini Client Wrapper
 
 Handles API communication with retry logic, timeout handling, and error management.
 """
@@ -10,42 +10,44 @@ import logging
 from typing import Dict, Any, Optional
 from datetime import datetime
 
-import anthropic
-from anthropic import Anthropic, APIError, APITimeoutError
+from openai import AsyncOpenAI
+from openai import APIError, APITimeoutError
 
 from app.config.llm_settings import LLMSettings
 
 logger = logging.getLogger(__name__)
 
 
-class AnthropicClient:
+class OpenAIClient:
     """
-    Wrapper for Anthropic API with retry logic and error handling.
+    Wrapper for OpenAI API with retry logic and error handling.
     """
 
     def __init__(self):
-        """Initialize Anthropic client with configuration."""
+        """Initialize OpenAI client with configuration."""
         self.settings = LLMSettings()
-        self.client = Anthropic(api_key=self.settings.ANTHROPIC_API_KEY)
-        self.model = self.settings.ANTHROPIC_MODEL
-        self.timeout = self.settings.ANTHROPIC_TIMEOUT
-        self.max_retries = self.settings.ANTHROPIC_MAX_RETRIES
+        self.client = AsyncOpenAI(api_key=self.settings.OPENAI_API_KEY)
+        self.model = self.settings.OPENAI_MODEL
+        self.timeout = self.settings.OPENAI_TIMEOUT
+        self.max_retries = self.settings.OPENAI_MAX_RETRIES
 
     async def create_message(
         self,
         system_prompt: str,
         user_message: str,
         max_tokens: int = 2000,
-        temperature: float = 0.3
+        temperature: float = 0.3,
+        response_format: Optional[Dict[str, str]] = None
     ) -> Dict[str, Any]:
         """
-        Create a Claude message with retry logic.
+        Create a chat completion with GPT-4o-mini with retry logic.
 
         Args:
             system_prompt: System prompt for the conversation
             user_message: User message content
             max_tokens: Maximum tokens in response
             temperature: Sampling temperature (0.0-1.0)
+            response_format: Optional JSON mode specification {"type": "json_object"}
 
         Returns:
             Dictionary containing:
@@ -63,32 +65,32 @@ class AnthropicClient:
 
         for attempt in range(self.max_retries):
             try:
-                # Synchronous API call (run in thread pool to avoid blocking)
-                loop = asyncio.get_event_loop()
-                response = await loop.run_in_executor(
-                    None,
-                    lambda: self.client.messages.create(
-                        model=self.model,
-                        max_tokens=max_tokens,
-                        temperature=temperature,
-                        system=system_prompt,
-                        messages=[
-                            {"role": "user", "content": user_message}
-                        ]
-                    )
+                # Build messages
+                messages = [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_message}
+                ]
+
+                # API call with optional JSON mode
+                completion = await self.client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    max_tokens=max_tokens,
+                    temperature=temperature,
+                    response_format=response_format
                 )
 
                 # Calculate latency
                 latency_ms = int((datetime.now() - start_time).total_seconds() * 1000)
 
                 # Extract response data
-                content = response.content[0].text
-                input_tokens = response.usage.input_tokens
-                output_tokens = response.usage.output_tokens
-                total_tokens = response.usage.total_tokens
+                content = completion.choices[0].message.content
+                input_tokens = completion.usage.prompt_tokens
+                output_tokens = completion.usage.completion_tokens
+                total_tokens = completion.usage.total_tokens
 
                 logger.info(
-                    f"Claude API call successful: model={self.model}, "
+                    f"OpenAI API call successful: model={self.model}, "
                     f"tokens={total_tokens}, latency={latency_ms}ms"
                 )
 
@@ -97,9 +99,9 @@ class AnthropicClient:
                     "input_tokens": input_tokens,
                     "output_tokens": output_tokens,
                     "total_tokens": total_tokens,
-                    "model": response.model,
+                    "model": completion.model,
                     "latency_ms": latency_ms,
-                    "stop_reason": response.stop_reason
+                    "finish_reason": completion.choices[0].finish_reason
                 }
 
             except APITimeoutError as e:
@@ -122,34 +124,38 @@ class AnthropicClient:
                     raise
 
             except Exception as e:
-                logger.error(f"Unexpected error in Claude API call: {str(e)}")
+                logger.error(f"Unexpected error in OpenAI API call: {str(e)}")
                 raise
 
         # Should not reach here
         raise APIError("Max retries exceeded")
 
-    def is_available(self) -> bool:
-        """Check if Anthropic API is accessible (simple health check)."""
+    async def is_available(self) -> bool:
+        """Check if OpenAI API is accessible (simple health check)."""
         try:
             # Quick test with minimal tokens
-            response = self.client.messages.create(
+            completion = await self.client.chat.completions.create(
                 model=self.model,
-                max_tokens=10,
-                messages=[{"role": "user", "content": "test"}]
+                messages=[{"role": "user", "content": "test"}],
+                max_tokens=10
             )
             return True
         except Exception as e:
-            logger.error(f"Anthropic API health check failed: {str(e)}")
+            logger.error(f"OpenAI API health check failed: {str(e)}")
             return False
 
 
 # Global client instance (singleton pattern)
-_anthropic_client: Optional[AnthropicClient] = None
+_openai_client: Optional[OpenAIClient] = None
 
 
-def get_anthropic_client() -> AnthropicClient:
-    """Get or create global Anthropic client instance."""
-    global _anthropic_client
-    if _anthropic_client is None:
-        _anthropic_client = AnthropicClient()
-    return _anthropic_client
+def get_openai_client() -> OpenAIClient:
+    """Get or create global OpenAI client instance."""
+    global _openai_client
+    if _openai_client is None:
+        _openai_client = OpenAIClient()
+    return _openai_client
+
+
+# Backwards compatibility alias
+get_anthropic_client = get_openai_client

@@ -23,7 +23,7 @@ class LLMService:
 
         # LLM Configuration
         self.openai_api_key = os.getenv("OPENAI_API_KEY")
-        self.default_model = os.getenv("OPENAI_MODEL", "gpt-4o")
+        self.default_model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
         self.max_tokens = int(os.getenv("LLM_MAX_TOKENS", "4000"))
         self.temperature = float(os.getenv("LLM_TEMPERATURE", "0.7"))
 
@@ -36,9 +36,9 @@ class LLMService:
         else:
             self.openai_client = None
 
-        # Cost tracking for GPT-4o (per 1M tokens)
-        self.cost_per_million_input = 2.50  # GPT-4o input
-        self.cost_per_million_output = 10.00  # GPT-4o output
+        # Cost tracking for GPT-4o-mini (per 1M tokens)
+        self.cost_per_million_input = 0.15  # GPT-4o-mini input
+        self.cost_per_million_output = 0.60  # GPT-4o-mini output
 
     async def grade_assessment(
         self,

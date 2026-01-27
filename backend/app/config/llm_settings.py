@@ -1,7 +1,7 @@
 """
 LLM Configuration Settings
 
-Loads Anthropic API configuration from environment variables using pydantic-settings.
+Loads OpenAI API configuration from environment variables using pydantic-settings.
 """
 
 from pydantic_settings import BaseSettings, Field
@@ -10,14 +10,14 @@ from typing import Optional
 
 class LLMSettings(BaseSettings):
     """
-    Anthropic Claude Sonnet 4.5 configuration loaded from environment.
+    OpenAI GPT-4o-mini configuration loaded from environment.
     """
 
-    # Anthropic API Configuration
-    ANTHROPIC_API_KEY: str = Field(..., description="Anthropic API key (starts with sk-ant-api03-)")
-    ANTHROPIC_MODEL: str = Field(default="claude-sonnet-4-5-20250929", description="Claude model version")
-    ANTHROPIC_TIMEOUT: int = Field(default=30, description="API request timeout in seconds")
-    ANTHROPIC_MAX_RETRIES: int = Field(default=3, description="Max retry attempts on failure")
+    # OpenAI API Configuration
+    OPENAI_API_KEY: str = Field(..., description="OpenAI API key (starts with sk-)")
+    OPENAI_MODEL: str = Field(default="gpt-4o-mini", description="OpenAI model version")
+    OPENAI_TIMEOUT: int = Field(default=30, description="API request timeout in seconds")
+    OPENAI_MAX_RETRIES: int = Field(default=3, description="Max retry attempts on failure")
 
     # Cost Monitoring
     LLM_COST_ALERT_THRESHOLD: float = Field(default=0.50, description="Alert threshold per student per month (USD)")

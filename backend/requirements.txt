@@ -27,7 +27,7 @@ python-dateutil==2.8.2
 stripe==8.0.0
 
 # Phase 2: LLM Integration
-anthropic==0.40.0
+openai==1.54.0
 tiktoken==0.5.2
 
 # Phase 2: Database (if using PostgreSQL for Phase 1)

@@ -206,12 +206,12 @@ tests/__pycache__/
 tests/.pytest_cache/
 
 # ================================
-# Phase 2: Anthropic Claude Credentials
+# Phase 2: OpenAI API Credentials
 # ================================
-# Anthropic API keys (NEVER commit)
-anthropic_api_key.txt
-*.anthropic
-.anthropic/
+# OpenAI API keys (NEVER commit)
+openai_api_key.txt
+*.openai
+.openai/
 
 # Phase 2: Cost tracking logs (local development)
 cost_logs/

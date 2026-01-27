@@ -33,7 +33,7 @@ class LLMUsageLog(Base):
 
     # Request Details
     request_timestamp = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), index=True)
-    model_version = Column(String(100), nullable=False, default="claude-sonnet-4-5-20250929")
+    model_version = Column(String(100), nullable=False, default="gpt-4o-mini")
 
     # Token Usage
     tokens_input = Column(Integer, nullable=False, CheckConstraint("tokens_input > 0"))
