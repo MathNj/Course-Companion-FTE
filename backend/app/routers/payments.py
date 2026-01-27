@@ -3,10 +3,11 @@ Payment Routes
 Handle Stripe checkout sessions and payment management
 """
 
-from fastapi import APIRouter, HTTPException, status, Request, BackgroundTasks
+from fastapi import APIRouter, HTTPException, status, Request, BackgroundTasks, Depends
 from pydantic import BaseModel
 from typing import Optional
 import logging
+import stripe
 
 from app.services.stripe_service import StripeService
 from app.database import get_db
