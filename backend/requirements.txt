@@ -37,3 +37,11 @@ tiktoken==0.5.2
 
 # Phase 2: Redis Cache
 # redis==5.0.1
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.0
+pytest-cov==4.1.0
+httpx==0.25.2
+pytest-mock==3.10.0
+faker==20.0.0
