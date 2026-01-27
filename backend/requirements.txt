@@ -25,3 +25,15 @@ python-dateutil==2.8.2
 
 # Payment Processing
 stripe==8.0.0
+
+# Phase 2: LLM Integration
+anthropic==0.40.0
+tiktoken==0.5.2
+
+# Phase 2: Database (if using PostgreSQL for Phase 1)
+# sqlalchemy==2.0.23
+# asyncpg==0.29.0
+# alembic==1.13.0
+
+# Phase 2: Redis Cache
+# redis==5.0.1
