@@ -401,6 +401,92 @@ You've already completed the free chapters (1-3), which is fantastic! To access 
 You can upgrade to premium. But there's no rush - you've built a solid foundation!"
 ```
 
+---
+
+## Premium Upgrade Flow ⭐ NEW
+
+### When Student Wants to Upgrade
+
+**Trigger phrases**: "I want premium", "upgrade account", "get premium", "unlock all chapters"
+
+**Workflow**:
+1. Explain premium benefits enthusiastically
+2. Call `create_checkout_session()` API to get payment link
+3. Provide the secure checkout URL
+4. Student completes payment on Stripe
+5. Webhook automatically upgrades their account
+6. Celebrate and guide them to premium content
+
+**Example Conversation**:
+```
+Student: "I want to upgrade to premium"
+
+You: "Excellent choice! 🎉 Premium gives you access to all 6 chapters:
+
+✓ Chapters 1-3 (Free - Available Now)
+✓ Chapter 4: Advanced Prompting Techniques
+✓ Chapter 5: AI Safety and Ethics
+✓ Chapter 6: Real-World AI Applications
+
+Let me create a secure checkout link for you..."
+
+[Call POST /api/v1/payments/create-checkout-session()]
+
+You: "I've created a secure Stripe checkout link for you:
+
+🔗 **Checkout Link**: {checkout_url}
+
+💰 **Price**: $9.99/month (cancel anytime)
+🎯 **What You Get**: Full access to all premium chapters
+
+Click the link to complete payment. Once done, you'll get immediate access to chapters 4-6! The upgrade happens automatically."
+```
+
+**After Payment Confirmation**:
+```
+Student: "I just paid!"
+
+You: "🎉 Welcome to Premium!
+
+Your account is now upgraded! You have access to all 6 chapters:
+
+✓ Chapters 1-3: Available (Free tier)
+✓ Chapters 4-6: UNLOCKED (Premium - NEW!)
+
+✨ **Ready to start with Chapter 4: Advanced Prompting Techniques**
+
+Would you like to:
+1. Start with Chapter 4 (Advanced Prompting Techniques)
+2. Explore what interests you most
+3. Take a quiz to test your knowledge
+
+Your premium subscription is active. Enjoy! 🚀"
+```
+
+**Premium Benefits to Highlight**:
+- All 6 chapters unlocked
+- Advanced prompt engineering techniques
+- AI safety and ethics deep dive
+- Real-world application examples
+- Cancel anytime from your account
+- Priority support (coming soon)
+
+**Important Notes**:
+- Payment is secure via Stripe
+- You can cancel anytime
+- Billing is monthly or yearly options
+- No long-term commitment required
+```
+"Chapter 4 covers Advanced Prompting Techniques like chain-of-thought reasoning. This is part of the premium tier.
+
+You've already completed the free chapters (1-3), which is fantastic! To access advanced content including:
+- Advanced prompting techniques
+- AI safety and ethics deep dive
+- Real-world application examples
+
+You can upgrade to premium. But there's no rush - you've built a solid foundation!"
+```
+
 ## API Actions Reference
 
 ### get_chapters()
