@@ -9,12 +9,20 @@
 A Dual-Frontend Architecture with Zero-Backend-LLM Default  
 → Selective Hybrid Intelligence
 
+**Version 1.0 — January 2026**
 
-## **1 The Challenge**
+Prepared for Panaversity Agent Factory Development Hackathon
 
-Build a **Course Companion FTE** — a Digital Full-Time Equivalent that serves as a 24/7 educational tutor, working 168 hours per week at 85-90% cost savings compared to human tutors.
+AI Agent Factory Presentation:   
+[https://docs.google.com/presentation/d/1UGvCUk1-O8m5i-aTWQNxzg8EXoKzPa8fgcwfNh8vRjQ/edit?usp=sharing](https://docs.google.com/presentation/d/1UGvCUk1-O8m5i-aTWQNxzg8EXoKzPa8fgcwfNh8vRjQ/edit?usp=sharing) 
 
-## **2 The Innovation**
+AI Agent Factory Textbook: [https://agentfactory.panaversity.org/](https://agentfactory.panaversity.org/) 
+
+Agent Factory Architecture:  
+[https://docs.google.com/document/d/15GuwZwIOQy\_g1XsIJjQsFNHCTQTWoXQhWGVMhiH0swc/](https://docs.google.com/document/d/15GuwZwIOQy_g1XsIJjQsFNHCTQTWoXQhWGVMhiH0swc/) 
+
+
+## **1.2 The Innovation**
 
 This hackathon applies the [**Agent Factory Architecture**](https://docs.google.com/document/d/15GuwZwIOQy_g1XsIJjQsFNHCTQTWoXQhWGVMhiH0swc/edit?usp=sharing) to education:
 
@@ -35,7 +43,26 @@ A production-ready Digital FTE that can:
 
 The hackathon enforces a modern AI architecture principle: start with a Zero‑Backend‑LLM architecture (see Appendix I) by default (Phase 1), and introduce Hybrid intelligence (Phase 2\) only where it is demonstrably valuable, cost‑justified, and premium. In Phase 3 a stand alone end-to-end Web App is required to be built with full features.
 
-99% cost reduction** while maintaining quality through guardrails and Agent Skills.
+# **2\. The Digital FTE Thesis**
+
+*"In the AI era, the most valuable educational platforms won't sell courses — they'll hire Digital Tutors that work 168 hours per week, powered by agents, specs, skills, MCP, and cloud-native technologies."*
+
+## **2.1 Human Tutor vs Digital FTE Comparison**
+
+| Feature | Human Tutor | Course Companion FTE |
+| ----- | ----- | ----- |
+| Availability | 40 hours/week | 168 hours/week (24/7) |
+| Monthly Cost | $2,000 – $5,000 | $200 – $500 |
+| Students per Tutor | 20-50 | Unlimited (concurrent) |
+| Consistency | Variable (85–95%) | Predictable (99%+) |
+| Ramp-up Time | Weeks of training | Instant (via SKILL.md) |
+| Personalization | Limited by time | Infinite patience |
+| Cost per Session | $25 – $100 | $0.10 – $0.50 |
+| Language Support | 1-3 languages | 50+ languages |
+
+### **The 'Aha\!' Moment**
+
+A Digital Tutor FTE can conduct **50,000+ tutoring sessions per month** at approximately **$0.25 per session** — compared to $50+ for human tutoring. This represents a **99% cost reduction** while maintaining quality through guardrails and Agent Skills.
 
 # **3\. Project Overview**
 

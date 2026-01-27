@@ -105,32 +105,79 @@ async def _fetch_chapter_from_storage(chapter_id: str) -> Optional[Dict[str, Any
     Fetch chapter content from R2 or local files.
 
     Args:
-        chapter_id: Chapter identifier
+        chapter_id: Chapter identifier (e.g., "chapter-1" or "Chapter 1 — The Age of Synthesis_ An Introduction to Generative AI")
 
     Returns:
         Chapter content dictionary, or None if not found
     """
-    # Try local files first (for development)
+    # Try R2 first if configured
+    if r2_client.is_configured():
+        try:
+            # List chapters to find the matching file
+            chapters = r2_client.list_chapters()
+
+            # Try to find chapter by name match
+            matched_chapter = None
+            for chapter in chapters:
+                # Match by chapter_id in various formats
+                if (chapter_id.lower() in chapter['name'].lower() or
+                    chapter_id.replace('-', ' ').lower() in chapter['name'].lower() or
+                    chapter['name'].lower().replace(' — ', ' ').replace('_', ' ') == chapter_id.lower().replace('-', ' ')):
+                    matched_chapter = chapter
+                    break
+
+            if matched_chapter:
+                # Fetch markdown content from R2
+                markdown_content = r2_client.get_markdown_file(matched_chapter['key'])
+
+                if markdown_content:
+                    logger.info(f"Loaded chapter {chapter_id} from R2")
+                    return {
+                        "chapter_id": chapter_id,
+                        "title": matched_chapter['name'],
+                        "content": markdown_content,
+                        "content_type": "text/markdown",
+                        "size": matched_chapter['size'],
+                        "source": "r2"
+                    }
+
+        except Exception as e:
+            logger.error(f"Error loading chapter {chapter_id} from R2: {e}")
+
+    # Fallback to local files (for development)
     from pathlib import Path
 
     content_dir = Path(__file__).parent.parent.parent / "content" / "chapters"
-    chapter_file = content_dir / f"{chapter_id}.json"
+    chapter_file = content_dir / f"{chapter_id}.md"
 
     if chapter_file.exists():
         try:
-            import json
             with open(chapter_file, 'r', encoding='utf-8') as f:
-                chapter_content = json.load(f)
+                markdown_content = f.read()
             logger.info(f"Loaded chapter {chapter_id} from local storage")
-            return chapter_content
+            return {
+                "chapter_id": chapter_id,
+                "title": chapter_id.replace('-', ' ').title(),
+                "content": markdown_content,
+                "content_type": "text/markdown",
+                "source": "local"
+            }
         except Exception as e:
             logger.error(f"Error loading chapter {chapter_id} from local file: {e}")
 
-    # TODO: Fallback to R2 if local file not found
-    # if settings.content_source == "r2":
-    #     return await r2_client.get_chapter(chapter_id)
+    # Try JSON format as well
+    chapter_json = content_dir / f"{chapter_id}.json"
+    if chapter_json.exists():
+        try:
+            import json
+            with open(chapter_json, 'r', encoding='utf-8') as f:
+                chapter_content = json.load(f)
+            logger.info(f"Loaded chapter {chapter_id} from local JSON storage")
+            return chapter_content
+        except Exception as e:
+            logger.error(f"Error loading chapter {chapter_id} from local JSON: {e}")
 
-    logger.warning(f"Chapter {chapter_id} not found in storage")
+    logger.warning(f"Chapter {chapter_id} not found in any storage")
     return None
 
 

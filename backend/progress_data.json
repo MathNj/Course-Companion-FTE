@@ -1,0 +1,32 @@
+{
+  "user_id": "demo-user",
+  "chapters": {
+    "chapter-1": {
+      "chapter_id": "chapter-1",
+      "completion_percentage": 100,
+      "is_completed": true,
+      "time_spent_seconds": 600,
+      "started_at": "2026-01-27T01:20:37.156154",
+      "last_accessed": "2026-01-27T01:20:39.183546",
+      "completed_at": "2026-01-27T01:20:39.183553"
+    },
+    "chapter-2": {
+      "chapter_id": "chapter-2",
+      "completion_percentage": 25,
+      "is_completed": false,
+      "time_spent_seconds": 180,
+      "started_at": "2026-01-27T01:20:41.211184",
+      "last_accessed": "2026-01-27T01:20:41.211194"
+    }
+  },
+  "streak": {
+    "current_streak": 1,
+    "longest_streak": 1,
+    "total_active_days": 1,
+    "last_activity_date": "2026-01-27"
+  },
+  "quiz_attempts": {},
+  "achievements": [
+    "first_chapter"
+  ]
+}

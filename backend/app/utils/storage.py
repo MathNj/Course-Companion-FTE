@@ -216,6 +216,66 @@ class R2StorageClient:
             logger.error(f"Failed to list objects with prefix '{prefix}': {e}")
             return []
 
+    def get_markdown_file(self, object_key: str) -> Optional[str]:
+        """
+        Fetch a markdown file from R2 and return its content as string.
+
+        Args:
+            object_key: Object key/path in R2 (e.g., 'Generative AI Fundamentals/Chapter 1 — The Age of Synthesis_ An Introduction to Generative AI.md')
+
+        Returns:
+            Markdown content as string, or None if not found
+        """
+        if not self.is_configured():
+            logger.error("R2 storage not configured")
+            return None
+
+        try:
+            response = self.client.get_object(
+                Bucket=self.bucket_name,
+                Key=object_key
+            )
+
+            content = response['Body'].read().decode('utf-8')
+            logger.info(f"Successfully fetched markdown file: {object_key}")
+
+            return content
+
+        except self.client.exceptions.NoSuchKey:
+            logger.warning(f"Markdown file not found: {object_key}")
+            return None
+        except ClientError as e:
+            logger.error(f"Failed to fetch markdown file {object_key}: {e}")
+            return None
+
+    def list_chapters(self, prefix: str = "Generative AI Fundamentals/") -> list[dict]:
+        """
+        List all chapter files in the R2 bucket.
+
+        Args:
+            prefix: Directory prefix for chapters (default: 'Generative AI Fundamentals/')
+
+        Returns:
+            List of chapter metadata dictionaries with name, size, and key
+        """
+        objects = self.list_objects(prefix=prefix)
+
+        chapters = []
+        for obj in objects:
+            key = obj['Key']
+            if key.endswith('.md'):
+                # Extract chapter name from key
+                name = key.replace(prefix, '').replace('.md', '')
+                chapters.append({
+                    'name': name,
+                    'key': key,
+                    'size': obj['Size'],
+                    'last_modified': obj['LastModified']
+                })
+
+        logger.info(f"Found {len(chapters)} chapter files")
+        return chapters
+
 
 # Global R2 client instance
 r2_client = R2StorageClient()
