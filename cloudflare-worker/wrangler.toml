@@ -1,0 +1,7 @@
+name = "course-companion-mcp-proxy"
+main = "mcp-proxy-worker.js"
+compatibility_date = "2024-01-01"
+
+# Optional: Add your Cloudflare Account ID
+# Find this in Cloudflare Dashboard > URL path
+# account_id = "your-account-id-here"

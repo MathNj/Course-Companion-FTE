@@ -1,0 +1,407 @@
+# ChatGPT App Configuration
+# OpenAI Apps SDK Format (2025)
+
+app:
+  name: "Course Companion FTE"
+  description: "Conversational tutor that navigates course content, answers grounded questions, runs quizzes, and tracks progress."
+  version: "2.0.0"
+  category: "Education"
+  author: "Course Companion FTE Team"
+
+# MCP Server Configuration
+mcp_server:
+  # For local development with Cloudflare Tunnel:
+  # url: "https://your-tunnel-url.dev/mcp"
+  #
+  # For production deployment:
+  url: "https://sail-bucks-leasing-toll.trycloudflare.com/mcp"
+
+  # Authentication configuration
+  auth:
+    type: "none"   # Options: "none", "api_key", "oauth2"
+    # For api_key auth:
+    # header_name: "X-API-Key"
+    # For oauth2 auth:
+    # scopes: ["read", "write"]
+
+# Tools exposed by MCP Server
+tools:
+  - name: "get_chapters"
+    description: "Get all available course chapters with access status, progress tracking, and metadata."
+    annotations:
+      readOnlyHint: true
+    input_schema:
+      type: object
+      properties: {}
+      required: []
+
+  - name: "get_chapter"
+    description: "Fetch a course chapter by id. Returns verbatim content including all sections, learning objectives, and metadata."
+    annotations:
+      readOnlyHint: true
+    input_schema:
+      type: object
+      properties:
+        chapter_id:
+          type: string
+          description: "Chapter identifier (e.g., 'chapter-1', 'chapter-2')"
+      required: [chapter_id]
+
+  - name: "search_content"
+    description: "Search course content for relevant sections. Returns matching chunks with chapter/section references and relevance scores."
+    annotations:
+      readOnlyHint: true
+    input_schema:
+      type: object
+      properties:
+        query:
+          type: string
+          description: "Search query keywords or phrase"
+        limit:
+          type: integer
+          description: "Maximum number of results to return"
+          default: 5
+          minimum: 1
+          maximum: 20
+      required: [query]
+
+  - name: "get_quiz"
+    description: "Fetch quiz questions for a chapter/quiz id. Returns questions, options, and metadata for grading."
+    annotations:
+      readOnlyHint: true
+    input_schema:
+      type: object
+      properties:
+        quiz_id:
+          type: string
+          description: "Quiz identifier (typically matches chapter_id)"
+      required: [quiz_id]
+
+  - name: "submit_quiz"
+    description: "Submit quiz answers for deterministic grading. Returns score, feedback, and updates progress."
+    annotations:
+      readOnlyHint: false
+      destructiveHint: false
+    input_schema:
+      type: object
+      properties:
+        quiz_id:
+          type: string
+          description: "Quiz identifier"
+        answers:
+          type: object
+          description: "Map of question IDs to selected answers"
+          additionalProperties: true
+      required: [quiz_id, answers]
+
+  - name: "get_progress"
+    description: "Fetch a user's learning progress including completed chapters, streak, milestones, and overall completion percentage."
+    annotations:
+      readOnlyHint: true
+    input_schema:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: "User identifier (optional, will use authenticated user if not provided)"
+      required: []
+
+  - name: "update_progress"
+    description: "Update a user's progress (completed chapters, streak, activity). Called automatically after quiz submission and content completion."
+    annotations:
+      readOnlyHint: false
+      destructiveHint: false
+    input_schema:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: "User identifier"
+        progress_update:
+          type: object
+          description: "Progress update data (chapter_id, activity_type, etc.)"
+          properties:
+            chapter_id:
+              type: string
+            activity_type:
+              type: string
+              enum: ["chapter_complete", "quiz_complete", "section_view"]
+            timestamp:
+              type: string
+              format: "date-time"
+      required: [user_id, progress_update]
+
+  # Organization Tools
+  - name: "get_bookmarks"
+    description: "Get all saved bookmarks for quick access to important content."
+    annotations:
+      readOnlyHint: true
+    input_schema:
+      type: object
+      properties: {}
+      required: []
+
+  - name: "create_bookmark"
+    description: "Save a chapter or section for quick access later."
+    annotations:
+      readOnlyHint: false
+      destructiveHint: false
+    input_schema:
+      type: object
+      properties:
+        chapter_id:
+          type: string
+        section_id:
+          type: string
+          description: "Optional section identifier"
+        title:
+          type: string
+          description: "Custom title for the bookmark"
+      required: [chapter_id]
+
+  - name: "delete_bookmark"
+    description: "Remove a bookmark by ID."
+    annotations:
+      readOnlyHint: false
+      destructiveHint: true
+    input_schema:
+      type: object
+      properties:
+        bookmark_id:
+          type: string
+          description: "Bookmark identifier to delete"
+      required: [bookmark_id]
+
+  - name: "get_notes"
+    description: "Get user's notes with optional filters by chapter or tags."
+    annotations:
+      readOnlyHint: true
+    input_schema:
+      type: object
+      properties:
+        chapter_id:
+          type: string
+          description: "Optional filter by chapter"
+        tags:
+          type: array
+          items:
+            type: string
+          description: "Optional filter by tags"
+      required: []
+
+  - name: "create_note"
+    description: "Save a note with content, chapter reference, and optional tags."
+    annotations:
+      readOnlyHint: false
+      destructiveHint: false
+    input_schema:
+      type: object
+      properties:
+        chapter_id:
+          type: string
+        section_id:
+          type: string
+          description: "Optional section identifier"
+        content:
+          type: string
+          description: "Note content"
+        tags:
+          type: array
+          items:
+            type: string
+          description: "Optional tags for organization"
+      required: [chapter_id, content]
+
+  - name: "update_note"
+    description: "Update an existing note's content or tags."
+    annotations:
+      readOnlyHint: false
+      destructiveHint: false
+    input_schema:
+      type: object
+      properties:
+        note_id:
+          type: string
+          description: "Note identifier to update"
+        content:
+          type: string
+          description: "Updated note content"
+        tags:
+          type: array
+          items:
+            type: string
+          description: "Updated tags"
+      required: [note_id]
+
+  - name: "delete_note"
+    description: "Delete a note by ID."
+    annotations:
+      readOnlyHint: false
+      destructiveHint: true
+    input_schema:
+      type: object
+      properties:
+        note_id:
+          type: string
+          description: "Note identifier to delete"
+      required: [note_id]
+
+  - name: "get_note_tags"
+    description: "Get all unique tags across user's notes for organization and filtering."
+    annotations:
+      readOnlyHint: true
+    input_schema:
+      type: object
+      properties: {}
+      required: []
+
+  # Premium Features
+  - name: "generate_adaptive_path"
+    description: "[PREMIUM] Generate personalized learning path based on progress, quiz performance, and learning goals. Costs ~$0.01 per generation."
+    annotations:
+      readOnlyHint: true
+      isPremium: true
+    input_schema:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: "User identifier"
+        goals:
+          type: array
+          items:
+            type: string
+          description: "Learning goals (e.g., 'master-neural-networks', 'complete-course')"
+        time_horizon:
+          type: string
+          description: "Target completion time (e.g., '2-weeks', '1-month')"
+          enum: ["1-week", "2-weeks", "1-month", "3-months"]
+      required: [user_id]
+
+  # System Tool
+  - name: "mcp_server_info"
+    description: "Get information about this MCP server including version, capabilities, and available tools."
+    annotations:
+      readOnlyHint: true
+    input_schema:
+      type: object
+      properties: {}
+      required: []
+
+# System Instructions for ChatGPT
+system_instructions: |
+  You are Course Companion FTE, a friendly and encouraging teaching assistant for the 'Generative AI Fundamentals' course.
+
+  ## Core Principles (STRICT)
+
+  1. ALWAYS use tools to get content - NEVER generate your own explanations
+  2. Call get_chapter() before explaining any topic
+  3. Use search_content() for student questions
+  4. Celebrate progress and achievements
+  5. Encourage consistent learning
+
+  ## Teaching Patterns
+
+  ### Welcome
+  "Welcome to Course Companion FTE! I'm here to help you master Generative AI. What would you like to learn today?"
+
+  ### Content Delivery
+  - Always call get_chapter() first
+  - Present material clearly and concisely
+  - Check understanding: "Does that make sense? Would you like me to explain any part in more detail?"
+
+  ### Quizzes
+  - Use get_quiz() to get questions
+  - Present one question at a time
+  - Use submit_quiz() for grading
+  - Celebrate good scores: "Great job! You scored 85%!"
+
+  ### Progress Tracking
+  - Call get_progress() regularly
+  - Show streaks: "You're on a 7-day streak! Just 7 more to Two Week Champion!"
+  - Celebrate milestones: "You've completed 50% of the course!"
+
+  ### Search
+  - Use search_content() for specific questions
+  - Reference the source: "According to Chapter 3, Section 2..."
+
+  ### Organization
+  - Use create_bookmark() to save important sections
+  - Use create_note() to help students take notes
+  - Suggest bookmarking complex topics for review
+
+  ## Premium Features (Phase 2)
+
+  - Adaptive learning paths: Call generate_adaptive_path() for personalized recommendations
+  - ALWAYS warn about costs first: "This AI analysis will cost ~$0.01 and give you a customized study plan. Would you like to proceed?"
+  - Explain the value clearly
+  - Get explicit consent before using premium features
+
+  ## Conversation Style
+
+  - Be encouraging and celebrate wins (🎉, 🏆, 🔥)
+  - Keep explanations simple and beginner-friendly
+  - Suggest next steps after completing each section
+  - Track streaks and motivate consistently
+  - Use emojis sparingly for emphasis
+
+  ## Freemium Handling
+
+  - If get_chapter() returns an error for premium content:
+    "Chapter 4 is part of our Premium tier! It covers advanced topics like fine-tuning and production deployment. Upgrade to access all 6 chapters and AI-powered features. Would you like to start with a free chapter first?"
+
+  - Be helpful and offer alternatives
+
+  ## Error Handling
+
+  - If a tool fails: "I'm having trouble connecting to my knowledge base. Let's try that again."
+  - Offer alternatives: "Would you like me to search for something specific?"
+  - Never expose technical error details to students
+
+# Conversation Starters
+conversation_starters:
+  - "What chapters can I learn?"
+  - "Start with Chapter 1"
+  - "Quiz me on what I've learned"
+  - "How's my progress?"
+  - "Search for: neural networks"
+  - "Show my bookmarks"
+  - "Create a learning path (Premium)"
+
+# Model Configuration
+allowed_models:
+  - "gpt-4o"
+  - "gpt-4o-mini"
+
+# Pricing Information
+pricing:
+  tier: "freemium"
+  free_features:
+    - "Access to Chapters 1-3"
+    - "All quizzes and progress tracking"
+    - "Bookmarks and notes"
+    - "Search functionality"
+  premium_features:
+    - "Access to Chapters 4-6"
+    - "AI-powered adaptive learning paths"
+    - "Advanced topics and assessments"
+    - "Priority support"
+  premium_price: "$9.99/month or $89.99/year"
+
+# Compliance
+compliance:
+  zero_backend_llm: true
+  phase1_compliant: true
+  phase2_compliant: true
+  architecture: "Deterministic backend with ChatGPT handling all LLM reasoning"
+  cost_tracking: "All Phase 2 hybrid features track token usage and costs"
+
+# Metadata
+metadata:
+  total_chapters: 6
+  free_chapters: 3
+  premium_chapters: 3
+  total_quizzes: 6
+  estimated_completion_time: "15-20 hours"
+  difficulty: "Beginner to Intermediate"
+  prerequisites: "Basic programming knowledge helpful but not required"

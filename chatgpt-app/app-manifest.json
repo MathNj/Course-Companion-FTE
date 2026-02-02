@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "1.0",
+  "appName": "Course Companion FTE",
+  "appDescription": "Your AI-powered learning companion for mastering Generative AI fundamentals. Access 6 comprehensive chapters, take quizzes, track progress, and get personalized learning paths.",
+  "appUrl": "https://github.com/yourusername/course-companion-fte",
+  "author": "Course Companion FTE Team",
+  "version": "2.0.0",
+  "category": "Education",
+  "subcategory": "Learning & Courses",
+  "tags": [
+    "AI",
+    "Machine Learning",
+    "Generative AI",
+    "Education",
+    "Learning",
+    "Courses",
+    "Productivity"
+  ],
+  "mcpServers": [
+    {
+      "id": "primary-backend",
+      "name": "Course Companion API",
+      "description": "Primary backend for course content, quizzes, progress tracking, bookmarks, and notes",
+      "serverUrl": "http://localhost:8000/mcp",
+      "transport": "stdio",
+      "capabilities": {
+        "tools": [
+          {
+            "name": "get_chapters",
+            "description": "Get all available course chapters with access status",
+            "category": "content"
+          },
+          {
+            "name": "get_chapter",
+            "description": "Get full chapter content including all sections",
+            "category": "content"
+          },
+          {
+            "name": "get_quiz",
+            "description": "Get quiz questions for a chapter",
+            "category": "assessment"
+          },
+          {
+            "name": "submit_quiz",
+            "description": "Submit quiz answers for grading",
+            "category": "assessment"
+          },
+          {
+            "name": "get_progress",
+            "description": "Get comprehensive progress summary with streaks and milestones",
+            "category": "progress"
+          },
+          {
+            "name": "search_content",
+            "description": "Search through all course content for relevant sections",
+            "category": "content"
+          },
+          {
+            "name": "get_bookmarks",
+            "description": "Get all saved bookmarks",
+            "category": "organization"
+          },
+          {
+            "name": "create_bookmark",
+            "description": "Save a chapter or section for quick access",
+            "category": "organization"
+          },
+          {
+            "name": "delete_bookmark",
+            "description": "Remove a bookmark",
+            "category": "organization"
+          },
+          {
+            "name": "get_notes",
+            "description": "Get user's notes with optional filters",
+            "category": "organization"
+          },
+          {
+            "name": "create_note",
+            "description": "Save a note with content and optional tags",
+            "category": "organization"
+          },
+          {
+            "name": "update_note",
+            "description": "Update an existing note",
+            "category": "organization"
+          },
+          {
+            "name": "delete_note",
+            "description": "Delete a note",
+            "category": "organization"
+          },
+          {
+            "name": "get_note_tags",
+            "description": "Get all unique tags across user's notes",
+            "category": "organization"
+          },
+          {
+            "name": "generate_adaptive_path",
+            "description": "Generate personalized learning path (Premium Feature)",
+            "category": "premium",
+            "isPremium": true
+          },
+          {
+            "name": "mcp_server_info",
+            "description": "Get information about this MCP server",
+            "category": "system"
+          }
+        ],
+        "resources": [
+          {
+            "uri": "chapters://course",
+            "name": "Course Chapters",
+            "description": "All course chapters and their content"
+          },
+          {
+            "uri": "quizzes://assessment",
+            "name": "Quiz Bank",
+            "description": "All quizzes for knowledge testing"
+          },
+          {
+            "uri": "progress://user",
+            "name": "User Progress",
+            "description": "User's learning progress and achievements"
+          },
+          {
+            "uri": "bookmarks://user",
+            "name": "User Bookmarks",
+            "description": "User's saved bookmarks"
+          },
+          {
+            "uri": "notes://user",
+            "name": "User Notes",
+            "description": "User's learning notes"
+          }
+        ]
+      }
+    }
+  ],
+  "systemInstructions": "You are Course Companion FTE, a friendly and encouraging teaching assistant for the 'Generative AI Fundamentals' course. Your role is to help students master Generative AI through structured learning, quizzes, and progress tracking.\n\n## Core Principles (STRICT)\n\n1. ALWAYS use tools to get content - NEVER generate your own explanations\n2. Call get_chapter() before explaining any topic\n3. Use search_content() for student questions\n4. Celebrate progress and achievements\n5. Encourage consistent learning\n\n## Teaching Patterns\n\n- Welcome: \"Welcome to Course Companion FTE! I'm here to help you master Generative AI. What would you like to learn today?\"\n- Content: Always call get_chapter() first, then present the material clearly\n- Quizzes: Use get_quiz() and submit_quiz() for assessment\n- Progress: Call get_progress() to show streaks and milestones\n- Search: Use search_content() for questions\n- Bookmarks: Use create_bookmark() to save important sections\n- Notes: Use create_note() to help students take notes\n\n## Premium Features (Phase 2)\n\n- Adaptive learning paths: Call generate_adaptive_path() for personalized recommendations\n- Always warn about costs before using premium features\n- Explain the value: \"This AI analysis will cost ~$0.01 and give you a customized study plan\"\n\n## Conversation Style\n\n- Be encouraging and celebrate wins (\"Great job on that quiz! 🎉\")\n- Keep explanations simple and beginner-friendly\n- Suggest next steps after completing each section\n- Use emojis sparingly for emphasis (🎓, 📚, 🔥, 🏆)\n- Track streaks and motivate: \"You're on a 7-day streak! Just 7 more to Two Week Champion!\"\n\n## Freemium Handling\n\n- If get_chapter() returns an error for premium content, explain: \"Chapter 4 is part of our Premium tier! It covers advanced topics like fine-tuning and production deployment. Upgrade to access all 6 chapters and AI-powered features.\"\n- Be helpful: \"Would you like to start with a free chapter first?\"\n\n## Error Handling\n\n- If a tool fails: \"I'm having trouble connecting to my knowledge base. Let's try again.\"\n- Offer alternatives: \"Would you like me to search for something specific?\"\n- Never expose technical error details to students",
+  "conversationStarters": [
+    "What chapters can I learn?",
+    "Start with Chapter 1",
+    "Quiz me on what I've learned",
+    "How's my progress?",
+    "Search for: neural networks",
+    "Show my bookmarks",
+    "Create a learning path (Premium)"
+  ],
+  "allowedModels": ["gpt-4o", "gpt-4o-mini"],
+  "pricing": {
+    "tier": "freemium",
+    "freeFeatures": [
+      "Access to Chapters 1-3",
+      "All quizzes and progress tracking",
+      "Bookmarks and notes",
+      "Search functionality"
+    ],
+    "premiumFeatures": [
+      "Access to Chapters 4-6",
+      "AI-powered adaptive learning paths",
+      "Advanced topics and assessments",
+      "Priority support"
+    ],
+    "premiumPrice": "$9.99/month or $89.99/year"
+  },
+  "compliance": {
+    "zeroBackendLLM": true,
+    "phase1Compliant": true,
+    "phase2Compliant": true,
+    "architecture": "Deterministic backend with ChatGPT handling all LLM reasoning",
+    "costTracking": "All Phase 2 hybrid features track token usage and costs"
+  },
+  "metadata": {
+    "totalChapters": 6,
+    "freeChapters": 3,
+    "premiumChapters": 3,
+    "totalQuizzes": 6,
+    "estimatedCompletionTime": "15-20 hours",
+    "difficulty": "Beginner to Intermediate",
+    "prerequisites": "Basic programming knowledge helpful but not required"
+  }
+}
