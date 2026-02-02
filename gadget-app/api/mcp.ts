@@ -63,11 +63,18 @@ export const createMCPServer = async (request: FastifyRequest) => {
     },
     async (params) => {
       try {
+        // Use production backend (public endpoint, no auth required)
         const response = await fetch("https://course-companion-fte.fly.dev/api/v1/chapters", {
           headers: {
             "Content-Type": "application/json",
           },
         });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Backend returned ${response.status}: ${errorText}`);
+        }
+
         const chapters = await response.json();
 
         return {
