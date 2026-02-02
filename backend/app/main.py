@@ -140,14 +140,16 @@ app.include_router(chapters_router, prefix=settings.api_v1_prefix)
 app.include_router(quizzes_router, prefix=settings.api_v1_prefix)
 app.include_router(progress_router, prefix=settings.api_v1_prefix)
 app.include_router(payments_router, prefix=settings.api_v1_prefix)
+from app.api.v1.bookmarks import router as bookmarks_router
+app.include_router(bookmarks_router, prefix=settings.api_v1_prefix)
 
 # Phase 2: Hybrid Intelligence (v2 routers)
 from app.api.v2.adaptive import router as adaptive_router
-from app.api.v2.admin import router as admin_router
+from app.api.v2.teacher import router as teacher_router
 from app.api.v2.usage import router as usage_router
 from app.api.v2.assessments import router as assessments_router
 app.include_router(adaptive_router, prefix="/api/v2")
-app.include_router(admin_router, prefix="/api/v2")
+app.include_router(teacher_router, prefix="/api/v2")
 app.include_router(usage_router, prefix="/api/v2")
 app.include_router(assessments_router, prefix="/api/v2")
 

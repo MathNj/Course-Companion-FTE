@@ -101,6 +101,14 @@ class User(Base, TimestampMixin):
         server_default="true",
     )
 
+    # Teacher role
+    is_teacher: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        default=False,
+        server_default="false",
+    )
+
     # Relationships (will be populated when related models are created)
     # chapter_progress = relationship("ChapterProgress", back_populates="user")
     # quiz_attempts = relationship("QuizAttempt", back_populates="user")
