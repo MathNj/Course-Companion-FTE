@@ -1,0 +1,91 @@
+'use client';
+
+import { Chapter, Section } from '@/types';
+import { Check, ChevronRight, Lock } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { useState } from 'react';
+
+interface ChapterSidebarProps {
+  chapter: Chapter;
+  selectedSection: Section | null;
+  onSectionSelect: (section: Section) => void;
+}
+
+export function ChapterSidebar({ chapter, selectedSection, onSectionSelect }: ChapterSidebarProps) {
+  const [hoveredSection, setHoveredSection] = useState<string | null>(null);
+
+  return (
+    <div className="card-dark p-4">
+      {/* Chapter Info */}
+      <div className="mb-4 pb-4 border-b border-zinc-800">
+        <h3 className="font-bold text-white mb-1">{chapter.title}</h3>
+        <p className="text-xs text-zinc-500">{chapter.sections.length} sections</p>
+      </div>
+
+      {/* Section List */}
+      <nav className="space-y-1">
+        {chapter.sections.map((section, index) => {
+          const isSelected = selectedSection?.id === section.id;
+          const isHovered = hoveredSection === section.id;
+          const isCompleted = false; // TODO: Track completion
+
+          return (
+            <button
+              key={section.id}
+              onClick={() => onSectionSelect(section)}
+              onMouseEnter={() => setHoveredSection(section.id)}
+              onMouseLeave={() => setHoveredSection(null)}
+              className={cn(
+                'w-full flex items-start gap-3 px-3 py-2.5 rounded-lg text-left transition-all duration-300',
+                isSelected
+                  ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 scale-105'
+                  : 'text-zinc-400 hover:bg-zinc-800 hover:text-white hover:scale-[1.02]'
+              )}
+            >
+              <div className="flex-shrink-0 mt-0.5">
+                {isCompleted ? (
+                  <Check className="h-4 w-4 text-emerald-400" />
+                ) : (
+                  <ChevronRight
+                    className={cn(
+                      'h-4 w-4 transition-all duration-300',
+                      isSelected || isHovered ? 'text-emerald-400 translate-x-1' : 'text-zinc-600'
+                    )}
+                  />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-xs font-medium text-zinc-500">{index + 1}</span>
+                  {isSelected && (
+                    <span className="text-xs px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 animate-pulse">
+                      Reading
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm font-medium line-clamp-2">{section.title}</p>
+              </div>
+            </button>
+          );
+        })}
+      </nav>
+
+      {/* Quiz Link */}
+      <div className="mt-4 pt-4 border-t border-zinc-800">
+        <Link
+          href={`/chapters/${chapter.id}/quiz`}
+          className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-300 hover:bg-zinc-800 hover:text-emerald-400 hover:scale-105 transition-all duration-300 group"
+        >
+          <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <Check className="h-4 w-4 text-emerald-400" />
+          </div>
+          <div>
+            <p className="group-hover:translate-x-1 transition-transform duration-300">Take Quiz</p>
+            <p className="text-xs text-zinc-500">Test your knowledge</p>
+          </div>
+        </Link>
+      </div>
+    </div>
+  );
+}

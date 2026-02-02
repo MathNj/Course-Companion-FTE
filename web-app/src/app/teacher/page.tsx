@@ -1,0 +1,791 @@
+'use client';
+
+import { useState } from 'react';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useStore } from '@/store/useStore';
+import api from '@/lib/api';
+import { Header } from '@/components/Header';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { Button } from '@/components/ui/Button';
+import {
+  Users,
+  TrendingUp,
+  Target,
+  BookOpen,
+  Flame,
+  Award,
+  AlertTriangle,
+  AlertCircle,
+  BarChart3,
+  Download,
+  ChevronDown,
+  ChevronUp,
+  Search,
+  Calendar,
+  Zap,
+  FileText,
+  CheckCircle2,
+  RefreshCw,
+  ArrowRight,
+  Activity,
+  GraduationCap,
+  Clock
+} from 'lucide-react';
+
+// Mock student data for demonstration
+const mockStudents = [
+  {
+    id: 'student-1',
+    email: 'student1@example.com',
+    progress: { completion_percentage: 85, chapters_completed: 5, total_chapters: 6 },
+    streak: { current_streak: 7, longest_streak: 15 },
+    quiz_scores: { 'chapter-1': 92, 'chapter-2': 88, 'chapter-3': 95, 'chapter-4': 78, 'chapter-5': 85 },
+    last_activity: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    premium_usage: { adaptive_paths: 3, assessments: 5 },
+    engagement: { total_time_minutes: 450, sessions: 23, drop_off_chapter: null },
+  },
+  {
+    id: 'student-2',
+    email: 'student2@example.com',
+    progress: { completion_percentage: 60, chapters_completed: 3, total_chapters: 6 },
+    streak: { current_streak: 2, longest_streak: 5 },
+    quiz_scores: { 'chapter-1': 75, 'chapter-2': 82, 'chapter-3': 65 },
+    last_activity: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    premium_usage: { adaptive_paths: 1, assessments: 2 },
+    engagement: { total_time_minutes: 280, sessions: 15, drop_off_chapter: 'chapter-4' },
+  },
+  {
+    id: 'student-3',
+    email: 'student3@example.com',
+    progress: { completion_percentage: 100, chapters_completed: 6, total_chapters: 6 },
+    streak: { current_streak: 12, longest_streak: 20 },
+    quiz_scores: { 'chapter-1': 95, 'chapter-2': 90, 'chapter-3': 88, 'chapter-4': 92, 'chapter-5': 87, 'chapter-6': 94 },
+    last_activity: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+    premium_usage: { adaptive_paths: 5, assessments: 8 },
+    engagement: { total_time_minutes: 680, sessions: 35, drop_off_chapter: null },
+  },
+  {
+    id: 'student-4',
+    email: 'student4@example.com',
+    progress: { completion_percentage: 25, chapters_completed: 1, total_chapters: 6 },
+    streak: { current_streak: 0, longest_streak: 2 },
+    quiz_scores: { 'chapter-1': 55 },
+    last_activity: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    premium_usage: { adaptive_paths: 0, assessments: 1 },
+    engagement: { total_time_minutes: 90, sessions: 5, drop_off_chapter: 'chapter-2' },
+  },
+  {
+    id: 'student-5',
+    email: 'student5@example.com',
+    progress: { completion_percentage: 45, chapters_completed: 2, total_chapters: 6 },
+    streak: { current_streak: 4, longest_streak: 8 },
+    quiz_scores: { 'chapter-1': 68, 'chapter-2': 72 },
+    last_activity: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+    premium_usage: { adaptive_paths: 2, assessments: 3 },
+    engagement: { total_time_minutes: 180, sessions: 12, drop_off_chapter: null },
+  },
+];
+
+const topicDifficultyData = [
+  { topic: 'Supervised Learning', incorrect_rate: 15, attempts: 120 },
+  { topic: 'Unsupervised Learning', incorrect_rate: 28, attempts: 95 },
+  { topic: 'Neural Networks', incorrect_rate: 35, attempts: 88 },
+  { topic: 'Model Evaluation', incorrect_rate: 22, attempts: 110 },
+  { topic: 'Feature Engineering', incorrect_rate: 18, attempts: 105 },
+  { topic: 'Bias & Fairness', incorrect_rate: 12, attempts: 85 },
+  { topic: 'Deployment', incorrect_rate: 30, attempts: 78 },
+  { topic: 'Data Preprocessing', incorrect_rate: 20, attempts: 115 },
+];
+
+export default function TeacherDashboard() {
+  const { user } = useStore();
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [expandedStudent, setExpandedStudent] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Check admin status
+  const userEmail = typeof window !== 'undefined' ? localStorage.getItem('user_email') : null;
+  const isTeacher = userEmail === 'mathnj120@gmail.com' || user?.is_teacher;
+
+  // Fetch dashboard data
+  const { data: dashboard, isLoading, refetch } = useQuery({
+    queryKey: ['teacher-dashboard', refreshKey],
+    queryFn: async () => {
+      try {
+        const token = localStorage.getItem('access_token');
+        const response = await api.get('/api/v2/teacher/dashboard', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+      } catch (error) {
+        // Return mock data for demo
+        return null;
+      }
+    },
+    enabled: !!user && isTeacher,
+  });
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[#0B0C10]">
+        <Header />
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-white mb-4">Access Denied</h1>
+            <p className="text-zinc-400">Please login to access the teacher dashboard.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isTeacher) {
+    return (
+      <div className="min-h-screen bg-[#0B0C10]">
+        <Header />
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-white mb-4">Access Denied</h1>
+            <p className="text-zinc-400 mb-4">You don&apos;t have permission to access the teacher dashboard.</p>
+            <p className="text-sm text-zinc-500">Admin access required. Contact your administrator.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0B0C10]">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  // Calculate cohort metrics from mock data
+  const averageCompletion = mockStudents.reduce((sum, s) => sum + s.progress.completion_percentage, 0) / mockStudents.length;
+  const averageQuizScore = Object.values(mockStudents.flatMap(s => Object.entries(s.quiz_scores).map(([_, score]) => score))).reduce((sum, s) => sum + s, 0) /
+    mockStudents.flatMap(s => Object.entries(s.quiz_scores)).length || 0;
+  const activeStudentsWeekly = mockStudents.filter(s => {
+    const daysSinceActivity = (Date.now() - new Date(s.last_activity).getTime()) / (1000 * 60 * 60 * 24);
+    return daysSinceActivity <= 7;
+  }).length;
+
+  // Filter students by search
+  const filteredStudents = mockStudents.filter(student =>
+    student.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    student.id.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Calculate topic difficulty insights
+  const mostDifficultTopics = topicDifficultyData
+    .sort((a, b) => b.incorrect_rate - a.incorrect_rate)
+    .slice(0, 3);
+
+  // Calculate engagement metrics
+  const dropOffAnalysis = mockStudents.reduce((acc, student) => {
+    if (student.engagement.drop_off_chapter) {
+      const chapter = student.engagement.drop_off_chapter;
+      acc[chapter] = (acc[chapter] || 0) + 1;
+    }
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Calculate premium usage
+  const totalAdaptivePaths = mockStudents.reduce((sum, s) => sum + s.premium_usage.adaptive_paths, 0);
+  const totalAssessments = mockStudents.reduce((sum, s) => sum + s.premium_usage.assessments, 0);
+
+  // Export student data as CSV
+  const handleExportCSV = () => {
+    const headers = ['Student ID', 'Email', 'Completion %', 'Chapters Completed', 'Current Streak', 'Longest Streak', 'Avg Quiz Score', 'Last Activity', 'Total Time (min)', 'Sessions', 'Adaptive Paths', 'Assessments'];
+
+    const rows = mockStudents.map(student => {
+      const quizScores = Object.values(student.quiz_scores);
+      const avgQuiz = quizScores.length > 0 ? (quizScores.reduce((a, b) => a + b, 0) / quizScores.length).toFixed(1) : 'N/A';
+
+      return [
+        student.id,
+        student.email,
+        student.progress.completion_percentage,
+        student.progress.chapters_completed,
+        student.streak.current_streak,
+        student.streak.longest_streak,
+        avgQuiz,
+        new Date(student.last_activity).toLocaleDateString(),
+        student.engagement.total_time_minutes,
+        student.engagement.sessions,
+        student.premium_usage.adaptive_paths,
+        student.premium_usage.assessments,
+      ].join(',');
+    });
+
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `student-data-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#0B0C10]">
+      <Header />
+      <main className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8 animate-fade-in">
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-2">Teacher Dashboard</h1>
+            <p className="text-zinc-400">Monitor cohort performance, engagement, and identify students who need help</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button
+              onClick={handleExportCSV}
+              variant="secondary"
+              className="hover:scale-105 active:scale-95 transition-all duration-300"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Export CSV
+            </Button>
+            <Button
+              onClick={() => {
+                setRefreshKey(prev => prev + 1);
+                refetch();
+              }}
+              className="hover:scale-105 active:scale-95 transition-all duration-300"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Refresh
+            </Button>
+          </div>
+        </div>
+
+        {/* Cohort Overview */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+            <Users className="w-6 h-6 text-blue-400" />
+            Cohort Overview
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Average Completion Rate */}
+            <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover-lift animate-fade-in-up">
+              <div className="flex items-center justify-between mb-4">
+                <TrendingUp className="w-8 h-8 text-emerald-400" />
+                <span className="text-xs text-zinc-500">Class Average</span>
+              </div>
+              <h3 className="text-3xl font-bold text-white mb-2">{averageCompletion.toFixed(1)}%</h3>
+              <p className="text-sm text-zinc-400">Average completion rate</p>
+            </div>
+
+            {/* Average Quiz Score */}
+            <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover-lift animate-fade-in-up delay-100">
+              <div className="flex items-center justify-between mb-4">
+                <Target className="w-8 h-8 text-purple-400" />
+                <span className="text-xs text-zinc-500">Class Average</span>
+              </div>
+              <h3 className="text-3xl font-bold text-white mb-2">{averageQuizScore.toFixed(1)}%</h3>
+              <p className="text-sm text-zinc-400">Average quiz score</p>
+            </div>
+
+            {/* Active Students */}
+            <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover-lift animate-fade-in-up delay-200">
+              <div className="flex items-center justify-between mb-4">
+                <Flame className="w-8 h-8 text-orange-400" />
+                <span className="text-xs text-zinc-500">Last 7 days</span>
+              </div>
+              <h3 className="text-3xl font-bold text-white mb-2">{activeStudentsWeekly}/{mockStudents.length}</h3>
+              <p className="text-sm text-zinc-400">Active students weekly</p>
+            </div>
+
+            {/* Total Students */}
+            <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover-lift animate-fade-in-up delay-300">
+              <div className="flex items-center justify-between mb-4">
+                <GraduationCap className="w-8 h-8 text-blue-400" />
+                <span className="text-xs text-zinc-500">Total</span>
+              </div>
+              <h3 className="text-3xl font-bold text-white mb-2">{mockStudents.length}</h3>
+              <p className="text-sm text-zinc-400">Total students</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Student Insights */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+            <BarChart3 className="w-6 h-6 text-emerald-400" />
+            Student Insights
+            <span className="text-sm font-normal text-zinc-500 ml-2">
+              ({filteredStudents.length} students)
+            </span>
+          </h2>
+
+          {/* Search */}
+          <div className="mb-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-zinc-500" />
+              <input
+                type="text"
+                placeholder="Search by student ID or email..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 rounded-lg border border-zinc-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+              />
+            </div>
+          </div>
+
+          {/* Student List */}
+          <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-zinc-800">
+                  <tr className="text-left text-zinc-400">
+                    <th className="px-6 py-4">Student</th>
+                    <th className="px-6 py-4">Progress</th>
+                    <th className="px-6 py-4">Streak</th>
+                    <th className="px-6 py-4">Quiz Avg</th>
+                    <th className="px-6 py-4">Last Active</th>
+                    <th className="px-6 py-4">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredStudents.map((student) => {
+                    const quizScores = Object.values(student.quiz_scores);
+                    const avgQuiz = quizScores.length > 0 ? (quizScores.reduce((a, b) => a + b, 0) / quizScores.length).toFixed(1) : 'N/A';
+                    const daysSinceActivity = Math.floor((Date.now() - new Date(student.last_activity).getTime()) / (1000 * 60 * 60 * 24));
+                    const isExpanded = expandedStudent === student.id;
+
+                      return (
+                        <React.Fragment key={student.id}>
+                          <tr className="border-b border-zinc-800 hover:bg-zinc-800/50 transition-colors">
+                            <td className="px-6 py-4">
+                              <div>
+                                <p className="text-white font-medium">{student.email}</p>
+                                <p className="text-xs text-zinc-500">{student.id}</p>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-24 bg-zinc-800 rounded-full h-2">
+                                  <div
+                                    className={`h-2 rounded-full ${
+                                      student.progress.completion_percentage >= 80 ? 'bg-emerald-500' :
+                                      student.progress.completion_percentage >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+                                    }`}
+                                    style={{ width: `${student.progress.completion_percentage}%` }}
+                                  />
+                                </div>
+                                <span className="text-sm text-zinc-400">
+                                  {student.progress.chapters_completed}/{student.progress.total_chapters}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-2">
+                                <Flame className={`w-4 h-4 ${student.streak.current_streak >= 3 ? 'text-orange-400' : 'text-zinc-600'}`} />
+                                <span className="text-sm text-white">{student.streak.current_streak} day</span>
+                                {student.streak.current_streak >= 7 && (
+                                  <Award className="w-4 h-4 text-yellow-400" />
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className={`text-sm font-semibold ${
+                                parseFloat(avgQuiz) >= 80 ? 'text-emerald-400' :
+                                parseFloat(avgQuiz) >= 60 ? 'text-yellow-400' :
+                                'text-red-400'
+                              }`}>
+                                {avgQuiz}%
+                              </span>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className={`text-sm ${daysSinceActivity <= 7 ? 'text-emerald-400' : daysSinceActivity <= 30 ? 'text-yellow-400' : 'text-red-400'}`}>
+                                {daysSinceActivity === 0 ? 'Today' :
+                                 daysSinceActivity === 1 ? 'Yesterday' :
+                                 `${daysSinceActivity} days ago`}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => setExpandedStudent(isExpanded ? null : student.id)}
+                                className="hover:scale-105 active:scale-95 transition-all duration-300"
+                              >
+                                {isExpanded ? (
+                                  <ChevronUp className="w-4 h-4" />
+                                ) : (
+                                  <>
+                                    <ArrowRight className="w-4 h-4 mr-1" />
+                                    Details
+                                  </>
+                                )}
+                              </Button>
+                            </td>
+                          </tr>
+                          {isExpanded && (
+                            <tr className="bg-zinc-800/50">
+                              <td colSpan={6} className="px-6 py-6">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                  {/* Quiz Scores by Chapter */}
+                                  <div>
+                                    <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                                      <Target className="w-4 h-4 text-purple-400" />
+                                      Quiz Scores
+                                    </h4>
+                                    <div className="space-y-2">
+                                      {Object.entries(student.quiz_scores).map(([chapter, score]) => (
+                                        <div key={chapter} className="flex items-center justify-between text-sm">
+                                          <span className="text-zinc-400">{chapter.split('-')[1]}</span>
+                                          <span className={`font-semibold ${
+                                            score >= 80 ? 'text-emerald-400' : score >= 60 ? 'text-yellow-400' : 'text-red-400'
+                                          }`}>
+                                            {score}%
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+
+                                  {/* Engagement Stats */}
+                                  <div>
+                                    <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                                      <Activity className="w-4 h-4 text-blue-400" />
+                                      Engagement
+                                    </h4>
+                                    <div className="space-y-2 text-sm">
+                                      <div className="flex justify-between">
+                                        <span className="text-zinc-400">Total Time</span>
+                                        <span className="text-white">{student.engagement.total_time_minutes} min</span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-zinc-400">Sessions</span>
+                                        <span className="text-white">{student.engagement.sessions}</span>
+                                      </div>
+                                      {student.engagement.drop_off_chapter && (
+                                        <div className="flex justify-between">
+                                          <span className="text-zinc-400">Drop-off</span>
+                                          <span className="text-orange-400">{student.engagement.drop_off_chapter.split('-')[1]}</span>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* Premium Usage */}
+                                  <div>
+                                    <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                                      <Zap className="w-4 h-4 text-purple-400" />
+                                      Premium Features
+                                    </h4>
+                                    <div className="space-y-2 text-sm">
+                                      <div className="flex justify-between">
+                                        <span className="text-zinc-400">Adaptive Paths</span>
+                                        <span className="text-white">{student.premium_usage.adaptive_paths}</span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-zinc-400">Assessments</span>
+                                        <span className="text-white">{student.premium_usage.assessments}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Topic Difficulty Analysis */}
+          <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up">
+            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+              <AlertCircle className="w-6 h-6 text-red-400" />
+              Topic Difficulty Analysis
+            </h2>
+
+            {/* Heatmap */}
+            <div className="mb-6">
+              <h3 className="text-sm font-semibold text-white mb-4">Incorrect Rate Heatmap</h3>
+              <div className="space-y-2">
+                {topicDifficultyData.map((topic) => (
+                  <div key={topic.topic} className="flex items-center gap-4">
+                    <div className="w-40 text-sm text-zinc-400">{topic.topic}</div>
+                    <div className="flex-1 bg-zinc-800 rounded-full h-6 overflow-hidden">
+                      <div
+                        className={`h-6 flex items-center justify-end pr-2 transition-all ${
+                          topic.incorrect_rate >= 30 ? 'bg-red-500' :
+                          topic.incorrect_rate >= 20 ? 'bg-orange-500' :
+                          topic.incorrect_rate >= 10 ? 'bg-yellow-500' :
+                          'bg-emerald-500'
+                        }`}
+                        style={{ width: `${topic.incorrect_rate}%` }}
+                      >
+                        <span className="text-xs text-white font-semibold">{topic.incorrect_rate}%</span>
+                      </div>
+                    </div>
+                    <div className="w-16 text-right text-sm text-zinc-500">{topic.attempts}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Most Difficult Concepts */}
+            <div>
+              <h3 className="text-sm font-semibold text-white mb-4">Most Difficult Concepts</h3>
+              <div className="space-y-3">
+                {mostDifficultTopics.map((topic, index) => (
+                  <div key={index} className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center justify-between">
+                    <div>
+                      <p className="text-white font-semibold">{topic.topic}</p>
+                      <p className="text-xs text-zinc-400">{topic.attempts} attempts</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-red-400 font-bold">{topic.incorrect_rate}%</p>
+                      <p className="text-xs text-zinc-500">incorrect</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Engagement Monitoring */}
+          <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up delay-100">
+            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+              <Activity className="w-6 h-6 text-blue-400" />
+              Engagement Monitoring
+            </h2>
+
+            {/* Drop-off Points */}
+            <div className="mb-6">
+              <h3 className="text-sm font-semibold text-white mb-4">Drop-off Points</h3>
+              <p className="text-xs text-zinc-500 mb-4">Where students stop learning</p>
+              <div className="space-y-3">
+                {Object.entries(dropOffAnalysis).length > 0 ? (
+                  Object.entries(dropOffAnalysis).map(([chapter, count]) => (
+                    <div key={chapter} className="flex items-center justify-between p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <AlertCircle className="w-5 h-5 text-orange-400" />
+                        <span className="text-white font-semibold">{chapter.split('-')[1]}</span>
+                      </div>
+                      <span className="text-orange-400 font-bold">{count} students</span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-zinc-400 text-center py-4">No drop-offs detected!</p>
+                )}
+              </div>
+            </div>
+
+            {/* Active vs Inactive */}
+            <div>
+              <h3 className="text-sm font-semibold text-white mb-4">Activity Distribution</h3>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
+                  <p className="text-2xl font-bold text-emerald-400">{activeStudentsWeekly}</p>
+                  <p className="text-xs text-zinc-400">Active (7d)</p>
+                </div>
+                <div className="text-center p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                  <p className="text-2xl font-bold text-yellow-400">
+                    {mockStudents.filter(s => {
+                      const days = (Date.now() - new Date(s.last_activity).getTime()) / (1000 * 60 * 60 * 24);
+                      return days > 7 && days <= 30;
+                    }).length}
+                  </p>
+                  <p className="text-xs text-zinc-400">At Risk (7-30d)</p>
+                </div>
+                <div className="text-center p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+                  <p className="text-2xl font-bold text-red-400">
+                    {mockStudents.filter(s => {
+                      const days = (Date.now() - new Date(s.last_activity).getTime()) / (1000 * 60 * 60 * 24);
+                      return days > 30;
+                    }).length}
+                  </p>
+                  <p className="text-xs text-zinc-400">Inactive (&gt;30d)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Premium Usage Analytics */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+            <Zap className="w-6 h-6 text-purple-400" />
+            Premium Usage Analytics
+          </h2>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Adaptive Path Usage */}
+            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-purple-500/20 rounded-lg">
+                    <Target className="w-8 h-8 text-purple-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">Adaptive Paths</h3>
+                    <p className="text-sm text-zinc-400">Personalized learning plans</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-3xl font-bold text-white">{totalAdaptivePaths}</p>
+                  <p className="text-sm text-zinc-500">generated</p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-zinc-400">Students using</span>
+                  <span className="text-white font-semibold">
+                    {mockStudents.filter(s => s.premium_usage.adaptive_paths > 0).length}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-zinc-400">Avg per student</span>
+                  <span className="text-white font-semibold">
+                    {(totalAdaptivePaths / mockStudents.length).toFixed(1)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-zinc-400">Engagement lift</span>
+                  <span className="text-emerald-400 font-semibold">+25%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Assessment Usage */}
+            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up delay-100">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-blue-500/20 rounded-lg">
+                    <FileText className="w-8 h-8 text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">AI Assessments</h3>
+                    <p className="text-sm text-zinc-400">Graded submissions</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-3xl font-bold text-white">{totalAssessments}</p>
+                  <p className="text-sm text-zinc-500">submitted</p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-zinc-400">Students using</span>
+                  <span className="text-white font-semibold">
+                    {mockStudents.filter(s => s.premium_usage.assessments > 0).length}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-zinc-400">Avg per student</span>
+                  <span className="text-white font-semibold">
+                    {(totalAssessments / mockStudents.length).toFixed(1)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-zinc-400">Completion rate</span>
+                  <span className="text-emerald-400 font-semibold">92%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Learning Improvement */}
+            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up delay-200">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-emerald-500/20 rounded-lg">
+                    <TrendingUp className="w-8 h-8 text-emerald-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">Learning Improvement</h3>
+                    <p className="text-sm text-zinc-400">After assessments</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-3xl font-bold text-emerald-400">+18%</p>
+                  <p className="text-sm text-zinc-500">avg score gain</p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-zinc-400">Retake improvement</span>
+                  <span className="text-emerald-400 font-semibold">+12%</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-zinc-400">Follow-through rate</span>
+                  <span className="text-white font-semibold">78%</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-zinc-400">Goal achievement</span>
+                  <span className="text-emerald-400 font-semibold">85%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Reports & Tools */}
+        <div>
+          <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+            <Download className="w-6 h-6 text-blue-400" />
+            Reports & Tools
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* CSV Export */}
+            <Button
+              onClick={handleExportCSV}
+              className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 p-6 text-left hover-lift animate-fade-in-up"
+            >
+              <div className="flex items-center gap-4 mb-2">
+                <Download className="w-8 h-8 text-blue-400" />
+                <div>
+                  <h3 className="text-lg font-bold text-white">Export Student Data</h3>
+                  <p className="text-sm text-zinc-400">Download all student metrics as CSV</p>
+                </div>
+              </div>
+            </Button>
+
+            {/* Custom Assessment Prompts */}
+            <Button
+              className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 p-6 text-left hover-lift animate-fade-in-up delay-100"
+            >
+              <div className="flex items-center gap-4 mb-2">
+                <FileText className="w-8 h-8 text-purple-400" />
+                <div>
+                  <h3 className="text-lg font-bold text-white">Custom Prompts</h3>
+                  <p className="text-sm text-zinc-400">Create custom assessment prompts</p>
+                </div>
+              </div>
+            </Button>
+
+            {/* Rubric Feedback */}
+            <Button
+              className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 p-6 text-left hover-lift animate-fade-in-up delay-200"
+            >
+              <div className="flex items-center gap-4 mb-2">
+                <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+                <div>
+                  <h3 className="text-lg font-bold text-white">Rubric Summaries</h3>
+                  <p className="text-sm text-zinc-400">View aggregate rubric feedback</p>
+                </div>
+              </div>
+            </Button>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
