@@ -15,7 +15,7 @@ interface AIAssistantProps {
 }
 
 export function AIAssistant({ chapter, quiz }: AIAssistantProps) {
-  const { user } = useStore();
+  const { user, setShowUpgradeModal } = useStore();
   const isPremium = user?.subscription_type === 'premium';
   const [showChat, setShowChat] = useState(false);
 
@@ -70,8 +70,8 @@ export function AIAssistant({ chapter, quiz }: AIAssistantProps) {
                   <li>• AI-graded assessments</li>
                   <li>• Detailed feedback</li>
                 </ul>
-                <Button size="sm" className="w-full mt-3">
-                  Upgrade to Premium
+                <Button size="sm" className="w-full mt-3" onClick={() => setShowUpgradeModal(true)}>
+                  View Plans
                 </Button>
               </div>
             )}

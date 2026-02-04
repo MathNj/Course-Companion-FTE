@@ -17,7 +17,7 @@ import { Lock } from 'lucide-react';
 export default function ChapterPage() {
   const params = useParams();
   const router = useRouter();
-  const { currentChapter, setCurrentChapter, user } = useStore();
+  const { currentChapter, setCurrentChapter, user, setShowUpgradeModal } = useStore();
   const [selectedSection, setSelectedSection] = useState<Section | null>(null);
 
   const chapterId = params.id as string;
@@ -87,11 +87,11 @@ export default function ChapterPage() {
             </div>
             <h1 className="text-3xl font-bold text-white mb-4">Premium Content</h1>
             <p className="text-zinc-400 mb-8">
-              This chapter is part of our premium curriculum. Upgrade to access all 6 chapters and unlock
+              This chapter is part of our premium curriculum. Choose a plan to access all 6 chapters and unlock
               advanced features like AI-powered assessments and adaptive learning paths.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="btn-primary">Upgrade to Premium</button>
+              <button onClick={() => setShowUpgradeModal(true)} className="btn-primary">View Plans</button>
               <button onClick={() => router.push('/')} className="btn-secondary">
                 Back to Free Chapters
               </button>

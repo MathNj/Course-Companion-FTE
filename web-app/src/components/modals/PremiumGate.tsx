@@ -24,7 +24,7 @@ export function PremiumGate({ feature = 'this feature' }: PremiumGateProps) {
 
         <h2 className="text-3xl font-bold text-white mb-3">Premium Feature</h2>
         <p className="text-zinc-400 mb-8 max-w-md">
-          This feature is available exclusively for Premium members. Upgrade now to unlock {feature} and more!
+          This feature is available exclusively for paid members. Choose a plan that works for you!
         </p>
 
         {/* Premium Benefits */}
@@ -61,7 +61,7 @@ export function PremiumGate({ feature = 'this feature' }: PremiumGateProps) {
             className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-semibold py-3 px-8 rounded-lg transition-all hover:scale-105 active:scale-95"
           >
             <Crown className="w-5 h-5 mr-2" />
-            Upgrade to Premium
+            View Plans
           </Button>
           <Button
             variant="outline"

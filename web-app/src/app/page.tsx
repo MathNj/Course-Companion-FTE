@@ -71,7 +71,7 @@ export default function HomePage() {
       <PremiumUpgradeModal
         isOpen={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
-        currentPlan={user?.subscription_type === 'premium' ? 'premium' : 'free'}
+        currentPlan={user?.subscription_type || 'free'}
       />
     </div>
   );

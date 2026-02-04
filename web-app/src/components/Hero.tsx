@@ -80,7 +80,7 @@ export function Hero() {
                   className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95"
                 >
                   <Crown className="inline w-4 h-4 mr-2" />
-                  Get Premium
+                  View Plans
                 </button>
               </div>
             </StaggerItem>
@@ -114,3 +114,5 @@ export function Hero() {
     </section>
   );
 }
+// Force refresh
+// Trigger recompile

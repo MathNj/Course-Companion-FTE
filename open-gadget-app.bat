@@ -1,0 +1,3 @@
+@echo off
+echo Opening Course Companion Gadget App...
+start https://course-companion-fte-1--development.gadget.app
