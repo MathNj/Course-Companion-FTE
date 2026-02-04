@@ -32,7 +32,7 @@ def upgrade():
         sa.Column('status', sa.String(length=20), server_default=sa.text('\'active\''), nullable=False),
         sa.Column('followed_at', sa.DateTime(timezone=True), nullable=True),
         sa.Column('completed_at', sa.DateTime(timezone=True), nullable=True),
-        sa.ForeignKeyConstraint(['student_id'], ['students.student_id'], name=op.f('fk_adaptive_paths_student_id'), ondelete='cascade'),
+        sa.ForeignKeyConstraint(['student_id'], ['users.id'], name=op.f('fk_adaptive_paths_student_id'), ondelete='cascade'),
         sa.CheckConstraint("status IN ('active', 'expired', 'superseded')", name='adaptive_paths_status_check'),
         sa.CheckConstraint('expires_at > generated_at', name='valid_expiration')
     )

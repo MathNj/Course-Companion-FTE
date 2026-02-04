@@ -32,7 +32,7 @@ def upgrade():
         sa.Column('attempt_number', sa.Integer(), server_default=sa.text('1'), nullable=False),
         sa.Column('error_message', sa.Text(), nullable=True),
         sa.ForeignKeyConstraint(['previous_submission_id'], ['assessment_submissions.submission_id'], name=op.f('fk_assessment_submissions_previous')),
-        sa.ForeignKeyConstraint(['student_id'], ['students.student_id'], name=op.f('fk_assessment_submissions_student_id'), ondelete='cascade'),
+        sa.ForeignKeyConstraint(['student_id'], ['users.id'], name=op.f('fk_assessment_submissions_student_id'), ondelete='cascade'),
         sa.CheckConstraint("grading_status IN ('pending', 'processing', 'completed', 'failed')", name='submissions_status_check'),
         sa.CheckConstraint('LENGTH(answer_text) BETWEEN 50 AND 5000', name='answer_length_check'),
         sa.CheckConstraint('attempt_number BETWEEN 1 AND 3', name='attempt_limit_check'),
@@ -56,7 +56,7 @@ def upgrade():
         sa.Column('is_off_topic', sa.Boolean(), server_default=sa.text('false'), nullable=False),
         sa.Column('human_reviewed', sa.Boolean(), server_default=sa.text('false'), nullable=False),
         sa.Column('human_review_notes', sa.Text(), nullable=True),
-        sa.ForeignKeyConstraint(['human_reviewer_id'], ['students.student_id'], name=op.f('fk_assessment_feedback_reviewer')),
+        sa.ForeignKeyConstraint(['human_reviewer_id'], ['users.id'], name=op.f('fk_assessment_feedback_reviewer')),
         sa.ForeignKeyConstraint(['submission_id'], ['assessment_submissions.submission_id'], name=op.f('fk_assessment_feedback_submission'), ondelete='cascade'),
         sa.CheckConstraint('quality_score BETWEEN 0 AND 10', name='score_range_check')
     )
