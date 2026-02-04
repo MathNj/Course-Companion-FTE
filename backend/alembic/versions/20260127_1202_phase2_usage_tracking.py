@@ -28,7 +28,7 @@ def upgrade():
         sa.Column('model_version', sa.String(length=100), server_default=sa.text('\'claude-sonnet-4-5-20250929\''), nullable=False),
         sa.Column('tokens_input', sa.Integer(), nullable=False),
         sa.Column('tokens_output', sa.Integer(), nullable=False),
-        sa.Column('tokens_total', sa.Integer(), server_default=sa.text('tokens_input + tokens_output'), nullable=False),
+        sa.Column('tokens_total', sa.Integer(), nullable=False),
         sa.Column('cost_usd', sa.Numeric(precision=10, scale=6), nullable=False),
         sa.Column('latency_ms', sa.Integer(), nullable=False),
         sa.Column('success', sa.Boolean(), server_default=sa.text('true'), nullable=False),
