@@ -63,8 +63,8 @@ export const createMCPServer = async (request: FastifyRequest) => {
     },
     async (params) => {
       try {
-        // Use production backend (public endpoint, no auth required)
-        const response = await fetch("https://course-companion-fte.fly.dev/api/v1/chapters", {
+        // Use local backend for testing (change to production when deployed)
+        const response = await fetch("http://localhost:8000/api/v1/chapters", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -109,7 +109,7 @@ export const createMCPServer = async (request: FastifyRequest) => {
       }
 
       try {
-        const response = await fetch(`https://course-companion-fte.fly.dev/api/v1/chapters/${chapter_id}`, {
+        const response = await fetch(`http://localhost:8000/api/v1/chapters/${chapter_id}`, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -149,7 +149,7 @@ export const createMCPServer = async (request: FastifyRequest) => {
 
       try {
         const response = await fetch(
-          `https://course-companion-fte.fly.dev/api/v1/chapters/search?query=${encodeURIComponent(query)}&limit=${limit}`,
+          `http://localhost:8000/api/v1/chapters/search?query=${encodeURIComponent(query)}&limit=${limit}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -190,7 +190,7 @@ export const createMCPServer = async (request: FastifyRequest) => {
       }
 
       try {
-        const response = await fetch(`https://course-companion-fte.fly.dev/api/v1/quizzes/${quiz_id}`, {
+        const response = await fetch(`http://localhost:8000/api/v1/quizzes/${quiz_id}`, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -221,7 +221,7 @@ export const createMCPServer = async (request: FastifyRequest) => {
     },
     async (params) => {
       try {
-        const response = await fetch("https://course-companion-fte.fly.dev/api/v1/progress", {
+        const response = await fetch("http://localhost:8000/api/v1/progress", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -255,7 +255,7 @@ export const createMCPServer = async (request: FastifyRequest) => {
 
       try {
         const response = await fetch(
-          `https://course-companion-fte.fly.dev/api/v1/chapters/${current_chapter_id}/next`,
+          `http://localhost:8000/api/v1/chapters/${current_chapter_id}/next`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -291,7 +291,7 @@ export const createMCPServer = async (request: FastifyRequest) => {
 
       try {
         const response = await fetch(
-          `https://course-companion-fte.fly.dev/api/v1/chapters/${current_chapter_id}/previous`,
+          `http://localhost:8000/api/v1/chapters/${current_chapter_id}/previous`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -337,7 +337,7 @@ export const createMCPServer = async (request: FastifyRequest) => {
 
       try {
         const response = await fetch(
-          `https://course-companion-fte.fly.dev/api/v1/quizzes/${quiz_id}/submit`,
+          `http://localhost:8000/api/v1/quizzes/${quiz_id}/submit`,
           {
             method: "POST",
             headers: {
@@ -378,7 +378,7 @@ export const createMCPServer = async (request: FastifyRequest) => {
 
       try {
         const response = await fetch(
-          "https://course-companion-fte.fly.dev/api/v1/progress/activity",
+          "http://localhost:8000/api/v1/progress/activity",
           {
             method: "POST",
             headers: {
@@ -416,7 +416,7 @@ export const createMCPServer = async (request: FastifyRequest) => {
     },
     async (params) => {
       try {
-        const response = await fetch("https://course-companion-fte.fly.dev/api/v2/access/check", {
+        const response = await fetch("http://localhost:8000/api/v2/access/check", {
           headers: {
             "Content-Type": "application/json",
           },

@@ -7,7 +7,7 @@ export const settings: GadgetSettings = {
     connections: {
       chatgpt: {
         // Disable authorization for demo/testing
-        // authorizationPath: "/authorize"
+        authorizationPath: ""
       }
     },
   },
