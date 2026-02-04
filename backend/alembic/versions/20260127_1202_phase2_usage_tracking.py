@@ -76,9 +76,8 @@ def upgrade():
     # Create partial index for active logs (not soft-deleted)
     op.execute('CREATE INDEX idx_llm_logs_active ON llm_usage_logs (request_timestamp) WHERE deleted_at IS NULL')
 
-    # Create composite indexes for analytics
-    op.execute('CREATE INDEX idx_llm_logs_student_month ON llm_usage_logs (student_id, DATE_TRUNC(\'month\', request_timestamp))')
-    op.execute('CREATE INDEX idx_llm_logs_feature_month ON llm_usage_logs (feature, DATE_TRUNC(\'month\', request_timestamp))')
+    # Note: Composite analytics indexes with DATE_TRUNC removed - not compatible with PostgreSQL IMMUTABLE requirement
+    # These can be added later using generated columns or materialized views if needed
 
     # Create indexes for premium_usage_quotas
     op.create_index('idx_quotas_student_id', 'premium_usage_quotas', ['student_id'])
@@ -96,8 +95,7 @@ def downgrade():
     op.drop_table('premium_usage_quotas')
 
     # Drop llm_usage_logs indexes and table
-    op.execute('DROP INDEX IF EXISTS idx_llm_logs_feature_month')
-    op.execute('DROP INDEX IF EXISTS idx_llm_logs_student_month')
+    # Note: Analytics indexes removed in upgrade, not present to drop
     op.execute('DROP INDEX IF EXISTS idx_llm_logs_active')
     op.drop_index('idx_llm_logs_success', table_name='llm_usage_logs')
     op.drop_index('idx_llm_logs_timestamp', table_name='llm_usage_logs')
