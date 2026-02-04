@@ -16,6 +16,7 @@ primary_region = 'iad'
   CONTENT_CACHE_TTL = '86400'
   CORS_ORIGINS = 'https://chat.openai.com,https://chatgpt.com'
   LOG_LEVEL = 'INFO'
+  DATABASE_URL = 'sqlite+aiosqlite:////data/course_companion.db'
 
 [http_service]
   internal_port = 8000
@@ -41,3 +42,7 @@ primary_region = 'iad'
   cpu_kind = 'shared'
   cpus = 1
   memory_mb = 512
+
+[mounts]
+  source = "course_companion_data"
+  destination = "/data"
