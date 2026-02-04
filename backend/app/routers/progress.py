@@ -5,7 +5,7 @@ REST API for user progress, streaks, and milestones.
 """
 
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from app.database import get_db
-from app.dependencies import get_current_user
+from app.dependencies import get_current_user, get_optional_user
 from app.models.user import User
 from app.models.streak import Streak
 from app.services.progress_tracker import (
@@ -29,7 +29,7 @@ router = APIRouter(prefix="/progress", tags=["progress"])
 
 @router.get("", response_model=Dict[str, Any])
 async def get_progress(
-    current_user: User = Depends(get_current_user),
+    current_user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
     """
@@ -41,7 +41,29 @@ async def get_progress(
     - Streak information
     - Milestone achievements
     - Quiz statistics
+
+    For unauthenticated users, returns demo data.
     """
+    if not current_user:
+        # Return demo progress for unauthenticated users
+        return {
+            "chapters_completed": 0,
+            "total_chapters": 6,
+            "completion_percentage": 0,
+            "current_streak": 0,
+            "longest_streak": 0,
+            "total_active_days": 0,
+            "last_activity_date": None,
+            "milestones": [],
+            "chapters": [],
+            "quiz_stats": {
+                "quizzes_taken": 0,
+                "quizzes_passed": 0,
+                "average_score": 0
+            },
+            "message": "Sign in to track your progress!"
+        }
+
     logger.info(f"Fetching progress for user {current_user.id}")
 
     # Record activity for streak tracking

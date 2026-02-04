@@ -171,9 +171,10 @@ async def verify_premium(
     return current_user
 
 
-def get_optional_user(
+async def get_optional_user(
     credentials: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False)),
-) -> Optional[str]:
+    db: AsyncSession = Depends(get_db)
+) -> Optional[User]:
     """
     Dependency to optionally get user from token (doesn't raise error if no token).
 
@@ -181,9 +182,10 @@ def get_optional_user(
 
     Args:
         credentials: Optional HTTP Bearer credentials
+        db: Database session
 
     Returns:
-        User ID string if authenticated, None otherwise
+        User object if authenticated, None otherwise
     """
     if credentials is None:
         return None
@@ -194,7 +196,21 @@ def get_optional_user(
     if payload is None:
         return None
 
-    return payload.get("sub")
+    # Extract user ID from token payload
+    user_id_str: Optional[str] = payload.get("sub")
+    if user_id_str is None:
+        return None
+
+    # Convert to UUID and fetch user
+    try:
+        user_id = UUID(user_id_str)
+        result = await db.execute(
+            select(User).where(User.id == user_id)
+        )
+        user = result.scalar_one_or_none()
+        return user
+    except (ValueError, Exception):
+        return None
 
 
 async def verify_quota(

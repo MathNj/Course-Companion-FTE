@@ -4,7 +4,7 @@ Chapter Routes
 Endpoints for browsing and accessing course chapter content.
 """
 
-from typing import List, Optional
+from typing import List, Optional, Union
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -12,7 +12,7 @@ from sqlalchemy import select
 from app.database import get_db
 from app.models.user import User
 from app.models.progress import ChapterProgress
-from app.dependencies import get_current_user
+from app.dependencies import get_current_user, get_optional_user
 from app.services.content import get_chapter_with_cache
 from app.services.search import search_chapters as search_chapters_service
 
@@ -72,9 +72,15 @@ CHAPTER_METADATA = [
 ]
 
 
+@router.get("/test-no-auth")
+async def test_no_auth():
+    """Test endpoint without any authentication"""
+    return {"status": "ok", "message": "No auth required!"}
+
+
 @router.get("", response_model=List[dict])
 async def get_chapters(
-    current_user: User = Depends(get_current_user),
+    current_user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -85,13 +91,15 @@ async def get_chapters(
     - Access status (user_has_access based on subscription tier)
     - Progress status (completion_status, quiz_score)
 
-    Requires authentication.
+    For unauthenticated users, returns public metadata only.
     """
-    # Fetch user's progress for all chapters
-    result = await db.execute(
-        select(ChapterProgress).where(ChapterProgress.user_id == current_user.id)
-    )
-    progress_records = {p.chapter_id: p for p in result.scalars().all()}
+    # For authenticated users, fetch progress
+    progress_records = {}
+    if current_user:
+        result = await db.execute(
+            select(ChapterProgress).where(ChapterProgress.user_id == current_user.id)
+        )
+        progress_records = {p.chapter_id: p for p in result.scalars().all()}
 
     # Build response with metadata + access + progress
     chapters = []
@@ -99,10 +107,14 @@ async def get_chapters(
         chapter_id = chapter_meta["id"]
 
         # Check access (free tier can access chapters 1-3, premium can access all)
-        user_has_access = (
-            chapter_meta["access_tier"] == "free" or
-            current_user.subscription_tier in ("premium", "pro")
-        )
+        if current_user:
+            user_has_access = (
+                chapter_meta["access_tier"] == "free" or
+                current_user.subscription_tier in ("premium", "pro")
+            )
+        else:
+            # Unauthenticated users can access free tier content only
+            user_has_access = chapter_meta["access_tier"] == "free"
 
         # Get progress if exists
         progress = progress_records.get(chapter_id)
@@ -125,7 +137,7 @@ async def get_chapters(
 @router.get("/{chapter_id}", response_model=dict)
 async def get_chapter(
     chapter_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -143,7 +155,7 @@ async def get_chapter(
     Returns 403 Forbidden if user doesn't have access.
     Returns 404 Not Found if chapter doesn't exist.
 
-    Requires authentication.
+    For unauthenticated users, only free tier chapters are accessible.
     """
     # Find chapter metadata
     chapter_meta = next((c for c in CHAPTER_METADATA if c["id"] == chapter_id), None)
@@ -155,7 +167,9 @@ async def get_chapter(
         )
 
     # Check freemium access
-    if chapter_meta["access_tier"] == "premium" and current_user.subscription_tier == "free":
+    # Unauthenticated users can only access free tier
+    user_tier = current_user.subscription_tier if current_user else "free"
+    if chapter_meta["access_tier"] == "premium" and user_tier == "free":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail={

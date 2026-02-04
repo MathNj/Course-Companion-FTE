@@ -6,7 +6,7 @@ REST API for quiz retrieval and submission.
 
 import logging
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc
 
 from app.database import get_db
-from app.dependencies import get_current_user
+from app.dependencies import get_current_user, get_optional_user
 from app.models.user import User
 from app.models.quiz import QuizAttempt
 from app.models.progress import ChapterProgress
@@ -89,7 +89,7 @@ QUIZ_METADATA = [
 @router.get("/{quiz_id}", response_model=Dict[str, Any])
 async def get_quiz(
     quiz_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
     """
@@ -97,6 +97,7 @@ async def get_quiz(
 
     Returns quiz questions WITHOUT answer keys or explanations.
     Students must submit answers to get graded results.
+    Unauthenticated users can access free tier quizzes (chapters 1-3).
     """
     # Find quiz metadata
     quiz_meta = next((q for q in QUIZ_METADATA if q["id"] == quiz_id), None)
@@ -113,15 +114,17 @@ async def get_quiz(
     chapter_number = int(chapter_id.split("-")[1])
 
     # Chapters 1-3 are free, 4-6 are premium
-    if chapter_number >= 4 and current_user.subscription_tier == "free":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={
-                "message": f"This quiz requires a premium subscription",
-                "quiz_title": quiz_meta["title"],
-                "upgrade_url": "/upgrade",
-            },
-        )
+    # Unauthenticated users can only access free tier
+    if chapter_number >= 4:
+        if not current_user or current_user.subscription_tier == "free":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail={
+                    "message": f"This quiz requires a premium subscription",
+                    "quiz_title": quiz_meta["title"],
+                    "upgrade_url": "/upgrade",
+                },
+            )
 
     # Fetch quiz content from cache/storage (with answers excluded)
     quiz_content = await get_quiz_with_cache(quiz_id, exclude_answers=True)
@@ -133,14 +136,16 @@ async def get_quiz(
             "note": "Quiz content will be available after content seeding",
         }
 
-    # Get user's previous attempts
-    result = await db.execute(
-        select(QuizAttempt)
-        .where(QuizAttempt.user_id == current_user.id)
-        .where(QuizAttempt.quiz_id == quiz_id)
-        .order_by(desc(QuizAttempt.created_at))
-    )
-    attempts = result.scalars().all()
+    # Get user's previous attempts (only for authenticated users)
+    attempts = []
+    if current_user:
+        result = await db.execute(
+            select(QuizAttempt)
+            .where(QuizAttempt.user_id == current_user.id)
+            .where(QuizAttempt.quiz_id == quiz_id)
+            .order_by(desc(QuizAttempt.created_at))
+        )
+        attempts = result.scalars().all()
 
     # Calculate attempt summary
     attempt_summary = {
