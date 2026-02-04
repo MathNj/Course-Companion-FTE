@@ -31,12 +31,19 @@ def upgrade():
         sa.Column('grading_completed_at', sa.DateTime(timezone=True), nullable=True),
         sa.Column('attempt_number', sa.Integer(), server_default=sa.text('1'), nullable=False),
         sa.Column('error_message', sa.Text(), nullable=True),
-        sa.ForeignKeyConstraint(['previous_submission_id'], ['assessment_submissions.submission_id'], name=op.f('fk_assessment_submissions_previous')),
+        sa.PrimaryKeyConstraint('submission_id', name=op.f('pk_assessment_submissions')),
         sa.ForeignKeyConstraint(['student_id'], ['users.id'], name=op.f('fk_assessment_submissions_student_id'), ondelete='cascade'),
         sa.CheckConstraint("grading_status IN ('pending', 'processing', 'completed', 'failed')", name='submissions_status_check'),
         sa.CheckConstraint('LENGTH(answer_text) BETWEEN 50 AND 5000', name='answer_length_check'),
         sa.CheckConstraint('attempt_number BETWEEN 1 AND 3', name='attempt_limit_check'),
         sa.CheckConstraint('grading_completed_at IS NULL OR grading_started_at IS NULL OR grading_completed_at >= grading_started_at', name='valid_grading_timeline')
+    )
+
+    # Add self-referencing foreign key after table creation
+    op.create_foreign_key(
+        'fk_assessment_submissions_previous',
+        'assessment_submissions', 'assessment_submissions',
+        ['previous_submission_id'], ['submission_id']
     )
 
     # Create assessment_feedback table
