@@ -10,7 +10,6 @@ import { cleanTitle, parseTitle } from '@/lib/utils';
 import { Chapter as ChapterType, Quiz as QuizType, Section } from '@/types';
 import { Header } from '@/components/Header';
 import { ChapterSidebar } from '@/components/ChapterSidebar';
-import { ChapterSidebarWithQuiz } from '@/components/ChapterSidebarWithQuiz';
 import { ChapterContent } from '@/components/ChapterContent';
 import { AIAssistant } from '@/components/AIAssistant';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
@@ -145,12 +144,11 @@ export default function ChapterPage() {
       {/* Main Content - 3 Column Layout */}
       <div className="container">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Sidebar - Chapter Navigation with Quiz */}
+          {/* Left Sidebar - Chapter Navigation */}
           <div className="lg:col-span-3 xl:col-span-2">
             <div className="sticky top-20">
-              <ChapterSidebarWithQuiz
+              <ChapterSidebar
                 chapter={chapter}
-                quiz={quiz ?? null}
                 selectedSection={selectedSection}
                 onSectionSelect={setSelectedSection}
               />
