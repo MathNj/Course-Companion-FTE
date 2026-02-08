@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useStore } from '@/store/useStore';
-import { BookOpen, Flame, Trophy, LogOut, User, Menu, X, BarChart3, TrendingUp, Library } from 'lucide-react';
+import { BookOpen, Flame, Trophy, LogOut, User, Menu, X, BarChart3, TrendingUp, Library, Settings } from 'lucide-react';
 import { Button } from './ui/Button';
 import { useState } from 'react';
 import { FadeIn } from '@/components/animations';
@@ -82,6 +82,18 @@ export function Header() {
                 >
                   <Trophy className="h-4 w-4 mr-2" />
                   Milestones
+                </Button>
+              </Link>
+
+              {/* Settings Link */}
+              <Link href="/settings">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-zinc-400 hover:text-white hover:scale-105 active:scale-95 transition-all duration-300"
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Settings
                 </Button>
               </Link>
 
@@ -189,6 +201,14 @@ export function Header() {
                     <Button variant="ghost" size="sm" className="justify-start w-full">
                       <Trophy className="h-4 w-4 mr-2" />
                       Milestones
+                    </Button>
+                  </Link>
+
+                  {/* Settings Link */}
+                  <Link href="/settings" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="ghost" size="sm" className="justify-start w-full">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Settings
                     </Button>
                   </Link>
 
