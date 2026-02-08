@@ -21,6 +21,7 @@ from app.models.progress import ChapterProgress
 from app.services.content import get_quiz_with_cache
 from app.services.quiz_grader import grade_quiz
 from app.services.progress_tracker import update_streak
+from app.services.milestone_service import check_quiz_milestones, check_chapter_completion_milestones
 from app.schemas.quiz import QuizAttemptCreate, QuizAttemptResponse
 
 logger = logging.getLogger(__name__)
@@ -329,6 +330,23 @@ async def submit_quiz(
 
         await db.commit()
         await db.refresh(quiz_attempt)
+
+        # Check for quiz-related milestones
+        new_milestones = await check_quiz_milestones(db, current_user.id, quiz_attempt)
+
+        # Check for chapter completion milestones if quiz passed
+        chapter_milestone = None
+        if grading_result["passed"]:
+            chapter_milestone = await check_chapter_completion_milestones(
+                db, current_user.id, chapter_id
+            )
+
+        # Log any new milestones
+        if new_milestones or chapter_milestone:
+            milestone_names = [m.display_name for m in new_milestones]
+            if chapter_milestone:
+                milestone_names.append(chapter_milestone.display_name)
+            logger.info(f"🎉 New milestones achieved for user {current_user.id}: {milestone_names}")
 
     logger.info(
         f"Quiz submitted: score={grading_result['score_percentage']}%, "

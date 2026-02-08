@@ -16,6 +16,7 @@ from sqlalchemy import select, func
 from app.models.progress import ChapterProgress
 from app.models.streak import Streak
 from app.models.quiz import QuizAttempt
+from app.services.milestone_service import check_streak_milestones, check_time_milestones
 
 logger = logging.getLogger(__name__)
 
@@ -183,6 +184,13 @@ async def update_streak(
 
     await db.commit()
     await db.refresh(streak)
+
+    # Check for streak-based milestones in the milestone system
+    if milestone_achieved:
+        await check_streak_milestones(db, user_id, streak.current_streak, previous_streak)
+
+    # Check for time-based milestones periodically
+    await check_time_milestones(db, user_id)
 
     return {
         "current_streak": streak.current_streak,

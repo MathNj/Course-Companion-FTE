@@ -12,6 +12,7 @@ from app.models.progress import ChapterProgress
 from app.models.quiz import QuizAttempt
 from app.models.session import Session
 from app.models.streak import Streak
+from app.models.milestone import Milestone, MilestoneType
 
 __all__ = [
     "Base",
@@ -22,4 +23,6 @@ __all__ = [
     "QuizAttempt",
     "Session",
     "Streak",
+    "Milestone",
+    "MilestoneType",
 ]

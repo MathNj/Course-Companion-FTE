@@ -73,6 +73,18 @@ export function Header() {
                 </Button>
               </Link>
 
+              {/* Milestones Link */}
+              <Link href="/milestones">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-zinc-400 hover:text-white hover:scale-105 active:scale-95 transition-all duration-300"
+                >
+                  <Trophy className="h-4 w-4 mr-2" />
+                  Milestones
+                </Button>
+              </Link>
+
               {/* Teacher Dashboard Link */}
               <Link href="/teacher">
                 <Button
@@ -161,6 +173,22 @@ export function Header() {
                     <Button variant="ghost" size="sm" className="justify-start w-full">
                       <TrendingUp className="h-4 w-4 mr-2" />
                       Student
+                    </Button>
+                  </Link>
+
+                  {/* Library Link */}
+                  <Link href="/library" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="ghost" size="sm" className="justify-start w-full">
+                      <Library className="h-4 w-4 mr-2" />
+                      Library
+                    </Button>
+                  </Link>
+
+                  {/* Milestones Link */}
+                  <Link href="/milestones" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="ghost" size="sm" className="justify-start w-full">
+                      <Trophy className="h-4 w-4 mr-2" />
+                      Milestones
                     </Button>
                   </Link>
 

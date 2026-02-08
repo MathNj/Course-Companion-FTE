@@ -7,6 +7,8 @@ import { Header } from '@/components/Header';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Button } from '@/components/ui/Button';
 import AIAssistant from '@/components/AIAssistantEmbedded';
+import { MilestoneList, MilestoneRow } from '@/components/MilestoneList';
+import { NextMilestonesCard } from '@/components/NextMilestones';
 import {
   Trophy,
   Flame,
@@ -144,20 +146,6 @@ export default function StudentDashboard() {
 
   // Calculate next recommended chapter
   const nextChapter = completedChapters < totalChapters ? completedChapters + 1 : null;
-
-  // Milestones
-  const milestones = [
-    { achieved: completedChapters >= 1, icon: '🎯', title: 'First Chapter', description: 'Completed your first chapter' },
-    { achieved: completedChapters >= 3, icon: '📚', title: 'Halfway There', description: 'Completed 3 chapters' },
-    { achieved: completedChapters >= 6, icon: '🏆', title: 'Course Master', description: 'Completed all chapters' },
-    { achieved: currentStreak >= 3, icon: '🔥', title: 'On Fire', description: '3-day learning streak' },
-    { achieved: currentStreak >= 7, icon: '💎', title: 'Dedicated Learner', description: '7-day learning streak' },
-    { achieved: longestStreak >= 10, icon: '⭐', title: 'Consistency King', description: '10-day longest streak' },
-    { achieved: totalActiveDays >= 20, icon: '🎓', title: 'Knowledge Seeker', description: '20+ active learning days' },
-    { achieved: completionPercentage >= 80, icon: '👑', title: 'Almost There', description: '80% course completion' },
-  ];
-
-  const earnedMilestones = milestones.filter(m => m.achieved).length;
 
   return (
     <div className="min-h-screen bg-[#0B0C10]">
@@ -438,31 +426,19 @@ export default function StudentDashboard() {
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
             <Trophy className="w-6 h-6 text-yellow-400" />
-            Milestones ({earnedMilestones}/{milestones.length})
+            Milestones & Achievements
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {milestones.map((milestone, index) => (
-              <div
-                key={index}
-                className={`p-4 rounded-lg border transition-all hover-lift ${
-                  milestone.achieved
-                    ? 'bg-yellow-500/10 border-yellow-500/30'
-                    : 'bg-zinc-800/50 border-zinc-700/50 opacity-50'
-                }`}
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-2xl">{milestone.icon}</span>
-                  {milestone.achieved && <CheckCircle2 className="w-5 h-5 text-yellow-400" />}
-                </div>
-                <p className={`font-semibold text-sm ${
-                  milestone.achieved ? 'text-white' : 'text-zinc-500'
-                }`}>
-                  {milestone.title}
-                </p>
-                <p className="text-xs text-zinc-400">{milestone.description}</p>
-              </div>
-            ))}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Recent Milestones */}
+            <div className="lg:col-span-2">
+              <MilestoneList limit={6} showUpcoming={true} />
+            </div>
+
+            {/* Next Milestones */}
+            <div className="lg:col-span-1">
+              <NextMilestonesCard />
+            </div>
           </div>
         </div>
 
