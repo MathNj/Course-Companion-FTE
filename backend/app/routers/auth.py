@@ -4,7 +4,7 @@ Authentication Routes
 Endpoints for user registration, login, token refresh, and profile management.
 """
 
-from datetime import datetime
+from datetime import datetime, date
 from uuid import uuid4
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,6 +12,7 @@ from sqlalchemy import select
 
 from app.database import get_db
 from app.models.user import User
+from app.models.streak import Streak
 from app.schemas.user import UserCreate, UserLogin, UserResponse, Token, TokenRefresh, UserUpdate
 from app.utils.auth import hash_password, verify_password, create_token_pair, verify_token
 from app.dependencies import get_current_user
@@ -57,11 +58,26 @@ async def register(
         preferences=user_data.preferences,
         subscription_tier="free",
         is_active=True,
+        is_teacher=False,
     )
 
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)
+
+    # Initialize progress tracking - Create Streak record for new user
+    new_streak = Streak(
+        user_id=new_user.id,
+        current_streak=0,  # Will increment to 1 on first activity
+        longest_streak=0,
+        total_active_days=0,
+        last_activity_date=None,  # Will be set on first learning activity
+        timezone=new_user.timezone,
+        is_active=True,
+        streak_freeze_count=0,
+    )
+    db.add(new_streak)
+    await db.commit()
 
     # Generate tokens
     access_token, refresh_token, expires_in = create_token_pair(

@@ -547,3 +547,139 @@ def _generate_alert_recommendations(alert_count: int, threshold: float, total_co
         recommendations.append("Cost levels are within acceptable ranges. Continue monitoring.")
 
     return recommendations
+
+
+@router.get("/students")
+async def get_all_students(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Get all students with their progress, quiz scores, and engagement data.
+
+    Returns real student data from the database including:
+    - User information (id, email)
+    - Chapter progress
+    - Quiz scores
+    - Streak information
+    - Last activity timestamp
+    """
+    from app.models.progress import ChapterProgress
+    from app.models.quiz import QuizAttempt
+    from app.models.streak import Streak
+
+    # Get all students (non-admin users)
+    result = await db.execute(
+        select(User).where(User.is_active == True)
+    )
+    students = result.scalars().all()
+
+    student_data = []
+
+    for student in students:
+        # Get chapter progress
+        progress_result = await db.execute(
+            select(ChapterProgress)
+            .where(ChapterProgress.user_id == student.id)
+        )
+        all_progress = progress_result.scalars().all()
+
+        completed_chapters = len([p for p in all_progress if p.is_completed])
+        total_chapters = 6  # TODO: Get from course config
+
+        # Calculate overall completion percentage
+        completion_percentage = (completed_chapters / total_chapters * 100) if total_chapters > 0 else 0
+
+        # Get quiz scores
+        quiz_result = await db.execute(
+            select(QuizAttempt)
+            .where(QuizAttempt.user_id == student.id)
+            .order_by(desc(QuizAttempt.created_at))
+        )
+        quiz_attempts = quiz_result.scalars().all()
+
+        # Get latest score for each quiz
+        quiz_scores = {}
+        for attempt in quiz_attempts:
+            quiz_id = attempt.quiz_id
+            if quiz_id not in quiz_scores:
+                quiz_scores[quiz_id] = {
+                    "score": attempt.score_percentage,
+                    "passed": attempt.passed,
+                    "attempted_at": attempt.completed_at.isoformat() if attempt.completed_at else None
+                }
+
+        # Get streak data
+        streak_result = await db.execute(
+            select(Streak)
+            .where(Streak.user_id == student.id)
+            .order_by(desc(Streak.last_activity_date))
+        )
+        streak = streak_result.scalar_one_or_none()
+
+        current_streak = streak.current_streak if streak else 0
+        longest_streak = streak.longest_streak if streak else 0
+
+        # Get last activity from progress updates or quiz attempts
+        last_progress_result = await db.execute(
+            select(ChapterProgress)
+            .where(ChapterProgress.user_id == student.id)
+            .order_by(desc(ChapterProgress.updated_at))
+            .limit(1)
+        )
+        last_progress = last_progress_result.scalar_one_or_none()
+
+        last_activity = (
+            last_progress.updated_at.isoformat() if last_progress else
+            student.created_at.isoformat()
+        )
+
+        # Get premium usage
+        # Note: AdaptivePath uses student_id, not user_id
+        adaptive_paths_count = 0  # TODO: Implement when AdaptivePath is properly linked to User model
+
+        # Note: AssessmentSubmission uses student_id, not user_id
+        assessments_count = 0  # TODO: Implement when AssessmentSubmission is properly linked to User model
+
+        # Calculate engagement metrics
+        total_time_minutes = sum([p.time_spent_seconds or 0 for p in all_progress]) // 60
+        sessions = len(all_progress)  # Count unique chapter sessions
+
+        # Find drop-off chapter (first incomplete chapter)
+        drop_off_chapter = None
+        incomplete_chapters = [p for p in all_progress if not p.is_completed]
+        if incomplete_chapters:
+            # Sort by updated_at to find most recent incomplete chapter
+            incomplete_chapters.sort(key=lambda x: x.updated_at, reverse=True)
+            drop_off_chapter = incomplete_chapters[0].chapter_id
+
+        student_data.append({
+            "id": str(student.id),
+            "email": student.email,
+            "progress": {
+                "completion_percentage": round(completion_percentage, 1),
+                "chapters_completed": completed_chapters,
+                "total_chapters": total_chapters
+            },
+            "streak": {
+                "current_streak": current_streak,
+                "longest_streak": longest_streak
+            },
+            "quiz_scores": quiz_scores,
+            "last_activity": last_activity,
+            "engagement": {
+                "total_time_minutes": total_time_minutes,
+                "sessions": sessions,
+                "drop_off_chapter": drop_off_chapter
+            },
+            "premium_usage": {
+                "adaptive_paths": adaptive_paths_count,
+                "assessments": assessments_count
+            },
+            "created_at": student.created_at.isoformat()
+        })
+
+    return {
+        "students": student_data,
+        "total": len(student_data)
+    }

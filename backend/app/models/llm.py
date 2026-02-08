@@ -5,13 +5,13 @@ Models for adaptive learning paths and LLM-graded assessments.
 """
 
 from sqlalchemy import Column, String, Text, Integer, Numeric, Boolean, DateTime, ForeignKey, Enum as SQLEnum, CheckConstraint, Index
-from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import enum
 import datetime
 
 from app.models.base import Base
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
 
 class AdaptivePathStatus(str, enum.Enum):
@@ -30,17 +30,17 @@ class AdaptivePath(Base):
     __tablename__ = "adaptive_paths"
 
     # Primary Key
-    path_id = Column(UUID(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
+    path_id = Column(UUIDType(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
 
     # Foreign Keys
-    student_id = Column(UUID(as_uuid=True), ForeignKey("students.student_id", ondelete="CASCADE"), nullable=False, index=True)
+    student_id = Column(UUIDType(as_uuid=True), ForeignKey("students.student_id", ondelete="CASCADE"), nullable=False, index=True)
 
     # Metadata
     generated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
     expires_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now() + datetime.timedelta(hours=24))
 
-    # Recommendations (JSONB)
-    recommendations_json = Column(JSONB, nullable=False)
+    # Recommendations (JSONType)
+    recommendations_json = Column(JSONType, nullable=False)
     # Structure: [
     #   {
     #     "chapter_id": "04-rag",
@@ -100,12 +100,12 @@ class AssessmentSubmission(Base):
     __tablename__ = "assessment_submissions"
 
     # Primary Key
-    submission_id = Column(UUID(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
+    submission_id = Column(UUIDType(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
 
     # Foreign Keys
-    student_id = Column(UUID(as_uuid=True), ForeignKey("students.student_id", ondelete="CASCADE"), nullable=False, index=True)
+    student_id = Column(UUIDType(as_uuid=True), ForeignKey("students.student_id", ondelete="CASCADE"), nullable=False, index=True)
     question_id = Column(String(50), nullable=False, index=True)
-    previous_submission_id = Column(UUID(as_uuid=True), ForeignKey("assessment_submissions.submission_id"), nullable=True)
+    previous_submission_id = Column(UUIDType(as_uuid=True), ForeignKey("assessment_submissions.submission_id"), nullable=True)
 
     # Submission Data
     answer_text = Column(Text, nullable=False)
@@ -154,23 +154,23 @@ class AssessmentFeedback(Base):
     __tablename__ = "assessment_feedback"
 
     # Primary Key
-    feedback_id = Column(UUID(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
+    feedback_id = Column(UUIDType(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
 
     # Foreign Keys
-    submission_id = Column(UUID(as_uuid=True), ForeignKey("assessment_submissions.submission_id", ondelete="CASCADE"), nullable=False, unique=True)
-    human_reviewer_id = Column(UUID(as_uuid=True), ForeignKey("students.student_id"), nullable=True)
+    submission_id = Column(UUIDType(as_uuid=True), ForeignKey("assessment_submissions.submission_id", ondelete="CASCADE"), nullable=False, unique=True)
+    human_reviewer_id = Column(UUIDType(as_uuid=True), ForeignKey("students.student_id"), nullable=True)
 
     # Grading Results
     quality_score = Column(Numeric(3, 1), nullable=False)
 
-    # Structured Feedback (JSONB)
-    strengths_json = Column(JSONB, nullable=False)
+    # Structured Feedback (JSONType)
+    strengths_json = Column(JSONType, nullable=False)
     # Structure: [
     #   "Strong explanation of cost tradeoffs",
     #   "Good use of concrete examples"
     # ]
 
-    improvements_json = Column(JSONB, nullable=False)
+    improvements_json = Column(JSONType, nullable=False)
     # Structure: [
     #   "Missing discussion of data privacy considerations",
     #   "Could expand on computational costs"

@@ -6,6 +6,8 @@ import { getProgress } from '@/lib/api';
 import { Header } from '@/components/Header';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Button } from '@/components/ui/Button';
+import { ClientOnly } from '@/components/ClientOnly';
+import AIAssistant from '@/components/AIAssistantEmbedded';
 import {
   Trophy,
   Flame,
@@ -25,62 +27,89 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { format } from 'date-fns';
+import { useState, useEffect } from 'react';
 
 export default function StudentDashboard() {
   const { user } = useStore();
   const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
 
-  const { data: apiProgress, isLoading, refetch } = useQuery({
+  // Ensure dates are only formatted on client-side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const { data: apiProgress, isLoading, error, refetch } = useQuery({
     queryKey: ['progress'],
-    queryFn: getProgress,
+    queryFn: async () => {
+      const response = await getProgress();
+      console.log('Dashboard - Progress API Response:', response);
+      console.log('Dashboard - User:', user?.id);
+      return response;
+    },
     enabled: !!user,
+    retry: false,
   });
 
-  // Mock progress data for demonstration
-  const mockProgress = {
-    completion_percentage: 65,
-    chapters_completed: 4,
-    total_chapters: 6,
-    current_streak: 7,
-    longest_streak: 12,
-    total_active_days: 18,
-    last_activity_date: new Date().toISOString(),
-    quiz_scores: {
-      'chapter-1': 85,
-      'chapter-2': 92,
-      'chapter-3': 65,
-      'chapter-4': 88,
-    },
-    chapter_progress: [
-      {
-        chapter_id: 'chapter-1',
-        completion_status: 'completed',
-        time_spent_minutes: 45,
-      },
-      {
-        chapter_id: 'chapter-2',
-        completion_status: 'completed',
-        time_spent_minutes: 52,
-      },
-      {
-        chapter_id: 'chapter-3',
-        completion_status: 'completed',
-        time_spent_minutes: 38,
-      },
-      {
-        chapter_id: 'chapter-4',
-        completion_status: 'completed',
-        time_spent_minutes: 48,
-      },
-    ],
-  };
+  // Debug logging to track data source (MUST be before any early returns)
+  const progress = apiProgress;
 
-  const progress = apiProgress || mockProgress;
+  useEffect(() => {
+    console.log('=== DASHBOARD DEBUG ===');
+    console.log('User ID:', user?.id);
+    console.log('Raw API Response:', progress);
+    console.log('Quiz Scores from API:', progress?.quiz_scores);
+    console.log('Chapter Progress from API:', progress?.chapter_progress);
+    console.log('=====================');
+  }, [progress, user?.id]);
 
-  if (isLoading) {
+  // Show loading state or wait for client-side
+  if (isLoading || !isClient) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0B0C10]">
         <LoadingSpinner />
+      </div>
+    );
+  }
+
+  // Show sign-in prompt if not authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[#0B0C10]">
+        <Header />
+        <main className="container mx-auto px-4 py-16 text-center">
+          <h1 className="text-4xl font-bold text-white mb-4">Student Dashboard</h1>
+          <p className="text-zinc-400 mb-8">Sign in to track your learning progress</p>
+          <Link href="/login">
+            <Button size="lg">Sign In</Button>
+          </Link>
+        </main>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error || !apiProgress) {
+    return (
+      <div className="min-h-screen bg-[#0B0C10]">
+        <Header />
+        <main className="container mx-auto px-4 py-16">
+          <div className="max-w-md mx-auto text-center">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800">
+              <h2 className="text-2xl font-bold text-white mb-4">Unable to Load Progress</h2>
+              <p className="text-zinc-400 mb-6">
+                We couldn't load your progress data. This might be because you haven't started learning yet.
+              </p>
+              <div className="flex gap-3 justify-center">
+                <Button onClick={() => refetch()}>Try Again</Button>
+                <Link href="/chapters/chapter-1">
+                  <Button variant="outline">Start Learning</Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
     );
   }
@@ -91,22 +120,27 @@ export default function StudentDashboard() {
   const currentStreak = progress.current_streak;
   const longestStreak = progress.longest_streak;
   const totalActiveDays = progress.total_active_days;
-  const lastActivityDate = new Date(progress.last_activity_date).toLocaleDateString();
+  // Only format date on client-side to prevent hydration errors
+  const lastActivityDate = isClient && progress.last_activity_date
+    ? format(new Date(progress.last_activity_date), 'MM/dd/yyyy')
+    : 'No activity yet';
 
-  // Calculate quiz statistics
-  const quizScores = Object.values(progress.quiz_scores || {});
+  // Calculate quiz statistics from recent attempts
+  const recentAttempts = progress.recent_quiz_attempts || [];
+  const quizScores = recentAttempts.length > 0
+    ? recentAttempts.map(a => parseFloat(a.score_percentage) || 0)
+    : Object.values(progress.quiz_scores || {}).map(s => parseFloat(s) || 0);
   const averageQuizScore = quizScores.length > 0
     ? quizScores.reduce((sum, score) => sum + score, 0) / quizScores.length
     : 0;
-  const recentQuizScores = quizScores.slice(-3); // Last 3 quiz scores
 
   // Identify weak areas (chapters with quiz scores below 70%)
   const weakAreas = Object.entries(progress.quiz_scores || {})
-    .filter(([_, score]) => score < 70)
+    .filter(([_, score]) => parseFloat(score) < 70)
     .map(([chapterId, score]) => ({
       chapterId,
       chapterNumber: chapterId.split('-')[1],
-      score,
+      score: parseFloat(score),
     }));
 
   // Calculate next recommended chapter
@@ -127,7 +161,8 @@ export default function StudentDashboard() {
   const earnedMilestones = milestones.filter(m => m.achieved).length;
 
   return (
-    <div className="min-h-screen bg-[#0B0C10]">
+    <ClientOnly fallback={<LoadingSpinner />}>
+      <div className="min-h-screen bg-[#0B0C10]">
       <Header />
       <main className="container mx-auto px-4 py-8">
         {/* Header */}
@@ -285,19 +320,22 @@ export default function StudentDashboard() {
                 <Star className="w-5 h-5 text-yellow-400" />
                 Recent Quiz Scores
               </h3>
-              {quizScores.length > 0 ? (
+              {recentAttempts.length > 0 ? (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 bg-zinc-800 rounded-lg">
                     <span className="text-zinc-400">Average Score</span>
                     <span className="text-xl font-bold text-white">{averageQuizScore.toFixed(1)}%</span>
                   </div>
-                  {recentQuizScores.slice(-3).reverse().map((score, index) => (
+                  {recentAttempts.map((attempt, index) => (
                     <div key={index} className="flex items-center justify-between p-3 bg-zinc-800 rounded-lg">
-                      <span className="text-zinc-400">Quiz {quizScores.length - recentQuizScores.length + index + 1}</span>
+                      <div className="flex-1">
+                        <span className="text-zinc-400 text-sm">Chapter {attempt.chapter_id?.replace('chapter-', '')}</span>
+                        <span className="text-zinc-500 text-xs ml-2">Attempt #{attempt.attempt_number}</span>
+                      </div>
                       <span className={`font-bold ${
-                        score >= 80 ? 'text-emerald-400' : score >= 60 ? 'text-yellow-400' : 'text-red-400'
+                        parseFloat(attempt.score_percentage) >= 80 ? 'text-emerald-400' : parseFloat(attempt.score_percentage) >= 60 ? 'text-yellow-400' : 'text-red-400'
                       }`}>
-                        {score}%
+                        {attempt.score_percentage}%
                       </span>
                     </div>
                   ))}
@@ -382,7 +420,11 @@ export default function StudentDashboard() {
               <div className="flex items-center justify-between mb-4">
                 <Calendar className="w-10 h-10 text-blue-400" />
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-white">{lastActivityDate}</p>
+                  {isClient ? (
+                    <p className="text-2xl font-bold text-white">{lastActivityDate}</p>
+                  ) : (
+                    <p className="text-2xl font-bold text-white">...</p>
+                  )}
                   <p className="text-sm text-zinc-400">last active</p>
                 </div>
               </div>
@@ -569,6 +611,8 @@ export default function StudentDashboard() {
           </div>
         </div>
       </main>
+      <AIAssistant />
     </div>
+    </ClientOnly>
   );
 }

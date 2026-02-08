@@ -29,112 +29,89 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { format, subDays, startOfDay } from 'date-fns';
+import { useEffect, useState } from 'react';
 
 export default function ProgressPage() {
   const { user } = useStore();
+  const [isClient, setIsClient] = useState(false);
 
   const { data: apiProgress, isLoading, refetch } = useQuery({
-    queryKey: ['progress'],
-    queryFn: getProgress,
+    queryKey: ['progress', user?.id],
+    queryFn: async () => {
+      const response = await getProgress();
+      console.log('Progress - Progress API Response:', response);
+      console.log('Progress - User:', user?.id);
+      console.log('Progress - quiz_scores from API:', response?.quiz_scores);
+      console.log('Progress - recent_quiz_attempts from API:', response?.recent_quiz_attempts);
+      return response;
+    },
     enabled: !!user,
+    retry: false,
+    staleTime: 0, // Always fetch fresh data
   });
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Refetch progress when user changes or on mount
+  useEffect(() => {
+    if (user) {
+      console.log('Progress - Refetching progress for user:', user.id);
+      refetch();
+    }
+  }, [user, refetch]);
 
   // Prepare progress data for PDF export
   const prepareProgressData = (): ProgressPDFData => {
-    const progress = apiProgress || mockProgress;
+    if (!apiProgress) {
+      throw new Error('No progress data available');
+    }
 
     return {
       user: {
         email: user?.email || 'user@example.com',
-        subscriptionType: user?.subscription_type || 'free'
+        subscriptionType: user?.subscription_tier || 'free'
       },
       progress: {
-        completionPercentage: progress.completion_percentage || 0,
-        currentStreak: progress.current_streak || 0,
-        totalQuizzesTaken: Object.keys(progress.quiz_scores || {}).length,
-        averageQuizScore: Object.values(progress.quiz_scores || {}).reduce((a, b) => a + b, 0) / (Object.keys(progress.quiz_scores || {}).length || 1),
-        chaptersCompleted: progress.chapters_completed || 0,
-        totalChapters: progress.total_chapters || 6
+        completionPercentage: apiProgress.completion_percentage || 0,
+        currentStreak: apiProgress.current_streak || 0,
+        totalQuizzesTaken: Object.keys(apiProgress.quiz_scores || {}).length,
+        averageQuizScore: Object.values(apiProgress.quiz_scores || {}).reduce((a, b) => a + parseFloat(b), 0) / (Object.keys(apiProgress.quiz_scores || {}).length || 1),
+        chaptersCompleted: apiProgress.chapters_completed || 0,
+        totalChapters: apiProgress.total_chapters || 6
       },
-      quizHistory: Object.entries(progress.quiz_scores || {}).map(([chapterId, score]) => ({
+      quizHistory: Object.entries(apiProgress.quiz_scores || {}).map(([chapterId, score]) => ({
         chapterTitle: `Chapter ${chapterId.replace('chapter-', '')}`,
-        score: score as number,
-        completedAt: progress.last_activity_date || new Date().toISOString()
+        score: parseFloat(score) || 0,
+        completedAt: apiProgress.last_activity_date || new Date().toISOString()
       })),
       generatedAt: new Date().toISOString()
     };
   };
 
-  // Enhanced mock progress data for demonstration
-  const mockProgress = {
-    completion_percentage: 65,
-    chapters_completed: 4,
-    total_chapters: 6,
-    current_streak: 7,
-    longest_streak: 12,
-    total_active_days: 18,
-    last_activity_date: new Date().toISOString(),
-    quiz_scores: {
-      'chapter-1': 85,
-      'chapter-2': 92,
-      'chapter-3': 65,
-      'chapter-4': 88,
-    },
-    chapter_progress: [
-      {
-        chapter_id: 'chapter-1',
-        completion_status: 'completed',
-        completion_percent: 100,
-        quiz_score: 85,
-        time_spent_minutes: 45,
-        last_accessed: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        chapter_id: 'chapter-2',
-        completion_status: 'completed',
-        completion_percent: 100,
-        quiz_score: 92,
-        time_spent_minutes: 52,
-        last_accessed: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        chapter_id: 'chapter-3',
-        completion_status: 'completed',
-        completion_percent: 100,
-        quiz_score: 65,
-        time_spent_minutes: 38,
-        last_accessed: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        chapter_id: 'chapter-4',
-        completion_status: 'completed',
-        completion_percent: 100,
-        quiz_score: 88,
-        time_spent_minutes: 48,
-        last_accessed: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        chapter_id: 'chapter-5',
-        completion_status: 'in_progress',
-        completion_percent: 50,
-        quiz_score: undefined,
-        time_spent_minutes: 25,
-        last_accessed: new Date().toISOString(),
-      },
-      {
-        chapter_id: 'chapter-6',
-        completion_status: 'not_started',
-        completion_percent: 0,
-        quiz_score: undefined,
-        time_spent_minutes: 0,
-        last_accessed: new Date().toISOString(),
-      },
-    ],
-  };
+  // Use ONLY real API progress data
+  const progress = apiProgress;
 
-  const progress = apiProgress || mockProgress;
+  // Debug logging to track data source
+  useEffect(() => {
+    console.log('=== PROGRESS PAGE DEBUG ===');
+    console.log('User ID:', user?.id);
+    console.log('Raw API Response:', progress);
+    console.log('Quiz Scores from API:', progress?.quiz_scores);
+    console.log('Chapter Progress from API:', progress?.chapter_progress);
+    console.log('Total time spent:', progress?.total_time_spent_seconds);
+    console.log('Recent quiz attempts:', progress?.recent_quiz_attempts);
 
-  if (isLoading) {
+    // Log calculated values
+    const quizScores = Object.values(progress?.quiz_scores || {}).map(s => parseFloat(s) || 0);
+    const avg = quizScores.length > 0 ? quizScores.reduce((a, b) => a + b, 0) / quizScores.length : 0;
+    console.log('Calculated quizScores:', quizScores);
+    console.log('Calculated averageQuizScore:', avg);
+    console.log('===========================');
+  }, [progress, user?.id]);
+
+  if (isLoading || !isClient) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0B0C10]">
         <LoadingSpinner />
@@ -142,8 +119,22 @@ export default function ProgressPage() {
     );
   }
 
+  if (!progress) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0B0C10]">
+        <div className="text-center">
+          <p className="text-zinc-400 mb-4">No progress data available</p>
+          <Button onClick={() => refetch()} variant="outline">
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Refresh
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   // Calculate performance metrics
-  const quizScores = Object.values(progress.quiz_scores || {});
+  const quizScores = Object.values(progress.quiz_scores || {}).map(s => parseFloat(s) || 0);
   const averageQuizScore = quizScores.length > 0
     ? quizScores.reduce((sum, score) => sum + score, 0) / quizScores.length
     : 0;
@@ -152,21 +143,32 @@ export default function ProgressPage() {
   const passedQuizzes = quizScores.filter(score => score >= 80).length;
   const totalQuizzes = quizScores.length;
 
-  // Calculate study time estimates
-  const totalStudyMinutes = progress.chapter_progress?.reduce(
-    (sum, chapter) => sum + (chapter.time_spent_minutes || 0),
-    0
-  ) || 0;
-  const studyHours = Math.floor(totalStudyMinutes / 60);
-  const studyMinutes = totalStudyMinutes % 60;
+  // Debug log to verify calculations
+  console.log('=== RENDER CALCULATIONS ===');
+  console.log('quizScores from API:', progress.quiz_scores);
+  console.log('Parsed quizScores:', quizScores);
+  console.log('averageQuizScore:', averageQuizScore);
+  console.log('totalQuizzes:', totalQuizzes);
+  console.log('=========================');
+
+  // Calculate study time from API
+  // Since time tracking isn't implemented, use quiz attempts as a proxy
+  const totalQuizAttempts = progress.recent_quiz_attempts?.length || 0;
+  const totalStudySeconds = progress.total_time_spent_seconds || 0;
+  const totalStudyMinutes = Math.floor(totalStudySeconds / 60);
+
+  // Use a simple metric: 15 minutes estimated per quiz attempt
+  const estimatedStudyMinutes = totalQuizAttempts * 15;
+  const studyHours = Math.floor(estimatedStudyMinutes / 60);
+  const studyMinutes = estimatedStudyMinutes % 60;
 
   // Identify weak areas (chapters with quiz scores below 70%)
   const weakAreas = Object.entries(progress.quiz_scores || {})
-    .filter(([_, score]) => score < 70)
+    .filter(([_, score]) => parseFloat(score) < 70)
     .map(([chapterId, score]) => ({
       chapterId,
       chapterNumber: chapterId.split('-')[1],
-      score,
+      score: parseFloat(score),
     }));
 
   // Generate quiz trend data (last 7 quizzes with simulated trend)
@@ -190,11 +192,36 @@ export default function ProgressPage() {
     ? (progress.chapters_completed || 0) + 1
     : null;
 
-  // Generate study activity data (simulated last 7 days)
-  const studyActivityData = [45, 60, 30, 75, 90, 45, 60]; // Minutes studied per day
-  const activityLabels = Array.from({ length: 7 }, (_, i) =>
-    format(subDays(new Date(), 6 - i), 'MMM dd')
-  );
+  // Generate study activity data from recent quiz attempts (last 7 days)
+  const recentQuizAttempts = progress.recent_quiz_attempts || [];
+  const activityByDay: Record<string, number> = {};
+
+  // Initialize last 7 days with 0
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    const dateStr = date.toISOString().split('T')[0];
+    activityByDay[dateStr] = 0;
+  }
+
+  // Count quiz attempts per day
+  recentQuizAttempts.forEach(attempt => {
+    if (attempt.submitted_at) {
+      const dateStr = attempt.submitted_at.split('T')[0];
+      if (activityByDay.hasOwnProperty(dateStr)) {
+        activityByDay[dateStr] += 1;
+      }
+    }
+  });
+
+  const studyActivityData = Object.values(activityByDay);
+
+  const activityLabels = isClient
+    ? Object.keys(activityByDay).map(dateStr => {
+        const date = new Date(dateStr + 'T00:00:00');
+        return format(date, 'MMM dd');
+      })
+    : ['', '', '', '', '', '', ''];
 
   return (
     <div className="min-h-screen bg-[#0B0C10]">
@@ -241,18 +268,33 @@ export default function ProgressPage() {
               <Target className="w-8 h-8 text-purple-400" />
               <span className="text-xs text-zinc-500">Avg Quiz Score</span>
             </div>
-            <h3 className="text-3xl font-bold text-white mb-2">{averageQuizScore.toFixed(1)}%</h3>
-            <p className="text-sm text-zinc-400">{passedQuizzes}/{totalQuizzes} passed</p>
+            <h3 className="text-3xl font-bold text-white mb-2">
+              {totalQuizzes > 0 ? `${averageQuizScore.toFixed(1)}%` : '--'}
+            </h3>
+            <p className="text-sm text-zinc-400">
+              {totalQuizzes > 0
+                ? `${passedQuizzes}/${totalQuizzes} passed`
+                : 'Complete quizzes to see your average'}
+            </p>
             <div className="mt-3 flex gap-1">
-              {quizScores.slice(0, 5).map((score, i) => (
-                <div
-                  key={i}
-                  className="flex-1 h-2 rounded-full"
-                  style={{
-                    backgroundColor: score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#ef4444'
-                  }}
-                />
-              ))}
+              {quizScores.length > 0 ? (
+                quizScores.slice(0, 5).map((score, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 h-2 rounded-full"
+                    style={{
+                      backgroundColor: score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#ef4444'
+                    }}
+                  />
+                ))
+              ) : (
+                Array(5).fill(0).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 h-2 rounded-full bg-zinc-700"
+                  />
+                ))
+              )}
             </div>
           </div>
 
@@ -262,9 +304,15 @@ export default function ProgressPage() {
               <span className="text-xs text-zinc-500">Study Time</span>
             </div>
             <h3 className="text-3xl font-bold text-white mb-2">
-              {studyHours > 0 ? `${studyHours}h ${studyMinutes}m` : `${studyMinutes}m`}
+              {totalQuizAttempts > 0
+                ? (studyHours > 0 ? `${studyHours}h ${studyMinutes}m` : `${studyMinutes}m`)
+                : '--'}
             </h3>
-            <p className="text-sm text-zinc-400">{totalStudyMinutes} minutes total</p>
+            <p className="text-sm text-zinc-400">
+              {totalQuizAttempts > 0
+                ? `Based on ${totalQuizAttempts} quiz attempt${totalQuizAttempts > 1 ? 's' : ''}`
+                : 'Complete quizzes to track study time'}
+            </p>
             <div className="mt-3 flex items-center gap-2">
               <Flame className="w-4 h-4 text-orange-400" />
               <span className="text-xs text-zinc-400">{progress.total_active_days} active days</span>
@@ -348,7 +396,7 @@ export default function ProgressPage() {
               <BarChart
                 data={studyActivityData}
                 labels={activityLabels}
-                label="Minutes"
+                label="Quiz Attempts"
               />
             </div>
           </div>
@@ -420,7 +468,7 @@ export default function ProgressPage() {
                 <div className="flex items-center justify-between p-4 bg-zinc-800 rounded-lg">
                   <span className="text-zinc-300">Last Activity</span>
                   <span className="text-sm font-bold text-white">
-                    {new Date(progress.last_activity_date).toLocaleDateString()}
+                    {isClient ? new Date(progress.last_activity_date).toLocaleDateString() : ''}
                   </span>
                 </div>
               </div>
@@ -513,7 +561,7 @@ export default function ProgressPage() {
                   <div>
                     <p className="text-zinc-500">Last Accessed</p>
                     <p className="text-white font-semibold">
-                      {new Date(chapter.last_accessed).toLocaleDateString()}
+                      {isClient ? new Date(chapter.last_accessed).toLocaleDateString() : ''}
                     </p>
                   </div>
                   <div>

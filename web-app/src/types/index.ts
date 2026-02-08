@@ -1,10 +1,12 @@
 export interface User {
   id: string;
   email: string;
-  subscription_type: 'free' | 'premium';
+  subscription_tier: 'free' | 'premium' | 'pro' | 'team';
   created_at: string;
   timezone?: string;
   is_teacher?: boolean;
+  is_premium?: boolean;
+  subscription_expires_at?: string;
 }
 
 export interface Chapter {
@@ -18,6 +20,11 @@ export interface Chapter {
   difficulty_level: 'beginner' | 'intermediate' | 'advanced';
   access_tier: 'free' | 'premium';
   order: number;
+  // Optional markdown content (for chapters without sections)
+  content?: string;
+  // Computed/alias fields for compatibility
+  difficulty?: 'beginner' | 'intermediate' | 'advanced';
+  estimated_time?: string;
 }
 
 export interface Section {
@@ -43,6 +50,9 @@ export interface Question {
   correct_answer: string | string[];
   explanation: string;
   points: number;
+  // Backend compatibility fields
+  question?: string;  // Alias for question_text
+  type?: 'multiple_choice' | 'true_false' | 'short_answer';  // Alias for question_type
 }
 
 export interface QuizAttempt {
@@ -62,6 +72,11 @@ export interface GradingDetail {
   user_answer: string | string[];
   correct_answer: string | string[];
   explanation: string;
+  // Backend compatibility fields
+  is_correct?: boolean;  // Alias for correct
+  student_answer?: string | string[];  // Alias for user_answer
+  points_earned?: number;
+  points_possible?: number;
 }
 
 export interface Progress {

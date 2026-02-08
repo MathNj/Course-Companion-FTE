@@ -134,6 +134,92 @@ async def get_chapters(
     return chapters
 
 
+@router.get("/search", response_model=List[dict])
+async def search_chapters(
+    query: Optional[str] = Query(None, min_length=2, description="Search query (alias for q)"),
+    q: Optional[str] = Query(None, min_length=2, description="Search query"),
+    limit: int = Query(20, ge=1, le=100, description="Maximum results to return"),
+    chapter_id: Optional[str] = Query(None, description="Limit search to specific chapter"),
+    current_user: Optional[User] = Depends(get_optional_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Search across chapter content (Grounded Q&A).
+
+    Performs keyword search across all accessible chapters and returns relevant sections.
+    This enables ChatGPT to answer questions using only course material (zero-hallucination).
+
+    Query parameters:
+    - **query/q**: Search query (minimum 2 characters) - both names accepted
+    - **limit**: Maximum number of results (default 20, max 100)
+    - **chapter_id**: Optional - limit search to specific chapter
+
+    Returns search results with:
+    - chapter_id: Which chapter the result is from
+    - chapter_title: Chapter title for context
+    - section_id: Which section contains the match
+    - section_title: Section title for context
+    - snippet: Text excerpt with the matched content
+    - relevance_score: How well it matches the query (higher is better)
+    - match_count: Number of times query terms appear in this section
+
+    Access Control:
+    - Only searches chapters the user has access to
+    - Free users: chapters 1-3
+    - Premium users: all chapters 1-6
+
+    Works with unauthenticated users (treated as free tier).
+    """
+    # Support both 'query' and 'q' parameter names for compatibility
+    search_query = query or q
+    if not search_query:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Search query parameter 'q' or 'query' is required (minimum 2 characters)"
+        )
+    # Determine which chapters user has access to
+    accessible_chapters = []
+    user_tier = current_user.subscription_tier if current_user else "free"
+
+    for chapter_meta in CHAPTER_METADATA:
+        user_has_access = (
+            chapter_meta["access_tier"] == "free" or
+            user_tier in ("premium", "pro", "team")
+        )
+        if user_has_access:
+            accessible_chapters.append(chapter_meta["id"])
+
+    # If specific chapter requested, verify access
+    if chapter_id:
+        chapter_meta = next((c for c in CHAPTER_METADATA if c["id"] == chapter_id), None)
+        if not chapter_meta:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Chapter {chapter_id} not found"
+            )
+
+        # Check access
+        user_has_access = (
+            chapter_meta["access_tier"] == "free" or
+            user_tier in ("premium", "pro", "team")
+        )
+        if not user_has_access:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Chapter {chapter_id} requires premium subscription"
+            )
+
+    # Perform search using search service
+    results = await search_chapters_service(
+        query=search_query,
+        accessible_chapter_ids=accessible_chapters,
+        limit=limit,
+        chapter_id=chapter_id
+    )
+
+    return results
+
+
 @router.get("/{chapter_id}", response_model=dict)
 async def get_chapter(
     chapter_id: str,
@@ -214,77 +300,113 @@ async def get_chapter(
     return response
 
 
-@router.get("/search", response_model=List[dict])
-async def search_chapters(
-    q: str = Query(..., min_length=2, description="Search query"),
-    limit: int = Query(20, ge=1, le=100, description="Maximum results to return"),
-    chapter_id: Optional[str] = Query(None, description="Limit search to specific chapter"),
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
+@router.get("/{chapter_id}/next", response_model=dict)
+async def get_next_chapter(
+    chapter_id: str,
+    current_user: Optional[User] = Depends(get_optional_user)
 ):
     """
-    Search across chapter content (Grounded Q&A).
+    Get the next chapter in the learning sequence.
 
-    Performs keyword search across all accessible chapters and returns relevant sections.
-    This enables ChatGPT to answer questions using only course material (zero-hallucination).
+    Returns metadata and access information for the chapter that follows
+    the specified chapter_id. Used for navigation and progression through
+    the course.
 
-    Query parameters:
-    - **q**: Search query (minimum 2 characters)
-    - **limit**: Maximum number of results (default 20, max 100)
-    - **chapter_id**: Optional - limit search to specific chapter
+    Args:
+        chapter_id: Current chapter identifier
+        current_user: Optional authenticated user
 
-    Returns search results with:
-    - chapter_id: Which chapter the result is from
-    - chapter_title: Chapter title for context
-    - section_id: Which section contains the match
-    - section_title: Section title for context
-    - snippet: Text excerpt with the matched content
-    - relevance_score: How well it matches the query (higher is better)
-    - match_count: Number of times query terms appear in this section
+    Returns:
+        Next chapter metadata with access status and navigation info
 
-    Access Control:
-    - Only searches chapters the user has access to
-    - Free users: chapters 1-3
-    - Premium users: all chapters 1-6
-
-    Requires authentication.
+    Raises:
+        404: If chapter_id is not found or there is no next chapter
     """
-    # Determine which chapters user has access to
-    accessible_chapters = []
-    for chapter_meta in CHAPTER_METADATA:
-        user_has_access = (
-            chapter_meta["access_tier"] == "free" or
-            current_user.subscription_tier in ("premium", "pro")
+    # Find current chapter index
+    chapter_index = next((i for i, c in enumerate(CHAPTER_METADATA) if c["id"] == chapter_id), -1)
+
+    if chapter_index == -1:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Chapter {chapter_id} not found"
         )
-        if user_has_access:
-            accessible_chapters.append(chapter_meta["id"])
 
-    # If specific chapter requested, verify access
-    if chapter_id:
-        chapter_meta = next((c for c in CHAPTER_METADATA if c["id"] == chapter_id), None)
-        if not chapter_meta:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Chapter {chapter_id} not found"
-            )
-
-        # Check access
-        user_has_access = (
-            chapter_meta["access_tier"] == "free" or
-            current_user.subscription_tier in ("premium", "pro")
+    # Check if there's a next chapter
+    if chapter_index >= len(CHAPTER_METADATA) - 1:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No next chapter after {chapter_id}. This is the last chapter."
         )
-        if not user_has_access:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Chapter {chapter_id} requires premium subscription"
-            )
 
-    # Perform search using search service
-    results = await search_chapters_service(
-        query=q,
-        accessible_chapter_ids=accessible_chapters,
-        limit=limit,
-        chapter_id=chapter_id
+    # Get next chapter metadata
+    next_chapter = CHAPTER_METADATA[chapter_index + 1]
+
+    # Check user access
+    user_tier = current_user.subscription_tier if current_user else "free"
+    user_has_access = (
+        next_chapter["access_tier"] == "free" or
+        user_tier in ("premium", "pro", "team")
     )
 
-    return results
+    return {
+        **next_chapter,
+        "user_has_access": user_has_access,
+        "is_last_chapter": False,
+        "position": chapter_index + 2  # 1-indexed position
+    }
+
+
+@router.get("/{chapter_id}/previous", response_model=dict)
+async def get_previous_chapter(
+    chapter_id: str,
+    current_user: Optional[User] = Depends(get_optional_user)
+):
+    """
+    Get the previous chapter in the learning sequence.
+
+    Returns metadata and access information for the chapter that precedes
+    the specified chapter_id. Used for navigation and progression through
+    the course.
+
+    Args:
+        chapter_id: Current chapter identifier
+        current_user: Optional authenticated user
+
+    Returns:
+        Previous chapter metadata with access status and navigation info
+
+    Raises:
+        404: If chapter_id is not found or there is no previous chapter
+    """
+    # Find current chapter index
+    chapter_index = next((i for i, c in enumerate(CHAPTER_METADATA) if c["id"] == chapter_id), -1)
+
+    if chapter_index == -1:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Chapter {chapter_id} not found"
+        )
+
+    # Check if there's a previous chapter
+    if chapter_index <= 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No previous chapter before {chapter_id}. This is the first chapter."
+        )
+
+    # Get previous chapter metadata
+    previous_chapter = CHAPTER_METADATA[chapter_index - 1]
+
+    # Check user access
+    user_tier = current_user.subscription_tier if current_user else "free"
+    user_has_access = (
+        previous_chapter["access_tier"] == "free" or
+        user_tier in ("premium", "pro", "team")
+    )
+
+    return {
+        **previous_chapter,
+        "user_has_access": user_has_access,
+        "is_first_chapter": False,
+        "position": chapter_index  # 1-indexed position
+    }

@@ -1,18 +1,33 @@
 """
+from app.models.types import UUID as UUIDType, JSON as JSONType
 Note and Note Tag Models
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
+from app.models.types import UUID as UUIDType, JSON as JSONType
 Users can take notes on chapters and sections.
+from app.models.types import UUID as UUIDType, JSON as JSONType
 """
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from datetime import datetime
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from typing import Optional, List
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from uuid import UUID, uuid4
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from sqlalchemy import Column, String, Text, Boolean, ForeignKey, DateTime, Integer
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
+from app.models.types import UUID as UUIDType, JSON as JSONType
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.models.types import UUID as UUIDType, JSON as JSONType
+
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from app.models.base import Base, TimestampMixin
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
 
 class NoteTag(Base, TimestampMixin):
@@ -24,21 +39,21 @@ class NoteTag(Base, TimestampMixin):
 
     # Primary key
     id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         primary_key=True,
         default=uuid4,
     )
 
     # Foreign keys
     note_id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         ForeignKey("notes.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
 
     user_id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
@@ -72,14 +87,14 @@ class Note(Base, TimestampMixin):
 
     # Primary key
     id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         primary_key=True,
         default=uuid4,
     )
 
     # Foreign keys
     user_id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,

@@ -9,10 +9,10 @@ from typing import Optional
 from uuid import UUID, uuid4
 
 from sqlalchemy import Boolean, String, TIMESTAMP, Index
-from sqlalchemy.dialects.postgresql import JSONB, UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base, TimestampMixin
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
 
 class User(Base, TimestampMixin):
@@ -36,7 +36,7 @@ class User(Base, TimestampMixin):
 
     # Primary key
     id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         primary_key=True,
         default=uuid4,
     )
@@ -80,10 +80,9 @@ class User(Base, TimestampMixin):
         server_default="UTC",
     )
     preferences: Mapped[dict] = mapped_column(
-        JSONB,
+        JSONType,
         nullable=False,
         default=dict,
-        server_default="{}",
     )
 
     # Activity tracking

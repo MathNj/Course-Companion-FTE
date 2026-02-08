@@ -131,10 +131,42 @@ async def _fetch_chapter_from_storage(chapter_id: str) -> Optional[Dict[str, Any
                 markdown_content = r2_client.get_markdown_file(matched_chapter['key'])
 
                 if markdown_content:
+                    # Remove the "Chapter X: Title" line from the beginning of content
+                    lines = markdown_content.split('\n')
+                    if lines and lines[0].strip().startswith('Chapter '):
+                        # Remove first line and the following blank line
+                        markdown_content = '\n'.join(lines[2:]) if len(lines) > 1 else markdown_content
+
+                    # Also remove the chapter title if it appears as first line (e.g., "Generative AI Fundamentals/n/Chapter 1_ LLM")
+                    # Get the title from the chapter metadata
+                    r2_title = matched_chapter['name']
+                    transformed_title = r2_title.replace('./', '/n/').replace('_  ', '_ ')
+
+                    # Check if the first line of content matches or contains the title
+                    content_lines = markdown_content.split('\n')
+                    if content_lines:
+                        first_line = content_lines[0].strip()
+                        # Remove title variations from the beginning
+                        if (transformed_title in first_line or
+                            r2_title in first_line or
+                            first_line.startswith('Generative AI Fundamentals') or
+                            first_line.startswith('Chapter')):
+                            # Remove first line and following blank line
+                            markdown_content = '\n'.join(content_lines[2:]) if len(content_lines) > 1 else markdown_content
+                        # Also check for title after Welcome line
+                        elif len(content_lines) > 1 and 'Welcome to' in content_lines[0]:
+                            # Check second line for title
+                            second_line = content_lines[1].strip()
+                            if (transformed_title in second_line or
+                                r2_title in second_line or
+                                'Generative AI Fundamentals' in second_line):
+                                # Remove the second line
+                                markdown_content = '\n'.join([content_lines[0]] + content_lines[2:])
+
                     logger.info(f"Loaded chapter {chapter_id} from R2")
                     return {
                         "chapter_id": chapter_id,
-                        "title": matched_chapter['name'],
+                        "title": transformed_title,
                         "content": markdown_content,
                         "content_type": "text/markdown",
                         "size": matched_chapter['size'],

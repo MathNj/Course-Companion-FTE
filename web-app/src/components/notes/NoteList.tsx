@@ -28,9 +28,11 @@ export default function NoteList({ className = '' }: NoteListProps) {
   const [selectedChapter, setSelectedChapter] = useState<string | null>(null);
   const [expandedNote, setExpandedNote] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
   const { showToast } = useToast();
 
   useEffect(() => {
+    setIsClient(true);
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTag, selectedChapter]);
@@ -227,7 +229,7 @@ export default function NoteList({ className = '' }: NoteListProps) {
                       )}
                     </div>
                     <p className="text-xs text-zinc-500">
-                      {new Date(note.created_at).toLocaleDateString()}
+                      {isClient ? new Date(note.created_at).toLocaleDateString() : '...'}
                       {note.updated_at !== note.created_at && ' • Edited'}
                     </p>
                   </div>

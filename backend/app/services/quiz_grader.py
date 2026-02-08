@@ -227,8 +227,32 @@ def grade_quiz(
         explanation_incorrect = question.get("explanation_incorrect", "")
         points_possible = float(question.get("points", 1.0))
 
+        # Helper function to get option text from ID
+        def get_option_text(option_id: str) -> str:
+            """Convert option ID to option text for display."""
+            if not option_id:
+                return option_id
+            options = question.get("options", [])
+            for opt in options:
+                if opt.get("id") == option_id:
+                    return opt.get("text", option_id)
+            return option_id
+
+        # Helper function to format answer for display
+        def format_answer_for_display(answer: Any, q_type: str) -> str:
+            """Format answer for human-readable display in results."""
+            if answer is None:
+                return "Not answered"
+            if q_type == "true_false":
+                return "True" if answer else "False"
+            if q_type == "multiple_choice":
+                # Option IDs should be converted to text
+                return get_option_text(str(answer))
+            return str(answer)
+
         # Handle missing answer
         if student_answer is None:
+            formatted_correct = format_answer_for_display(correct_answer, question_type)
             grading_results.append(
                 GradingResult(
                     question_id=question_id,
@@ -236,8 +260,8 @@ def grade_quiz(
                     points_earned=0.0,
                     points_possible=points_possible,
                     explanation="No answer provided",
-                    student_answer=None,
-                    correct_answer=correct_answer,
+                    student_answer="Not answered",
+                    correct_answer=formatted_correct,
                 )
             )
             total_points_possible += points_possible
@@ -252,6 +276,9 @@ def grade_quiz(
                 explanation_incorrect,
             )
             points_earned = points * points_possible
+            # Format answers for display (convert option IDs to text)
+            formatted_student = format_answer_for_display(student_answer, question_type)
+            formatted_correct = format_answer_for_display(correct_answer, question_type)
 
         elif question_type == "true_false":
             is_correct, points, explanation = grade_true_false(
@@ -261,6 +288,9 @@ def grade_quiz(
                 explanation_incorrect,
             )
             points_earned = points * points_possible
+            # Format answers for display
+            formatted_student = format_answer_for_display(student_answer, question_type)
+            formatted_correct = format_answer_for_display(correct_answer, question_type)
 
         elif question_type == "short_answer":
             keywords = question.get("keywords", [])
@@ -275,6 +305,9 @@ def grade_quiz(
             )
             # Short answer already returns 0-10 points, normalize to points_possible
             points_earned = (points / 10.0) * points_possible
+            # For short answer, show the actual text
+            formatted_student = str(student_answer)
+            formatted_correct = "See explanation"
 
         else:
             logger.warning(f"Unknown question type: {question_type}")
@@ -285,8 +318,8 @@ def grade_quiz(
                     points_earned=0.0,
                     points_possible=points_possible,
                     explanation=f"Unknown question type: {question_type}",
-                    student_answer=student_answer,
-                    correct_answer=correct_answer,
+                    student_answer=str(student_answer),
+                    correct_answer=format_answer_for_display(correct_answer, question_type),
                 )
             )
             total_points_possible += points_possible
@@ -300,8 +333,8 @@ def grade_quiz(
                 points_earned=points_earned,
                 points_possible=points_possible,
                 explanation=explanation,
-                student_answer=student_answer,
-                correct_answer=correct_answer,
+                student_answer=formatted_student,
+                correct_answer=formatted_correct,
             )
         )
 

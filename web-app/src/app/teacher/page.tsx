@@ -33,60 +33,7 @@ import {
   Clock
 } from 'lucide-react';
 
-// Mock student data for demonstration
-const mockStudents = [
-  {
-    id: 'student-1',
-    email: 'student1@example.com',
-    progress: { completion_percentage: 85, chapters_completed: 5, total_chapters: 6 },
-    streak: { current_streak: 7, longest_streak: 15 },
-    quiz_scores: { 'chapter-1': 92, 'chapter-2': 88, 'chapter-3': 95, 'chapter-4': 78, 'chapter-5': 85 },
-    last_activity: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    premium_usage: { adaptive_paths: 3, assessments: 5 },
-    engagement: { total_time_minutes: 450, sessions: 23, drop_off_chapter: null },
-  },
-  {
-    id: 'student-2',
-    email: 'student2@example.com',
-    progress: { completion_percentage: 60, chapters_completed: 3, total_chapters: 6 },
-    streak: { current_streak: 2, longest_streak: 5 },
-    quiz_scores: { 'chapter-1': 75, 'chapter-2': 82, 'chapter-3': 65 },
-    last_activity: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    premium_usage: { adaptive_paths: 1, assessments: 2 },
-    engagement: { total_time_minutes: 280, sessions: 15, drop_off_chapter: 'chapter-4' },
-  },
-  {
-    id: 'student-3',
-    email: 'student3@example.com',
-    progress: { completion_percentage: 100, chapters_completed: 6, total_chapters: 6 },
-    streak: { current_streak: 12, longest_streak: 20 },
-    quiz_scores: { 'chapter-1': 95, 'chapter-2': 90, 'chapter-3': 88, 'chapter-4': 92, 'chapter-5': 87, 'chapter-6': 94 },
-    last_activity: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-    premium_usage: { adaptive_paths: 5, assessments: 8 },
-    engagement: { total_time_minutes: 680, sessions: 35, drop_off_chapter: null },
-  },
-  {
-    id: 'student-4',
-    email: 'student4@example.com',
-    progress: { completion_percentage: 25, chapters_completed: 1, total_chapters: 6 },
-    streak: { current_streak: 0, longest_streak: 2 },
-    quiz_scores: { 'chapter-1': 55 },
-    last_activity: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    premium_usage: { adaptive_paths: 0, assessments: 1 },
-    engagement: { total_time_minutes: 90, sessions: 5, drop_off_chapter: 'chapter-2' },
-  },
-  {
-    id: 'student-5',
-    email: 'student5@example.com',
-    progress: { completion_percentage: 45, chapters_completed: 2, total_chapters: 6 },
-    streak: { current_streak: 4, longest_streak: 8 },
-    quiz_scores: { 'chapter-1': 68, 'chapter-2': 72 },
-    last_activity: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-    premium_usage: { adaptive_paths: 2, assessments: 3 },
-    engagement: { total_time_minutes: 180, sessions: 12, drop_off_chapter: null },
-  },
-];
-
+// Placeholder topic difficulty data (would come from quiz analytics)
 const topicDifficultyData = [
   { topic: 'Supervised Learning', incorrect_rate: 15, attempts: 120 },
   { topic: 'Unsupervised Learning', incorrect_rate: 28, attempts: 95 },
@@ -108,19 +55,19 @@ export default function TeacherDashboard() {
   const userEmail = typeof window !== 'undefined' ? localStorage.getItem('user_email') : null;
   const isTeacher = userEmail === 'mathnj120@gmail.com' || user?.is_teacher;
 
-  // Fetch dashboard data
-  const { data: dashboard, isLoading, refetch } = useQuery({
-    queryKey: ['teacher-dashboard', refreshKey],
+  // Fetch students data
+  const { data: studentsData, isLoading, refetch } = useQuery({
+    queryKey: ['teacher-students', refreshKey],
     queryFn: async () => {
       try {
         const token = localStorage.getItem('access_token');
-        const response = await api.get('/api/v2/teacher/dashboard', {
+        const response = await api.get('/api/v2/teacher/students', {
           headers: { Authorization: `Bearer ${token}` }
         });
         return response.data;
       } catch (error) {
-        // Return mock data for demo
-        return null;
+        console.error('Failed to fetch student data:', error);
+        return { students: [], total: 0 };
       }
     },
     enabled: !!user && isTeacher,
@@ -163,17 +110,29 @@ export default function TeacherDashboard() {
     );
   }
 
-  // Calculate cohort metrics from mock data
-  const averageCompletion = mockStudents.reduce((sum, s) => sum + s.progress.completion_percentage, 0) / mockStudents.length;
-  const averageQuizScore = Object.values(mockStudents.flatMap(s => Object.entries(s.quiz_scores).map(([_, score]) => score))).reduce((sum, s) => sum + s, 0) /
-    mockStudents.flatMap(s => Object.entries(s.quiz_scores)).length || 0;
-  const activeStudentsWeekly = mockStudents.filter(s => {
+  // Get real students or use empty array if none
+  const realStudents = studentsData?.students || [];
+
+  // Calculate cohort metrics from real data
+  const averageCompletion = realStudents.length > 0
+    ? realStudents.reduce((sum: number, s: any) => sum + s.progress.completion_percentage, 0) / realStudents.length
+    : 0;
+
+  // Calculate average quiz score from real data
+  const allQuizScores = realStudents.flatMap((s: any) =>
+    Object.values(s.quiz_scores).map((q: any) => q.score)
+  );
+  const averageQuizScore = allQuizScores.length > 0
+    ? allQuizScores.reduce((sum: number, score: number) => sum + score, 0) / allQuizScores.length
+    : 0;
+
+  const activeStudentsWeekly = realStudents.filter((s: any) => {
     const daysSinceActivity = (Date.now() - new Date(s.last_activity).getTime()) / (1000 * 60 * 60 * 24);
     return daysSinceActivity <= 7;
   }).length;
 
   // Filter students by search
-  const filteredStudents = mockStudents.filter(student =>
+  const filteredStudents = realStudents.filter((student: any) =>
     student.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
     student.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -184,25 +143,27 @@ export default function TeacherDashboard() {
     .slice(0, 3);
 
   // Calculate engagement metrics
-  const dropOffAnalysis = mockStudents.reduce((acc, student) => {
-    if (student.engagement.drop_off_chapter) {
-      const chapter = student.engagement.drop_off_chapter;
-      acc[chapter] = (acc[chapter] || 0) + 1;
+  const dropOffAnalysis = realStudents.reduce((acc: any, student: any) => {
+    // For now, mark incomplete chapters as potential drop-offs
+    if (student.progress.chapters_completed < student.progress.total_chapters) {
+      // This is a simplified approach - in real data, you'd track actual drop-off points
+      const incompleteChapter = `chapter-${student.progress.chapters_completed + 1}`;
+      acc[incompleteChapter] = (acc[incompleteChapter] || 0) + 1;
     }
     return acc;
   }, {} as Record<string, number>);
 
   // Calculate premium usage
-  const totalAdaptivePaths = mockStudents.reduce((sum, s) => sum + s.premium_usage.adaptive_paths, 0);
-  const totalAssessments = mockStudents.reduce((sum, s) => sum + s.premium_usage.assessments, 0);
+  const totalAdaptivePaths = realStudents.reduce((sum: number, s: any) => sum + (s.premium_usage?.adaptive_paths || 0), 0);
+  const totalAssessments = realStudents.reduce((sum: number, s: any) => sum + (s.premium_usage?.assessments || 0), 0);
 
   // Export student data as CSV
   const handleExportCSV = () => {
-    const headers = ['Student ID', 'Email', 'Completion %', 'Chapters Completed', 'Current Streak', 'Longest Streak', 'Avg Quiz Score', 'Last Activity', 'Total Time (min)', 'Sessions', 'Adaptive Paths', 'Assessments'];
+    const headers = ['Student ID', 'Email', 'Completion %', 'Chapters Completed', 'Current Streak', 'Longest Streak', 'Avg Quiz Score', 'Last Activity', 'Adaptive Paths', 'Assessments'];
 
-    const rows = mockStudents.map(student => {
+    const rows = realStudents.map((student: any) => {
       const quizScores = Object.values(student.quiz_scores);
-      const avgQuiz = quizScores.length > 0 ? (quizScores.reduce((a, b) => a + b, 0) / quizScores.length).toFixed(1) : 'N/A';
+      const avgQuiz = quizScores.length > 0 ? (quizScores.reduce((a: number, b: any) => a + b.score, 0) / quizScores.length).toFixed(1) : 'N/A';
 
       return [
         student.id,
@@ -213,10 +174,8 @@ export default function TeacherDashboard() {
         student.streak.longest_streak,
         avgQuiz,
         new Date(student.last_activity).toLocaleDateString(),
-        student.engagement.total_time_minutes,
-        student.engagement.sessions,
-        student.premium_usage.adaptive_paths,
-        student.premium_usage.assessments,
+        student.premium_usage?.adaptive_paths || 0,
+        student.premium_usage?.assessments || 0,
       ].join(',');
     });
 
@@ -296,7 +255,7 @@ export default function TeacherDashboard() {
                 <Flame className="w-8 h-8 text-orange-400" />
                 <span className="text-xs text-zinc-500">Last 7 days</span>
               </div>
-              <h3 className="text-3xl font-bold text-white mb-2">{activeStudentsWeekly}/{mockStudents.length}</h3>
+              <h3 className="text-3xl font-bold text-white mb-2">{activeStudentsWeekly}/{realStudents.length}</h3>
               <p className="text-sm text-zinc-400">Active students weekly</p>
             </div>
 
@@ -306,7 +265,7 @@ export default function TeacherDashboard() {
                 <GraduationCap className="w-8 h-8 text-blue-400" />
                 <span className="text-xs text-zinc-500">Total</span>
               </div>
-              <h3 className="text-3xl font-bold text-white mb-2">{mockStudents.length}</h3>
+              <h3 className="text-3xl font-bold text-white mb-2">{realStudents.length}</h3>
               <p className="text-sm text-zinc-400">Total students</p>
             </div>
           </div>
@@ -353,7 +312,7 @@ export default function TeacherDashboard() {
                 <tbody>
                   {filteredStudents.map((student) => {
                     const quizScores = Object.values(student.quiz_scores);
-                    const avgQuiz = quizScores.length > 0 ? (quizScores.reduce((a, b) => a + b, 0) / quizScores.length).toFixed(1) : 'N/A';
+                    const avgQuiz = quizScores.length > 0 ? (quizScores.reduce((a: number, b: any) => a + b.score, 0) / quizScores.length).toFixed(1) : 'N/A';
                     const daysSinceActivity = Math.floor((Date.now() - new Date(student.last_activity).getTime()) / (1000 * 60 * 60 * 24));
                     const isExpanded = expandedStudent === student.id;
 
@@ -436,13 +395,13 @@ export default function TeacherDashboard() {
                                       Quiz Scores
                                     </h4>
                                     <div className="space-y-2">
-                                      {Object.entries(student.quiz_scores).map(([chapter, score]) => (
+                                      {Object.entries(student.quiz_scores).map(([chapter, quizData]) => (
                                         <div key={chapter} className="flex items-center justify-between text-sm">
                                           <span className="text-zinc-400">{chapter.split('-')[1]}</span>
                                           <span className={`font-semibold ${
-                                            score >= 80 ? 'text-emerald-400' : score >= 60 ? 'text-yellow-400' : 'text-red-400'
+                                            quizData.score >= 80 ? 'text-emerald-400' : quizData.score >= 60 ? 'text-yellow-400' : 'text-red-400'
                                           }`}>
-                                            {score}%
+                                            {quizData.score}%
                                           </span>
                                         </div>
                                       ))}
@@ -458,13 +417,13 @@ export default function TeacherDashboard() {
                                     <div className="space-y-2 text-sm">
                                       <div className="flex justify-between">
                                         <span className="text-zinc-400">Total Time</span>
-                                        <span className="text-white">{student.engagement.total_time_minutes} min</span>
+                                        <span className="text-white">{student.engagement?.total_time_minutes || 0} min</span>
                                       </div>
                                       <div className="flex justify-between">
                                         <span className="text-zinc-400">Sessions</span>
-                                        <span className="text-white">{student.engagement.sessions}</span>
+                                        <span className="text-white">{student.engagement?.sessions || 0}</span>
                                       </div>
-                                      {student.engagement.drop_off_chapter && (
+                                      {student.engagement?.drop_off_chapter && (
                                         <div className="flex justify-between">
                                           <span className="text-zinc-400">Drop-off</span>
                                           <span className="text-orange-400">{student.engagement.drop_off_chapter.split('-')[1]}</span>
@@ -482,11 +441,11 @@ export default function TeacherDashboard() {
                                     <div className="space-y-2 text-sm">
                                       <div className="flex justify-between">
                                         <span className="text-zinc-400">Adaptive Paths</span>
-                                        <span className="text-white">{student.premium_usage.adaptive_paths}</span>
+                                        <span className="text-white">{student.premium_usage?.adaptive_paths || 0}</span>
                                       </div>
                                       <div className="flex justify-between">
                                         <span className="text-zinc-400">Assessments</span>
-                                        <span className="text-white">{student.premium_usage.assessments}</span>
+                                        <span className="text-white">{student.premium_usage?.assessments || 0}</span>
                                       </div>
                                     </div>
                                   </div>
@@ -595,7 +554,7 @@ export default function TeacherDashboard() {
                 </div>
                 <div className="text-center p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
                   <p className="text-2xl font-bold text-yellow-400">
-                    {mockStudents.filter(s => {
+                    {realStudents.filter((s: any) => {
                       const days = (Date.now() - new Date(s.last_activity).getTime()) / (1000 * 60 * 60 * 24);
                       return days > 7 && days <= 30;
                     }).length}
@@ -604,7 +563,7 @@ export default function TeacherDashboard() {
                 </div>
                 <div className="text-center p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
                   <p className="text-2xl font-bold text-red-400">
-                    {mockStudents.filter(s => {
+                    {realStudents.filter((s: any) => {
                       const days = (Date.now() - new Date(s.last_activity).getTime()) / (1000 * 60 * 60 * 24);
                       return days > 30;
                     }).length}
@@ -646,13 +605,13 @@ export default function TeacherDashboard() {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-zinc-400">Students using</span>
                   <span className="text-white font-semibold">
-                    {mockStudents.filter(s => s.premium_usage.adaptive_paths > 0).length}
+                    {realStudents.filter((s: any) => (s.premium_usage?.adaptive_paths || 0) > 0).length}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-zinc-400">Avg per student</span>
                   <span className="text-white font-semibold">
-                    {(totalAdaptivePaths / mockStudents.length).toFixed(1)}
+                    {(totalAdaptivePaths / realStudents.length).toFixed(1)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
@@ -684,13 +643,13 @@ export default function TeacherDashboard() {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-zinc-400">Students using</span>
                   <span className="text-white font-semibold">
-                    {mockStudents.filter(s => s.premium_usage.assessments > 0).length}
+                    {realStudents.filter((s: any) => (s.premium_usage?.assessments || 0) > 0).length}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-zinc-400">Avg per student</span>
                   <span className="text-white font-semibold">
-                    {(totalAssessments / mockStudents.length).toFixed(1)}
+                    {(totalAssessments / realStudents.length).toFixed(1)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">

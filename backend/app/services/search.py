@@ -113,8 +113,10 @@ def _search_chapter_sections(
     """
     Search through all sections of a chapter.
 
+    Handles both structured chapters (with sections) and raw markdown content (from R2).
+
     Args:
-        chapter_content: Chapter JSON with sections
+        chapter_content: Chapter JSON with sections OR raw markdown content
         query_terms: Normalized search terms
         query_original: Original query for snippet highlighting
 
@@ -122,19 +124,57 @@ def _search_chapter_sections(
         List of search results from this chapter
     """
     results = []
-    chapter_id = chapter_content.get("id")
+    chapter_id = chapter_content.get("id", "unknown")
     chapter_title = chapter_content.get("title", "Unknown Chapter")
 
-    sections = chapter_content.get("sections", [])
+    # Check if chapter has structured sections
+    if "sections" in chapter_content and chapter_content["sections"]:
+        sections = chapter_content.get("sections", [])
 
-    for section in sections:
-        section_id = section.get("id")
-        section_title = section.get("title", "")
-        section_content = section.get("content", "")
+        for section in sections:
+            section_id = section.get("id")
+            section_title = section.get("title", "")
+            section_content = section.get("content", "")
 
-        # Search in section content
+            # Search in section content
+            matches = _find_matches_in_text(
+                text=section_content,
+                query_terms=query_terms
+            )
+
+            if matches:
+                # Calculate relevance score
+                relevance_score = _calculate_relevance_score(
+                    matches=matches,
+                    query_terms=query_terms,
+                    text=section_content
+                )
+
+                # Extract snippet with highlighted match
+                snippet = _extract_snippet(
+                    text=section_content,
+                    matches=matches,
+                    query_original=query_original,
+                    max_length=300
+                )
+
+                results.append({
+                    "chapter_id": chapter_id,
+                    "chapter_title": chapter_title,
+                    "section_id": section_id,
+                    "section_title": section_title,
+                    "snippet": snippet,
+                    "relevance_score": relevance_score,
+                    "match_count": len(matches)
+                })
+
+    # Check if chapter has raw markdown content (from R2)
+    elif "content" in chapter_content and chapter_content["content"]:
+        raw_content = chapter_content.get("content", "")
+
+        # Search in raw markdown content
         matches = _find_matches_in_text(
-            text=section_content,
+            text=raw_content,
             query_terms=query_terms
         )
 
@@ -143,12 +183,12 @@ def _search_chapter_sections(
             relevance_score = _calculate_relevance_score(
                 matches=matches,
                 query_terms=query_terms,
-                text=section_content
+                text=raw_content
             )
 
             # Extract snippet with highlighted match
             snippet = _extract_snippet(
-                text=section_content,
+                text=raw_content,
                 matches=matches,
                 query_original=query_original,
                 max_length=300
@@ -157,8 +197,8 @@ def _search_chapter_sections(
             results.append({
                 "chapter_id": chapter_id,
                 "chapter_title": chapter_title,
-                "section_id": section_id,
-                "section_title": section_title,
+                "section_id": "main-content",
+                "section_title": chapter_title,
                 "snippet": snippet,
                 "relevance_score": relevance_score,
                 "match_count": len(matches)

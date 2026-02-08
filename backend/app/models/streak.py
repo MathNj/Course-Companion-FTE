@@ -1,18 +1,33 @@
 """
+from app.models.types import UUID as UUIDType, JSON as JSONType
 Streak Model
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
+from app.models.types import UUID as UUIDType, JSON as JSONType
 Tracks student daily learning streaks.
+from app.models.types import UUID as UUIDType, JSON as JSONType
 """
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from datetime import datetime, date
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from typing import Optional
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from uuid import UUID, uuid4
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from sqlalchemy import String, DATE, Integer, Boolean, ForeignKey, Index
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
+from app.models.types import UUID as UUIDType, JSON as JSONType
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.models.types import UUID as UUIDType, JSON as JSONType
+
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from app.models.base import Base, TimestampMixin
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
 
 class Streak(Base, TimestampMixin):
@@ -35,14 +50,14 @@ class Streak(Base, TimestampMixin):
 
     # Primary key
     id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         primary_key=True,
         default=uuid4,
     )
 
     # Foreign keys (one-to-one with User)
     user_id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         unique=True,  # One streak per user

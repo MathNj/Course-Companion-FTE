@@ -150,10 +150,12 @@ from app.api.v2.adaptive import router as adaptive_router
 from app.api.v2.teacher import router as teacher_router
 from app.api.v2.usage import router as usage_router
 from app.api.v2.assessments import router as assessments_router
+from app.api.v2.access import router as access_router
 app.include_router(adaptive_router, prefix="/api/v2")
 app.include_router(teacher_router, prefix="/api/v2")
 app.include_router(usage_router, prefix="/api/v2")
 app.include_router(assessments_router, prefix="/api/v2")
+app.include_router(access_router, prefix="/api/v2")
 
 
 # Global exception handler

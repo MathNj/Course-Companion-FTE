@@ -1,18 +1,33 @@
 """
+from app.models.types import UUID as UUIDType, JSON as JSONType
 Bookmark and Bookmark Folder Models
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
+from app.models.types import UUID as UUIDType, JSON as JSONType
 Users can bookmark chapters and sections for quick access.
+from app.models.types import UUID as UUIDType, JSON as JSONType
 """
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from datetime import datetime
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from typing import Optional, List
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from uuid import UUID, uuid4
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from sqlalchemy import Column, String, Text, Boolean, ForeignKey, DateTime, Integer
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID, JSONB
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
+from app.models.types import UUID as UUIDType, JSON as JSONType
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.models.types import UUID as UUIDType, JSON as JSONType
+
+from app.models.types import UUID as UUIDType, JSON as JSONType
 from app.models.base import Base, TimestampMixin
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
 
 class BookmarkFolder(Base, TimestampMixin):
@@ -24,14 +39,14 @@ class BookmarkFolder(Base, TimestampMixin):
 
     # Primary key
     id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         primary_key=True,
         default=uuid4,
     )
 
     # Foreign key to user
     user_id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
@@ -61,21 +76,21 @@ class Bookmark(Base, TimestampMixin):
 
     # Primary key
     id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         primary_key=True,
         default=uuid4,
     )
 
     # Foreign keys
     user_id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
 
     folder_id: Mapped[Optional[UUID]] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         ForeignKey("bookmark_folders.id", ondelete="SET NULL"),
         nullable=True,
         index=True,

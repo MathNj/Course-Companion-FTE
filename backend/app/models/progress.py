@@ -3,16 +3,15 @@ Progress Tracking Models
 
 Tracks student progress through course content.
 """
-
 from datetime import datetime
 from typing import Optional
 from uuid import UUID, uuid4
 
 from sqlalchemy import String, TIMESTAMP, Integer, Boolean, ForeignKey, Index
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base, TimestampMixin
+from app.models.types import UUID as UUIDType, JSON as JSONType
 
 
 class ChapterProgress(Base, TimestampMixin):
@@ -35,14 +34,14 @@ class ChapterProgress(Base, TimestampMixin):
 
     # Primary key
     id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         primary_key=True,
         default=uuid4,
     )
 
     # Foreign keys
     user_id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+        UUIDType,
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,

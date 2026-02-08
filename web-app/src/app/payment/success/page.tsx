@@ -17,7 +17,7 @@ function PaymentSuccessContent() {
     if (user) {
       // In production, this would fetch fresh user data from API
       // For now, we'll update the local state
-      setUser({ ...user, subscription_type: 'premium' });
+      setUser({ ...user, subscription_tier: 'premium' });
     }
 
     // Redirect to dashboard after 3 seconds

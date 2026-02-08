@@ -16,6 +16,13 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+
+  /* Improve text rendering */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
 }
 
 @layer components {
@@ -305,6 +312,23 @@
   @apply bg-zinc-700;
 }
 
+/* Custom Scrollbar for Quiz Content */
+.quiz-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.quiz-content::-webkit-scrollbar-track {
+  @apply bg-zinc-900;
+}
+
+.quiz-content::-webkit-scrollbar-thumb {
+  @apply bg-zinc-700 rounded-full;
+}
+
+.quiz-content::-webkit-scrollbar-thumb:hover {
+  @apply bg-zinc-600;
+}
+
 /* Smooth Scroll */
 html {
   scroll-behavior: smooth;
@@ -322,6 +346,363 @@ html {
 
 .prose code {
   @apply text-emerald-400;
+}
+
+/* Syntax Highlighting - Dark Theme */
+.hljs {
+  background: #09090b;
+  color: #e4e4e7;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #71717a;
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: #34d399;
+  font-weight: bold;
+}
+
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag .hljs-attr {
+  color: #f472b6;
+}
+
+.hljs-string,
+.hljs-doctag {
+  color: #fbbf24;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+  color: #60a5fa;
+  font-weight: bold;
+}
+
+.hljs-type,
+.hljs-class .hljs-title {
+  color: #34d399;
+}
+
+.hljs-tag,
+.hljs-name,
+.hljs-attribute {
+  color: #e4e4e7;
+  font-weight: normal;
+}
+
+.hljs-regexp,
+.hljs-link {
+  color: #fbbf24;
+}
+
+.hljs-symbol,
+.hljs-bullet {
+  color: #f472b6;
+}
+
+.hljs-built_in,
+.hljs-builtin-name {
+  color: #60a5fa;
+}
+
+.hljs-meta {
+  color: #71717a;
+}
+
+.hljs-deletion {
+  background: #7f1d1d;
+}
+
+.hljs-addition {
+  background: #14532d;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+/* Prose/Typography Styling for Markdown Content */
+.prose {
+  --tw-prose-body: theme('colors.zinc.300');
+  --tw-prose-headings: theme('colors.white');
+  --tw-prose-lead: theme('colors.zinc.400');
+  --tw-prose-links: theme('colors.emerald.400');
+  --tw-prose-bold: theme('colors.white');
+  --tw-prose-counters: theme('colors.zinc.500');
+  --tw-prose-bullets: theme('colors.zinc.600');
+  --tw-prose-hr: theme('colors.zinc.800');
+  --tw-prose-quotes: theme('colors.zinc.400');
+  --tw-prose-quote-borders: theme('colors.emerald.500');
+  --tw-prose-code: theme('colors.emerald.400');
+  --tw-prose-pre-code: theme('colors.zinc.300');
+  --tw-prose-pre-bg: theme('colors.zinc.950');
+  --tw-prose-th-borders: theme('colors.zinc.700');
+  --tw-prose-td-borders: theme('colors.zinc.800');
+  --tw-prose-invert-body: theme('colors.zinc.300');
+  --tw-prose-invert-headings: theme('colors.white');
+  --tw-prose-invert-lead: theme('colors.zinc.400');
+  --tw-prose-invert-links: theme('colors.emerald.400');
+  --tw-prose-invert-bold: theme('colors.white');
+  --tw-prose-invert-counters: theme('colors.zinc.500');
+  --tw-prose-invert-bullets: theme('colors.zinc.600');
+  --tw-prose-invert-hr: theme('colors.zinc.800');
+  --tw-prose-invert-quotes: theme('colors.zinc.400');
+  --tw-prose-invert-quote-borders: theme('colors.emerald.500');
+  --tw-prose-invert-code: theme('colors.emerald.400');
+  --tw-prose-invert-pre-code: theme('colors.zinc.300');
+  --tw-prose-invert-pre-bg: theme('colors.zinc.950');
+  --tw-prose-invert-th-borders: theme('colors.zinc.700');
+  --tw-prose-invert-td-borders: theme('colors.zinc.800');
+}
+
+/* Enhanced Chapter Content Styling */
+.chapter-content {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1rem; /* Base font size - body text */
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.chapter-content p {
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+  text-align: left;
+  color: rgb(212 212 216);
+  font-weight: 400;
+  font-size: 1rem; /* Explicit base size */
+}
+
+.chapter-content h1,
+.chapter-content h2,
+.chapter-content h3,
+.chapter-content h4,
+.chapter-content h5,
+.chapter-content h6 {
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: rgb(255 255 255);
+  clear: both;
+}
+
+/* Much larger heading sizes for clear distinction */
+.chapter-content h1 {
+  font-size: 2.5rem; /* 40px - Main chapter title */
+  margin-top: 3rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgb(63 63 70);
+}
+
+.chapter-content h2 {
+  font-size: 2rem; /* 32px - Section headers */
+  margin-top: 2.5rem;
+}
+
+.chapter-content h3 {
+  font-size: 1.625rem; /* 26px - Subsection headers */
+  margin-top: 2rem;
+}
+
+.chapter-content h4 {
+  font-size: 1.375rem; /* 22px - Minor headers */
+  margin-top: 1.5rem;
+}
+
+.chapter-content h5 {
+  font-size: 1.125rem; /* 18px - Small headers */
+  margin-top: 1.25rem;
+}
+
+.chapter-content h6 {
+  font-size: 1rem; /* 16px - Smallest headers, same as body */
+  margin-top: 1rem;
+  color: rgb(161 161 170);
+}
+
+.chapter-content ul,
+.chapter-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+  font-size: 1rem; /* Same as body text */
+}
+
+.chapter-content ul {
+  list-style-type: disc;
+}
+
+.chapter-content ol {
+  list-style-type: decimal;
+}
+
+.chapter-content li {
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
+  color: rgb(212 212 216);
+  padding-left: 0.5rem;
+  font-size: 1rem; /* Same as body text */
+}
+
+.chapter-content li > ul {
+  margin-top: 0.5rem;
+}
+
+.chapter-content code {
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', 'Droid Sans Mono', 'Source Code Pro', 'Courier New', monospace;
+  font-size: 0.875rem; /* Slightly smaller than body */
+  background-color: rgb(39 39 42);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  border: 1px solid rgb(63 63 70);
+}
+
+.chapter-content pre {
+  margin: 1.5rem 0;
+  line-height: 1.6;
+  background-color: rgb(9 9 11);
+  border: 1px solid rgb(39 39 42);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  font-size: 0.875rem; /* Smaller for code blocks */
+}
+
+.chapter-content pre code {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.chapter-content blockquote {
+  margin: 1.5rem 0;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid rgb(16 185 129);
+  background-color: rgb(24 24 27 / 0.5);
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: rgb(212 212 216);
+  font-style: italic;
+  line-height: 1.7;
+  font-size: 1rem; /* Same as body text */
+}
+
+.chapter-content a {
+  color: rgb(52 211 153);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgb(52 211 153 / 0.3);
+  transition: text-decoration-color 0.2s ease;
+}
+
+.chapter-content a:hover {
+  text-decoration-color: rgb(52 211 153);
+}
+
+.chapter-content table {
+  margin: 1.5rem 0;
+  font-size: 0.875rem; /* Slightly smaller than body */
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid rgb(63 63 70);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.chapter-content thead {
+  background-color: rgb(24 24 27);
+}
+
+.chapter-content th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: rgb(228 228 231);
+  border-bottom: 1px solid rgb(63 63 70);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.chapter-content td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgb(39 39 42);
+  color: rgb(212 212 216);
+}
+
+.chapter-content tr:last-child td {
+  border-bottom: none;
+}
+
+.chapter-content tr:hover {
+  background-color: rgb(24 24 27 / 0.5);
+}
+
+.chapter-content img {
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.chapter-content strong {
+  font-weight: 700;
+  color: rgb(255 255 255);
+}
+
+.chapter-content em {
+  font-style: italic;
+  color: rgb(228 228 231);
+}
+
+.chapter-content hr {
+  border: none;
+  border-top: 1px solid rgb(63 63 70);
+  margin: 2rem 0;
+}
+
+.chapter-content sup {
+  font-size: 0.75em;
+  vertical-align: super;
+  color: rgb(161 161 170);
+}
+
+.chapter-content sub {
+  font-size: 0.75em;
+  vertical-align: sub;
+  color: rgb(161 161 170);
+}
+
+/* Clean up extra whitespace and special characters */
+.chapter-content * {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Prevent orphans and widows in text */
+.chapter-content p {
+  orphans: 3;
+  widows: 3;
 }
 
 /* Interactive Elements */

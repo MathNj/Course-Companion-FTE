@@ -52,11 +52,17 @@ function ChapterCard({ chapter, index }: { chapter: Chapter; index: number }) {
         <div className="mb-4 flex items-center gap-4 text-sm text-zinc-500">
           <div className="flex items-center gap-1.5 group-hover:text-zinc-400 transition-colors duration-300">
             <Clock className="h-4 w-4" />
-            <span>{formatTime(chapter.estimated_time_minutes)}</span>
+            <span>{chapter.estimated_time}</span>
           </div>
           <div className="flex items-center gap-1.5 group-hover:text-zinc-400 transition-colors duration-300">
             <BookOpen className="h-4 w-4" />
-            <span>{chapter.sections.length} sections</span>
+            <span>
+              {chapter.sections && chapter.sections.length > 0
+                ? `${chapter.sections.length} sections`
+                : chapter.content
+                ? 'Full chapter'
+                : 'No content'}
+            </span>
           </div>
         </div>
 
@@ -64,12 +70,12 @@ function ChapterCard({ chapter, index }: { chapter: Chapter; index: number }) {
         <div className="mb-4">
           <span
             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-all duration-300
-              ${chapter.difficulty_level === 'beginner' ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20' : ''}
-              ${chapter.difficulty_level === 'intermediate' ? 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20' : ''}
-              ${chapter.difficulty_level === 'advanced' ? 'bg-purple-500/10 text-purple-400 hover:bg-purple-500/20' : ''}
+              ${chapter.difficulty === 'beginner' ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20' : ''}
+              ${chapter.difficulty === 'intermediate' ? 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20' : ''}
+              ${chapter.difficulty === 'advanced' ? 'bg-purple-500/10 text-purple-400 hover:bg-purple-500/20' : ''}
             `}
           >
-            {chapter.difficulty_level}
+            {chapter.difficulty}
           </span>
         </div>
 

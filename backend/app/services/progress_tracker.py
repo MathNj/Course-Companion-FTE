@@ -331,8 +331,47 @@ async def get_progress_summary(
     )
     total_quiz_attempts = result.scalar() or 0
 
+    # Get all quiz attempts to calculate scores per chapter
+    # Order by attempt_number DESC to get the LATEST attempt first
+    result = await db.execute(
+        select(QuizAttempt)
+        .where(QuizAttempt.user_id == user_id)
+        .order_by(QuizAttempt.attempt_number.desc())
+    )
+    quiz_attempts = result.scalars().all()
+
+    # Build quiz_scores dict with LATEST score per chapter (most recent attempt)
+    quiz_scores = {}
+    quiz_attempts_by_chapter = {}  # Track attempts by chapter
+
+    for attempt in quiz_attempts:
+        chapter_id = attempt.chapter_id
+
+        # Group attempts by chapter
+        if chapter_id not in quiz_attempts_by_chapter:
+            quiz_attempts_by_chapter[chapter_id] = []
+        quiz_attempts_by_chapter[chapter_id].append(attempt)
+
+        # Store the LATEST score (first one since ordered by attempt_number desc)
+        if chapter_id not in quiz_scores:
+            quiz_scores[chapter_id] = attempt.score_percentage
+
+    # Add recent quiz attempts for display
+    recent_quiz_attempts = []
+    for attempt in quiz_attempts[:5]:  # Last 5 attempts
+        recent_quiz_attempts.append({
+            "quiz_id": attempt.quiz_id,
+            "chapter_id": attempt.chapter_id,
+            "score_percentage": attempt.score_percentage,
+            "passed": attempt.passed,
+            "attempt_number": attempt.attempt_number,
+            "submitted_at": attempt.completed_at.isoformat() if attempt.completed_at else None,
+        })
+
     return {
         **completion_stats,
+        "quiz_scores": quiz_scores,
+        "recent_quiz_attempts": recent_quiz_attempts,
         "chapters": [
             {
                 "chapter_id": p.chapter_id,
@@ -344,6 +383,15 @@ async def get_progress_summary(
             }
             for p in chapter_progress
         ],
+        # Flatten streak info for frontend compatibility
+        "current_streak": streak_info["current_streak"],
+        "longest_streak": streak_info["longest_streak"],
+        "total_active_days": streak_info["total_active_days"],
+        "last_activity_date": streak_info["last_activity_date"],
+        # Add flattened completion percentage
+        "completion_percentage": completion_stats["overall_completion_percentage"],
+        "chapters_completed": completion_stats["completed_chapters"],
+        # Keep nested versions for detailed views
         "streak": streak_info,
         "milestones": milestone_info,
         "quiz_stats": {
@@ -351,6 +399,18 @@ async def get_progress_summary(
             "quizzes_passed": quizzes_passed,
             "pass_rate": int((quizzes_passed / total_quiz_attempts * 100)) if total_quiz_attempts > 0 else 0,
         },
+        # Frontend expects chapter_progress (alias for chapters)
+        "chapter_progress": [
+            {
+                "chapter_id": p.chapter_id,
+                "completion_status": "completed" if p.is_completed else "in_progress" if p.is_in_progress else "not_started",
+                "completion_percent": p.completion_percentage,
+                "quiz_score": quiz_scores.get(p.chapter_id),
+                "time_spent_minutes": p.time_spent_seconds // 60,
+                "last_accessed": (p.completed_at or p.started_at).isoformat() if (p.completed_at or p.started_at) else None,
+            }
+            for p in chapter_progress
+        ],
     }
 
 

@@ -31,6 +31,7 @@ const STORAGE_KEYS = {
 
 export function AIChat({ chapter, isOpen = true, onClose }: AIChatProps) {
   const { user } = useStore();
+  const [isClient, setIsClient] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => {
     // Load messages from localStorage on mount
     if (typeof window !== 'undefined') {
@@ -104,6 +105,12 @@ What would you like to learn about?`,
     return 'en';
   });
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Set isClient to true after mount
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const recognitionRef = useRef<any>(null);
   const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
 
@@ -641,7 +648,7 @@ Is there anything specific about ${context.en} you'd like to explore further?`,
                     )}
                   </div>
                   <span className="text-xs text-zinc-500 mt-1 block">
-                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {isClient ? message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                   </span>
                 </div>
               </motion.div>

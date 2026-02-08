@@ -27,7 +27,7 @@ export const useStore = create<AppState>()(
       isLoading: false,
       isPremium: false,
       showUpgradeModal: false,
-      setUser: (user) => set({ user, isPremium: user?.subscription_type === 'premium' }),
+      setUser: (user) => set({ user, isPremium: user?.subscription_tier === 'premium' || user?.subscription_tier === 'pro' || user?.subscription_tier === 'team' }),
       setProgress: (progress) => set({ progress }),
       setCurrentChapter: (chapter) => set({ currentChapter: chapter }),
       setLoading: (isLoading) => set({ isLoading }),

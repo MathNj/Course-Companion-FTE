@@ -49,7 +49,7 @@ export function Header() {
                 </div>
               )}
 
-              {/* Progress Dashboard Link */}
+              {/* Student Dashboard Link */}
               <Link href="/dashboard">
                 <Button
                   variant="ghost"
@@ -57,7 +57,7 @@ export function Header() {
                   className="text-zinc-400 hover:text-white hover:scale-105 active:scale-95 transition-all duration-300"
                 >
                   <TrendingUp className="h-4 w-4 mr-2" />
-                  Progress
+                  Student
                 </Button>
               </Link>
 
@@ -74,7 +74,7 @@ export function Header() {
               </Link>
 
               {/* Teacher Dashboard Link */}
-              <Link href="/admin">
+              <Link href="/teacher">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -89,7 +89,7 @@ export function Header() {
               <div className="flex items-center gap-3">
                 <div className="hidden sm:block text-right">
                   <p className="text-sm font-medium text-white">{user.email}</p>
-                  <p className="text-xs text-zinc-400 capitalize">{user.subscription_type}</p>
+                  <p className="text-xs text-zinc-400 capitalize">{user.subscription_tier}</p>
                 </div>
                 <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center hover:scale-110 transition-transform duration-300 cursor-pointer ring-2 ring-transparent hover:ring-emerald-500/50">
                   <User className="h-5 w-5 text-white" />
@@ -156,16 +156,16 @@ export function Header() {
                     </div>
                   )}
 
-                  {/* Progress Dashboard Link */}
+                  {/* Student Dashboard Link */}
                   <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
                     <Button variant="ghost" size="sm" className="justify-start w-full">
                       <TrendingUp className="h-4 w-4 mr-2" />
-                      Progress
+                      Student
                     </Button>
                   </Link>
 
                   {/* Teacher Dashboard Link */}
-                  <Link href="/admin" onClick={() => setMobileMenuOpen(false)}>
+                  <Link href="/teacher" onClick={() => setMobileMenuOpen(false)}>
                     <Button variant="ghost" size="sm" className="justify-start w-full">
                       <BarChart3 className="h-4 w-4 mr-2" />
                       Teacher
@@ -179,7 +179,7 @@ export function Header() {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-white">{user.email}</p>
-                      <p className="text-xs text-zinc-400 capitalize">{user.subscription_type}</p>
+                      <p className="text-xs text-zinc-400 capitalize">{user.subscription_tier}</p>
                     </div>
                   </div>
 

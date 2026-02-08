@@ -16,7 +16,7 @@ interface AIAssistantProps {
 
 export function AIAssistant({ chapter, quiz }: AIAssistantProps) {
   const { user, setShowUpgradeModal } = useStore();
-  const isPremium = user?.subscription_type === 'premium';
+  const isPremium = user?.subscription_tier === 'premium';
   const [showChat, setShowChat] = useState(false);
 
   return (
@@ -101,15 +101,21 @@ export function AIAssistant({ chapter, quiz }: AIAssistantProps) {
         <CardContent className="space-y-3 text-sm">
           <div className="flex justify-between">
             <span className="text-zinc-400">Difficulty</span>
-            <span className="text-white capitalize">{chapter.difficulty_level}</span>
+            <span className="text-white capitalize">{chapter.difficulty}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-zinc-400">Duration</span>
-            <span className="text-white">{chapter.estimated_time_minutes} min</span>
+            <span className="text-white">{chapter.estimated_time}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-zinc-400">Sections</span>
-            <span className="text-white">{chapter.sections.length}</span>
+            <span className="text-zinc-400">Content</span>
+            <span className="text-white">
+              {chapter.sections && chapter.sections.length > 0
+                ? `${chapter.sections.length} sections`
+                : chapter.content
+                ? 'Full chapter'
+                : 'No content'}
+            </span>
           </div>
           <div className="flex justify-between">
             <span className="text-zinc-400">Access</span>

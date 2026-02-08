@@ -90,7 +90,7 @@ class TestAssessmentGradingPerformance:
 
         # TODO: Implement full end-to-end test with:
         # 1. Submit open-ended answer
-        2. LLM grading process
+        # 2. LLM grading process
         # 3. Feedback retrieval
 
 

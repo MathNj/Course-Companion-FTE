@@ -9,17 +9,18 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc
 
 from app.database import get_db
-from app.dependencies import get_current_user, get_optional_user
+from app.dependencies import get_current_user
 from app.models.user import User
 from app.models.quiz import QuizAttempt
 from app.models.progress import ChapterProgress
 from app.services.content import get_quiz_with_cache
 from app.services.quiz_grader import grade_quiz
+from app.services.progress_tracker import update_streak
 from app.schemas.quiz import QuizAttemptCreate, QuizAttemptResponse
 
 logger = logging.getLogger(__name__)
@@ -89,7 +90,7 @@ QUIZ_METADATA = [
 @router.get("/{quiz_id}", response_model=Dict[str, Any])
 async def get_quiz(
     quiz_id: str,
-    current_user: Optional[User] = Depends(get_optional_user),
+    request: Request,
     db: AsyncSession = Depends(get_db),
 ):
     """
@@ -99,6 +100,25 @@ async def get_quiz(
     Students must submit answers to get graded results.
     Unauthenticated users can access free tier quizzes (chapters 1-3).
     """
+    from app.utils.auth import verify_token
+
+    # Manually get optional user from request
+    current_user = None
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        try:
+            token = auth_header.split(" ")[1]
+            payload = verify_token(token, token_type="access")
+            if payload and payload.get("sub"):
+                from uuid import UUID
+                user_id = UUID(payload["sub"])
+                result = await db.execute(
+                    select(User).where(User.id == user_id)
+                )
+                current_user = result.scalar_one_or_none()
+        except:
+            current_user = None
+
     # Find quiz metadata
     quiz_meta = next((q for q in QUIZ_METADATA if q["id"] == quiz_id), None)
 
@@ -162,11 +182,11 @@ async def get_quiz(
     }
 
 
-@router.post("/{quiz_id}/submit", response_model=Dict[str, Any])
+@router.post("/{quiz_id}/submit", response_model=Dict[str, Any], openapi_extra={"security": []})
 async def submit_quiz(
     quiz_id: str,
     submission: QuizAttemptCreate,
-    current_user: User = Depends(get_current_user),
+    request: Request,
     db: AsyncSession = Depends(get_db),
 ):
     """
@@ -180,6 +200,25 @@ async def submit_quiz(
     5. Update ChapterProgress if quiz passed
     6. Return graded results with explanations
     """
+    from app.utils.auth import verify_token
+
+    # Manually get optional user from request
+    current_user = None
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        try:
+            token = auth_header.split(" ")[1]
+            payload = verify_token(token, token_type="access")
+            if payload and payload.get("sub"):
+                from uuid import UUID
+                user_id = UUID(payload["sub"])
+                result = await db.execute(
+                    select(User).where(User.id == user_id)
+                )
+                current_user = result.scalar_one_or_none()
+        except:
+            current_user = None
+
     # Validate quiz exists
     quiz_meta = next((q for q in QUIZ_METADATA if q["id"] == quiz_id), None)
 
@@ -218,69 +257,78 @@ async def submit_quiz(
             detail=f"Missing answers for questions: {', '.join(missing_questions)}",
         )
 
-    # Calculate attempt number
-    result = await db.execute(
-        select(func.count(QuizAttempt.id))
-        .where(QuizAttempt.user_id == current_user.id)
-        .where(QuizAttempt.quiz_id == quiz_id)
-    )
-    attempt_count = result.scalar() or 0
-    attempt_number = attempt_count + 1
+    # Calculate attempt number (only for authenticated users)
+    attempt_number = 1
+    if current_user:
+        result = await db.execute(
+            select(func.count(QuizAttempt.id))
+            .where(QuizAttempt.user_id == current_user.id)
+            .where(QuizAttempt.quiz_id == quiz_id)
+        )
+        attempt_count = result.scalar() or 0
+        attempt_number = attempt_count + 1
 
     # Grade the quiz
-    logger.info(f"Grading quiz {quiz_id} for user {current_user.id}, attempt {attempt_number}")
+    if current_user:
+        logger.info(f"Grading quiz {quiz_id} for user {current_user.id}, attempt {attempt_number}")
+    else:
+        logger.info(f"Grading quiz {quiz_id} for anonymous user")
     grading_result = grade_quiz(quiz_content, submission.answers)
 
-    # Create QuizAttempt record
-    quiz_attempt = QuizAttempt(
-        user_id=current_user.id,
-        quiz_id=quiz_id,
-        chapter_id=chapter_id,
-        started_at=datetime.utcnow(),  # TODO: Track actual start time
-        completed_at=datetime.utcnow(),
-        score_percentage=grading_result["score_percentage"],
-        total_questions=grading_result["total_questions"],
-        correct_answers=grading_result["correct_answers"],
-        passed=grading_result["passed"],
-        answers=submission.answers,
-        attempt_number=attempt_number,
-        time_spent_seconds=0,  # TODO: Track actual time spent
-    )
-
-    db.add(quiz_attempt)
-
-    # Update ChapterProgress if quiz passed
-    if grading_result["passed"]:
-        logger.info(f"Quiz passed! Updating chapter progress for {chapter_id}")
-
-        # Get or create chapter progress
-        result = await db.execute(
-            select(ChapterProgress)
-            .where(ChapterProgress.user_id == current_user.id)
-            .where(ChapterProgress.chapter_id == chapter_id)
+    # Create QuizAttempt record (only for authenticated users)
+    quiz_attempt = None
+    if current_user:
+        quiz_attempt = QuizAttempt(
+            user_id=current_user.id,
+            quiz_id=quiz_id,
+            chapter_id=chapter_id,
+            started_at=datetime.utcnow(),  # TODO: Track actual start time
+            completed_at=datetime.utcnow(),
+            score_percentage=grading_result["score_percentage"],
+            total_questions=grading_result["total_questions"],
+            correct_answers=grading_result["correct_answers"],
+            passed=grading_result["passed"],
+            answers=submission.answers,
+            attempt_number=attempt_number,
+            time_spent_seconds=0,  # TODO: Track actual time spent
         )
-        chapter_progress = result.scalar_one_or_none()
+        db.add(quiz_attempt)
 
-        if not chapter_progress:
-            # Create new progress record
-            chapter_progress = ChapterProgress(
-                user_id=current_user.id,
-                chapter_id=chapter_id,
-                started_at=datetime.utcnow(),
-                completion_percentage=100,
-                is_completed=True,
-                completed_at=datetime.utcnow(),
+        # Update ChapterProgress if quiz passed
+        if grading_result["passed"]:
+            logger.info(f"Quiz passed! Updating chapter progress for {chapter_id}")
+
+            # Record quiz completion as learning activity for streak tracking
+            await update_streak(db, current_user.id, current_user.timezone)
+
+            # Get or create chapter progress
+            result = await db.execute(
+                select(ChapterProgress)
+                .where(ChapterProgress.user_id == current_user.id)
+                .where(ChapterProgress.chapter_id == chapter_id)
             )
-            db.add(chapter_progress)
-        else:
-            # Update existing progress
-            if not chapter_progress.is_completed:
-                chapter_progress.is_completed = True
-                chapter_progress.completed_at = datetime.utcnow()
-                chapter_progress.completion_percentage = 100
+            chapter_progress = result.scalar_one_or_none()
 
-    await db.commit()
-    await db.refresh(quiz_attempt)
+            if not chapter_progress:
+                # Create new progress record
+                chapter_progress = ChapterProgress(
+                    user_id=current_user.id,
+                    chapter_id=chapter_id,
+                    started_at=datetime.utcnow(),
+                    completion_percentage=100,
+                    is_completed=True,
+                    completed_at=datetime.utcnow(),
+                )
+                db.add(chapter_progress)
+            else:
+                # Update existing progress
+                if not chapter_progress.is_completed:
+                    chapter_progress.is_completed = True
+                    chapter_progress.completed_at = datetime.utcnow()
+                    chapter_progress.completion_percentage = 100
+
+        await db.commit()
+        await db.refresh(quiz_attempt)
 
     logger.info(
         f"Quiz submitted: score={grading_result['score_percentage']}%, "
@@ -289,9 +337,12 @@ async def submit_quiz(
 
     # Return graded results
     return {
+        "id": str(quiz_attempt.id) if quiz_attempt else None,
         "quiz_id": quiz_id,
+        "user_id": str(current_user.id) if current_user else None,
         "chapter_id": chapter_id,
         "attempt_number": attempt_number,
+        "score": grading_result["score_percentage"],
         "score_percentage": grading_result["score_percentage"],
         "total_questions": grading_result["total_questions"],
         "correct_answers": grading_result["correct_answers"],
@@ -299,7 +350,8 @@ async def submit_quiz(
         "passing_score": quiz_meta["passing_score"],
         "grading_details": grading_result["grading_details"],
         "feedback": _generate_feedback(grading_result["score_percentage"], grading_result["passed"]),
-        "chapter_completed": grading_result["passed"],  # Chapter marked complete if quiz passed
+        "chapter_completed": grading_result["passed"] if current_user else False,  # Chapter marked complete if quiz passed (only for authenticated users)
+        "submitted_at": quiz_attempt.completed_at.isoformat() if quiz_attempt and quiz_attempt.completed_at else None,
     }
 
 

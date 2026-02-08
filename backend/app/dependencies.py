@@ -7,7 +7,7 @@ Authentication and authorization dependencies for route protection.
 from typing import Optional
 from uuid import UUID
 from datetime import datetime
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -172,7 +172,7 @@ async def verify_premium(
 
 
 async def get_optional_user(
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False)),
+    request: Request,
     db: AsyncSession = Depends(get_db)
 ) -> Optional[User]:
     """
@@ -181,28 +181,32 @@ async def get_optional_user(
     Useful for endpoints that have different behavior for authenticated vs. anonymous users.
 
     Args:
-        credentials: Optional HTTP Bearer credentials
+        request: FastAPI Request object
         db: Database session
 
     Returns:
         User object if authenticated, None otherwise
     """
-    if credentials is None:
+    # Get Authorization header from request
+    auth_header = request.headers.get("Authorization")
+
+    if not auth_header or not auth_header.startswith("Bearer "):
         return None
 
-    token = credentials.credentials
-    payload = verify_token(token, token_type="access")
-
-    if payload is None:
-        return None
-
-    # Extract user ID from token payload
-    user_id_str: Optional[str] = payload.get("sub")
-    if user_id_str is None:
-        return None
-
-    # Convert to UUID and fetch user
     try:
+        # Extract token
+        token = auth_header.split(" ")[1]
+        payload = verify_token(token, token_type="access")
+
+        if payload is None:
+            return None
+
+        # Extract user ID from token payload
+        user_id_str: Optional[str] = payload.get("sub")
+        if user_id_str is None:
+            return None
+
+        # Convert to UUID and fetch user
         user_id = UUID(user_id_str)
         result = await db.execute(
             select(User).where(User.id == user_id)
@@ -210,6 +214,7 @@ async def get_optional_user(
         user = result.scalar_one_or_none()
         return user
     except (ValueError, Exception):
+        # Return None on any error instead of raising
         return None
 
 

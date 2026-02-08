@@ -68,6 +68,7 @@ class UserResponse(UserBase):
     subscription_tier: str = Field(..., description="Current subscription tier (free/premium/pro)")
     subscription_expires_at: Optional[datetime] = Field(None, description="Subscription expiration timestamp")
     is_active: bool = Field(..., description="Whether the user account is active")
+    is_teacher: bool = Field(..., description="Whether the user has teacher privileges")
     last_active_at: Optional[datetime] = Field(None, description="Last activity timestamp")
     created_at: datetime = Field(..., description="Account creation timestamp")
     updated_at: datetime = Field(..., description="Last update timestamp")

@@ -1,81 +1,101 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Backend API configuration - uses OpenAI SDK, not custom fetch
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+interface ChatMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+/**
+ * Chat API Route - Proxies to backend OpenAI SDK integration
+
+ * This endpoint calls the backend which uses the official OpenAI SDK
+ * (not custom fetch calls) for chat completions with proper error handling,
+ * retries, and token management.
+ */
 export async function POST(request: NextRequest) {
   try {
-    const { messages } = await request.json();
+    const { messages, max_tokens = 1000, temperature = 0.7 } = await request.json();
 
-    // Get the last user message
-    const lastMessage = messages[messages.length - 1];
+    // Validate input
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return NextResponse.json(
+        { error: 'Invalid messages format' },
+        { status: 400 }
+      );
+    }
 
-    // TODO: Integrate with ChatGPT API using your MCP tools
-    // For now, return a simple response based on the user's input
+    // Call backend chat endpoint (uses OpenAI SDK)
+    const response = await fetch(`${API_BASE}/api/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messages,
+        max_tokens,
+        temperature,
+      }),
+    });
 
-    const userMessage = lastMessage.content.toLowerCase();
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: 'Unknown error' }));
+      console.error('Backend chat error:', error);
 
-    let response = "";
+      return NextResponse.json(
+        {
+          message: `I'm having trouble connecting to the AI assistant. Please try again!\n\n(Error: ${response.status})`,
+          error: error.detail || 'Backend error',
+        },
+        { status: response.status }
+      );
+    }
 
-    // Simple pattern matching for demo
-    if (userMessage.includes("chapter") && userMessage.includes("available")) {
-      response = "I found 6 chapters available in this course:\n\n" +
-        "1. 📖 Introduction to Generative AI\n" +
-        "2. 🤖 Large Language Models\n" +
-        "3. 💡 Prompt Engineering\n" +
-        "4. 🔌 API Integration\n" +
-        "5. 🛠️ Building Applications\n" +
-        "6. 🚀 Deployment & Best Practices\n\n" +
-        "Which chapter would you like to explore?";
-    }
-    else if (userMessage.includes("progress") || userMessage.includes("how am i doing")) {
-      response = "📊 Your Learning Progress:\n\n" +
-        "✅ Chapters Completed: 2/6 (33%)\n" +
-        "🔥 Current Streak: 7 days\n" +
-        "⏱️  Total Learning Time: 4.5 hours\n" +
-        "✅ Quizzes Passed: 3/5\n\n" +
-        "You're making great progress! Keep it up! 💪";
-    }
-    else if (userMessage.includes("quiz") || userMessage.includes("test me")) {
-      response = "I can quiz you on any chapter! Here's a quick question from Chapter 1:\n\n" +
-        "❓ What are the three main types of Generative AI models?\n" +
-        "a) Text, Image, Audio\n" +
-        "b) LLMs, GANs, Diffusion\n" +
-        "c) supervised, unsupervised, reinforcement\n\n" +
-        "Type your answer!";
-    }
-    else if (userMessage.includes("help") || userMessage.includes("can you do")) {
-      response = "I'm here to help you learn! Here's what I can do:\n\n" +
-        "📚 **Explain Concepts** - Break down complex topics\n" +
-        "📝 **Create Quizzes** - Test your knowledge\n" +
-        "🔍 **Find Information** - Search across all chapters\n" +
-        "📊 **Track Progress** - See how you're doing\n" +
-        "💡 **Give Tips** - Hackathon best practices\n\n" +
-        "What would you like help with?";
-    }
-    else {
-      response = "That's a great question! I'm here to help you learn about " +
-        "Generative AI and prepare for the hackathon.\n\n" +
-        "I can:\n" +
-        "• Explain chapters in simple terms\n" +
-        "• Quiz you on any topic\n" +
-        "• Help you find specific information\n" +
-        "• Track your learning progress\n\n" +
-        "What would you like to explore?";
-    }
+    const data = await response.json();
 
     return NextResponse.json({
-      message: response,
-      sources: [
-        {
-          title: "Course Content",
-          url: "/chapters"
-        }
-      ]
+      message: data.message,
+      sources: data.sources || [],
     });
 
   } catch (error) {
     console.error('Chat API Error:', error);
     return NextResponse.json(
-      { error: 'Failed to process chat message' },
+      {
+        message: "I'm having trouble connecting right now. Please try again!",
+        error: 'Failed to process chat message'
+      },
       { status: 500 }
     );
+  }
+}
+
+/**
+ * GET endpoint to check chat configuration
+ */
+export async function GET() {
+  try {
+    const response = await fetch(`${API_BASE}/api/v1/chat/config`);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch chat config');
+    }
+
+    const config = await response.json();
+
+    return NextResponse.json({
+      status: 'connected',
+      backend: API_BASE,
+      model: config.model,
+      features: config.features,
+      mcp_tools: config.mcp_tools,
+    });
+  } catch (error) {
+    return NextResponse.json({
+      status: 'disconnected',
+      error: 'Cannot connect to backend chat service',
+    }, { status: 503 });
   }
 }
