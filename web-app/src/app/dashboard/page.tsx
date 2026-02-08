@@ -6,7 +6,6 @@ import { getProgress } from '@/lib/api';
 import { Header } from '@/components/Header';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Button } from '@/components/ui/Button';
-import { ClientOnly } from '@/components/ClientOnly';
 import AIAssistant from '@/components/AIAssistantEmbedded';
 import {
   Trophy,
@@ -161,8 +160,7 @@ export default function StudentDashboard() {
   const earnedMilestones = milestones.filter(m => m.achieved).length;
 
   return (
-    <ClientOnly fallback={<LoadingSpinner />}>
-      <div className="min-h-screen bg-[#0B0C10]">
+    <div className="min-h-screen bg-[#0B0C10]">
       <Header />
       <main className="container mx-auto px-4 py-8">
         {/* Header */}
@@ -613,6 +611,5 @@ export default function StudentDashboard() {
       </main>
       <AIAssistant />
     </div>
-    </ClientOnly>
   );
 }
