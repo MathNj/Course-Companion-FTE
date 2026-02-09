@@ -17,7 +17,7 @@ export default function OfflinePage() {
         <div className="mb-8 flex justify-center">
           <div className="relative">
             <div className="absolute inset-0 bg-zinc-500/20 rounded-full blur-3xl animate-pulse"></div>
-            <div className="relative p-8 bg-zinc-800/50 rounded-full border border-zinc-700">
+            <div className="relative p-8 bg-zinc-800/50 rounded-full border border-cyan-700">
               <WifiOff className="w-20 h-20 text-zinc-400" />
             </div>
           </div>
@@ -34,24 +34,24 @@ export default function OfflinePage() {
         </p>
 
         {/* Info Cards */}
-        <div className="bg-zinc-900/50 rounded-xl p-6 border border-zinc-800 mb-8 text-left">
+        <div className="bg-zinc-900/50 rounded-xl p-6 border border-cyan-800 mb-8 text-left">
           <h2 className="text-lg font-bold text-white mb-4">While offline, you can:</h2>
           <ul className="space-y-3">
             <li className="flex items-start gap-3 text-zinc-300">
-              <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-emerald-400 text-sm">✓</span>
+              <div className="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-cyan-400 text-sm">✓</span>
               </div>
               <span>View previously accessed chapters and notes</span>
             </li>
             <li className="flex items-start gap-3 text-zinc-300">
-              <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-emerald-400 text-sm">✓</span>
+              <div className="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-cyan-400 text-sm">✓</span>
               </div>
               <span>Review your progress and bookmarks</span>
             </li>
             <li className="flex items-start gap-3 text-zinc-300">
-              <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-emerald-400 text-sm">✓</span>
+              <div className="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-cyan-400 text-sm">✓</span>
               </div>
               <span>Access your library of saved content</span>
             </li>
@@ -62,7 +62,7 @@ export default function OfflinePage() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
             onClick={() => window.location.reload()}
-            className="bg-emerald-500 hover:bg-emerald-400 text-white font-semibold py-3 px-8 rounded-lg transition-all hover:scale-105"
+            className="bg-cyan-500 hover:bg-cyan-400 text-white font-semibold py-3 px-8 rounded-lg transition-all hover:scale-105"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             Try Again
@@ -70,7 +70,7 @@ export default function OfflinePage() {
           <Link href="/">
             <Button
               variant="outline"
-              className="border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-600 py-3 px-8 rounded-lg transition-all"
+              className="border-cyan-700 text-zinc-400 hover:text-white hover:border-cyan-600 py-3 px-8 rounded-lg transition-all"
             >
               Go to Home
             </Button>

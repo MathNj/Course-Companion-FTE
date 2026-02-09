@@ -287,7 +287,7 @@ I'll be back shortly to answer your questions!`;
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-emerald-500 to-teal-500 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-all duration-300 group"
+        className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-cyan-500 to-teal-500 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-all duration-300 group"
       >
         <div className="flex items-center gap-2">
           <Sparkles className="w-6 h-6" />
@@ -302,7 +302,7 @@ I'll be back shortly to answer your questions!`;
       {/* Skill Detection Toast */}
       {showSkillToast && detectedSkill && (
         <div className="fixed bottom-32 right-8 z-50 animate-fade-in-up">
-          <div className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-4 py-3 rounded-lg shadow-xl border border-white/20 flex items-center gap-3">
+          <div className="bg-gradient-to-r from-cyan-600 to-teal-600 text-white px-4 py-3 rounded-lg shadow-xl border border-white/20 flex items-center gap-3">
             {getSkillIconComponent(detectedSkill)}
             <div>
               <p className="text-sm font-semibold">Switched to {getSkillDisplayName(detectedSkill)}</p>
@@ -312,9 +312,9 @@ I'll be back shortly to answer your questions!`;
         </div>
       )}
 
-      <div className="fixed bottom-6 right-6 z-50 w-96 h-[600px] bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-700 flex flex-col overflow-hidden">
+      <div className="fixed bottom-6 right-6 z-50 w-96 h-[600px] bg-zinc-900 rounded-2xl shadow-2xl border border-cyan-700 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-4 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-cyan-600 to-teal-600 p-4 flex items-center justify-between">
           <div className="flex items-center gap-2 text-white">
             <Sparkles className="w-5 h-5" />
             <div className="flex flex-col">
@@ -347,13 +347,13 @@ I'll be back shortly to answer your questions!`;
             <div
               className={`max-w-[85%] rounded-2xl px-4 py-2 ${
                 message.role === 'user'
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-zinc-800 text-zinc-100 border border-zinc-700'
+                  ? 'bg-cyan-600 text-white'
+                  : 'bg-zinc-800 text-zinc-100 border border-cyan-700'
               }`}
             >
               {/* Skill Badge for Assistant Messages */}
               {message.role === 'assistant' && message.skill && message.skill !== 'general' && (
-                <div className="flex items-center gap-1 mb-2 pb-2 border-b border-zinc-700/50">
+                <div className="flex items-center gap-1 mb-2 pb-2 border-b border-cyan-700/50">
                   {getSkillIconComponent(message.skill)}
                   <span className="text-xs font-semibold text-zinc-400">
                     {getSkillDisplayName(message.skill)}
@@ -366,11 +366,11 @@ I'll be back shortly to answer your questions!`;
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-zinc-800 rounded-2xl px-4 py-2 border border-zinc-700">
+            <div className="bg-zinc-800 rounded-2xl px-4 py-2 border border-cyan-700">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" />
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce delay-100" />
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce delay-200" />
+                <div className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce" />
+                <div className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce delay-100" />
+                <div className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce delay-200" />
               </div>
             </div>
           </div>
@@ -389,7 +389,7 @@ I'll be back shortly to answer your questions!`;
                   setInput(suggestion.text);
                   setCurrentSkill(suggestion.skill);
                 }}
-                className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 rounded-lg border border-zinc-700 transition-colors text-left flex items-center gap-2"
+                className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 rounded-lg border border-cyan-700 transition-colors text-left flex items-center gap-2"
               >
                 {getSkillIconComponent(suggestion.skill)}
                 <span>{suggestion.text}</span>
@@ -400,7 +400,7 @@ I'll be back shortly to answer your questions!`;
       )}
 
       {/* Input */}
-      <div className="p-4 border-t border-zinc-800 bg-zinc-900/50">
+      <div className="p-4 border-t border-cyan-800 bg-zinc-900/50">
         <div className="flex items-center gap-2">
           <input
             type="text"
@@ -408,13 +408,13 @@ I'll be back shortly to answer your questions!`;
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
             placeholder="Ask me anything about the course..."
-            className="flex-1 bg-zinc-800 text-white px-4 py-2 rounded-lg border border-zinc-700 focus:border-emerald-500 focus:outline-none transition-colors"
+            className="flex-1 bg-zinc-800 text-white px-4 py-2 rounded-lg border border-cyan-700 focus:border-cyan-500 focus:outline-none transition-colors"
             disabled={isLoading}
           />
           <button
             onClick={sendMessage}
             disabled={isLoading || !input.trim()}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-cyan-600 hover:bg-cyan-700 text-white p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Send className="w-5 h-5" />
           </button>

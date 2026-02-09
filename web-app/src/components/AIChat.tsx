@@ -541,8 +541,8 @@ Is there anything specific about ${context.en} you'd like to explore further?`,
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-              <Sparkles className="h-4 w-4 text-emerald-400" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+              <Sparkles className="h-4 w-4 text-cyan-400" />
             </div>
             <div>
               <CardTitle className="text-lg">AI Assistant</CardTitle>
@@ -619,19 +619,19 @@ Is there anything specific about ${context.en} you'd like to explore further?`,
                 <div
                   className={`max-w-[85%] rounded-lg px-4 py-2 ${
                     message.role === 'user'
-                      ? 'bg-emerald-500/20 border border-emerald-500/20 text-white'
-                      : 'bg-zinc-800 border border-zinc-700 text-zinc-200'
+                      ? 'bg-cyan-500/20 border border-cyan-500/20 text-white'
+                      : 'bg-zinc-800 border border-cyan-700 text-zinc-200'
                   }`}
                   dir={message.role === 'assistant' ? 'auto' : 'ltr'}
                 >
                   <div className="flex items-start gap-2">
                     <div className="flex-1 space-y-2">
                       {message.role === 'assistant' && message.contentUrdu && (
-                        <p className="text-sm whitespace-pre-wrap text-emerald-400" dir="rtl">
+                        <p className="text-sm whitespace-pre-wrap text-cyan-400" dir="rtl">
                           {message.contentUrdu}
                         </p>
                       )}
-                      <p className={`text-sm whitespace-pre-wrap ${message.contentUrdu ? 'border-t border-zinc-700 pt-2' : ''}`} dir={message.contentUrdu ? 'ltr' : 'auto'}>
+                      <p className={`text-sm whitespace-pre-wrap ${message.contentUrdu ? 'border-t border-cyan-700 pt-2' : ''}`} dir={message.contentUrdu ? 'ltr' : 'auto'}>
                         {message.content}
                       </p>
                     </div>
@@ -659,8 +659,8 @@ Is there anything specific about ${context.en} you'd like to explore further?`,
                 animate={{ opacity: 1, y: 0 }}
                 className="flex justify-start"
               >
-                <div className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2">
-                  <Loader2 className="h-4 w-4 animate-spin text-emerald-400" />
+                <div className="bg-zinc-800 border border-cyan-700 rounded-lg px-4 py-2">
+                  <Loader2 className="h-4 w-4 animate-spin text-cyan-400" />
                 </div>
               </motion.div>
             )}
@@ -669,7 +669,7 @@ Is there anything specific about ${context.en} you'd like to explore further?`,
         </div>
 
         {/* Input */}
-        <div className="border-t border-zinc-800 p-4">
+        <div className="border-t border-cyan-800 p-4">
           <form onSubmit={handleSubmit} className="flex gap-2">
             <input
               type="text"
@@ -681,7 +681,7 @@ Is there anything specific about ${context.en} you'd like to explore further?`,
               className={`flex-1 px-4 py-2 rounded-lg border bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 text-sm ${
                 isListening
                   ? 'border-red-500 ring-1 ring-red-500'
-                  : 'border-zinc-700 focus:border-emerald-500 focus:ring-emerald-500'
+                  : 'border-cyan-700 focus:border-cyan-500 focus:ring-cyan-500'
               }`}
               style={{ fontFamily: language === 'ur' ? 'Noto Nastaliq Urdu, serif' : 'inherit' }}
             />
@@ -731,7 +731,7 @@ Is there anything specific about ${context.en} you'd like to explore further?`,
               {isListening ? (
                 <span className="text-red-400 animate-pulse">🎤 Listening... (Release to stop)</span>
               ) : isSpeaking ? (
-                <span className="text-emerald-400">🔊 Speaking... ({currentLang.name})</span>
+                <span className="text-cyan-400">🔊 Speaking... ({currentLang.name})</span>
               ) : (
                 <>
                   {currentLang.flag} {currentLang.name} • 💾 Auto-saved

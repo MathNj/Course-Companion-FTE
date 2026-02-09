@@ -26,7 +26,7 @@ export function Toast() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 100 }}
               className={`flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg ${
-                toast.type === 'success' ? 'bg-emerald-500 text-white' :
+                toast.type === 'success' ? 'bg-cyan-500 text-white' :
                 toast.type === 'error' ? 'bg-red-500 text-white' :
                 'bg-blue-500 text-white'
               }`}
@@ -68,9 +68,9 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="bg-zinc-900 rounded-xl border border-zinc-800 shadow-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto modal-content"
+            className="bg-zinc-900 rounded-xl border border-cyan-800 shadow-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto modal-content"
           >
-            <div className="flex items-center justify-between p-6 border-b border-zinc-800">
+            <div className="flex items-center justify-between p-6 border-b border-cyan-800">
               <h3 className="text-xl font-bold text-white">{title}</h3>
               <button
                 onClick={onClose}
@@ -99,7 +99,7 @@ export function AccordionItem({ title, children, defaultOpen = false }: Accordio
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="border border-zinc-800 rounded-lg overflow-hidden">
+    <div className="border border-cyan-800 rounded-lg overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between p-4 text-left hover:bg-zinc-800/50 transition-colors duration-200"
@@ -152,7 +152,7 @@ export function Tabs({ tabs, activeTab, onChange, children }: TabsProps) {
   return (
     <div className="space-y-4">
       {/* Tab Headers */}
-      <div className="flex gap-2 border-b border-zinc-800">
+      <div className="flex gap-2 border-b border-cyan-800">
         {tabs.map(tab => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -162,7 +162,7 @@ export function Tabs({ tabs, activeTab, onChange, children }: TabsProps) {
               onClick={() => onChange(tab.id)}
               className={`
                 flex items-center gap-2 px-4 py-2 font-medium transition-all duration-200 relative
-                ${isActive ? 'text-emerald-400' : 'text-zinc-400 hover:text-white'}
+                ${isActive ? 'text-cyan-400' : 'text-zinc-400 hover:text-white'}
               `}
             >
               {Icon && <Icon className="h-4 w-4" />}
@@ -170,7 +170,7 @@ export function Tabs({ tabs, activeTab, onChange, children }: TabsProps) {
               {isActive && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-400"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-cyan-400"
                   initial={false}
                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
@@ -259,7 +259,7 @@ export function ProgressBar({
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 0.7, ease: 'easeOut' }}
           className={`h-full rounded-full ${
-            animated ? 'progress-bar-animated' : 'bg-gradient-to-r from-emerald-500 to-emerald-400'
+            animated ? 'progress-bar-animated' : 'bg-gradient-to-r from-cyan-500 to-cyan-400'
           }`}
         />
       </div>
@@ -277,7 +277,7 @@ export function NotificationPill({ message, type = 'info', onClose }: Notificati
   const colors = {
     info: 'bg-blue-500/10 border-blue-500/20 text-blue-400',
     warning: 'bg-orange-500/10 border-orange-500/20 text-orange-400',
-    success: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
+    success: 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400',
   };
 
   const icons = {
@@ -321,8 +321,8 @@ export function AchievementBadge({ icon, title, description, unlocked = true }: 
       className={`
         relative p-4 rounded-xl border text-center transition-all duration-300
         ${unlocked
-          ? 'bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border-emerald-500/30 hover:border-emerald-500/50'
-          : 'bg-zinc-800/50 border-zinc-700 opacity-60'
+          ? 'bg-gradient-to-br from-cyan-500/20 to-cyan-500/5 border-cyan-500/30 hover:border-cyan-500/50'
+          : 'bg-zinc-800/50 border-cyan-700 opacity-60'
         }
       `}
     >

@@ -36,10 +36,10 @@ export function BarChart({ data, labels, label = 'Value', title, horizontal = fa
         label,
         data,
         backgroundColor: data.map((value) =>
-          value >= 80 ? '#10b981' : value >= 60 ? '#f59e0b' : '#ef4444'
+          value >= 80 ? '#06b6d4' : value >= 60 ? '#f59e0b' : '#ef4444'
         ),
         borderColor: data.map((value) =>
-          value >= 80 ? '#059669' : value >= 60 ? '#d97706' : '#dc2626'
+          value >= 80 ? '#0891b2' : value >= 60 ? '#d97706' : '#dc2626'
         ),
         borderWidth: 2,
         borderRadius: 8,

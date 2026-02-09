@@ -248,7 +248,7 @@ export default function ProgressPage() {
 
         {/* Overview Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover-lift animate-fade-in-up">
+          <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover-lift animate-fade-in-up">
             <div className="flex items-center justify-between mb-4">
               <BookOpen className="w-8 h-8 text-blue-400" />
               <span className="text-xs text-zinc-500">Completion</span>
@@ -263,7 +263,7 @@ export default function ProgressPage() {
             </div>
           </div>
 
-          <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover-lift animate-fade-in-up delay-100">
+          <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover-lift animate-fade-in-up delay-100">
             <div className="flex items-center justify-between mb-4">
               <Target className="w-8 h-8 text-purple-400" />
               <span className="text-xs text-zinc-500">Avg Quiz Score</span>
@@ -283,7 +283,7 @@ export default function ProgressPage() {
                     key={i}
                     className="flex-1 h-2 rounded-full"
                     style={{
-                      backgroundColor: score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#ef4444'
+                      backgroundColor: score >= 80 ? '#06b6d4' : score >= 60 ? '#f59e0b' : '#ef4444'
                     }}
                   />
                 ))
@@ -298,9 +298,9 @@ export default function ProgressPage() {
             </div>
           </div>
 
-          <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover-lift animate-fade-in-up delay-200">
+          <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover-lift animate-fade-in-up delay-200">
             <div className="flex items-center justify-between mb-4">
-              <Clock className="w-8 h-8 text-emerald-400" />
+              <Clock className="w-8 h-8 text-cyan-400" />
               <span className="text-xs text-zinc-500">Study Time</span>
             </div>
             <h3 className="text-3xl font-bold text-white mb-2">
@@ -319,7 +319,7 @@ export default function ProgressPage() {
             </div>
           </div>
 
-          <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover-lift animate-fade-in-up delay-300">
+          <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover-lift animate-fade-in-up delay-300">
             <div className="flex items-center justify-between mb-4">
               <Award className="w-8 h-8 text-yellow-400" />
               <span className="text-xs text-zinc-500">Streak</span>
@@ -346,7 +346,7 @@ export default function ProgressPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Quiz Scores Trend - Line Chart */}
-            <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 animate-fade-in-up">
+            <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 animate-fade-in-up">
               <h3 className="text-lg font-bold text-white mb-4">Quiz Scores Trend</h3>
               {quizScores.length > 0 ? (
                 <LineChart
@@ -363,7 +363,7 @@ export default function ProgressPage() {
             </div>
 
             {/* Chapter Accuracy - Bar Chart */}
-            <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 animate-fade-in-up delay-100">
+            <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 animate-fade-in-up delay-100">
               <h3 className="text-lg font-bold text-white mb-4">Accuracy by Chapter</h3>
               {quizScores.length > 0 ? (
                 <BarChart
@@ -381,17 +381,17 @@ export default function ProgressPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Completion Distribution - Doughnut Chart */}
-            <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 animate-fade-in-up">
+            <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 animate-fade-in-up">
               <h3 className="text-lg font-bold text-white mb-4">Completion Status</h3>
               <DoughnutChart
                 data={completionDistribution}
                 labels={['Completed', 'In Progress', 'Not Started']}
-                colors={['#10b981', '#3b82f6', '#3f3f46']}
+                colors={['#06b6d4', '#3b82f6', '#3f3f46']}
               />
             </div>
 
             {/* Study Activity - Bar Chart */}
-            <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 animate-fade-in-up delay-100 lg:col-span-2">
+            <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 animate-fade-in-up delay-100 lg:col-span-2">
               <h3 className="text-lg font-bold text-white mb-4">Study Activity (Last 7 Days)</h3>
               <BarChart
                 data={studyActivityData}
@@ -405,13 +405,13 @@ export default function ProgressPage() {
         {/* Performance Insights */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-            <TrendingUp className="w-6 h-6 text-emerald-400" />
+            <TrendingUp className="w-6 h-6 text-cyan-400" />
             Performance Insights
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Quiz Performance Analysis */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up">
               <h3 className="text-xl font-bold text-white mb-6">Quiz Statistics</h3>
               {totalQuizzes > 0 ? (
                 <div className="space-y-4">
@@ -421,7 +421,7 @@ export default function ProgressPage() {
                   </div>
                   <div className="flex items-center justify-between p-4 bg-zinc-800 rounded-lg">
                     <span className="text-zinc-300">Highest Score</span>
-                    <span className="text-2xl font-bold text-emerald-400">{highestQuizScore}%</span>
+                    <span className="text-2xl font-bold text-cyan-400">{highestQuizScore}%</span>
                   </div>
                   <div className="flex items-center justify-between p-4 bg-zinc-800 rounded-lg">
                     <span className="text-zinc-300">Lowest Score</span>
@@ -444,7 +444,7 @@ export default function ProgressPage() {
             </div>
 
             {/* Study Statistics */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up delay-100">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-100">
               <h3 className="text-xl font-bold text-white mb-6">Study Statistics</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 bg-zinc-800 rounded-lg">
@@ -477,14 +477,14 @@ export default function ProgressPage() {
         </div>
 
         {/* Detailed Chapter Progress */}
-        <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 mb-8 animate-fade-in-up">
+        <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 mb-8 animate-fade-in-up">
           <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-            <CheckCircle2 className="w-6 h-6 text-emerald-400" />
+            <CheckCircle2 className="w-6 h-6 text-cyan-400" />
             Chapter-by-Chapter Progress
           </h2>
           <div className="space-y-6">
             {progress.chapter_progress?.map((chapter) => (
-              <div key={chapter.chapter_id} className="border border-zinc-800 rounded-lg p-6 hover:border-zinc-700 transition-all">
+              <div key={chapter.chapter_id} className="border border-cyan-800 rounded-lg p-6 hover:border-cyan-700 transition-all">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="text-lg font-bold text-white mb-1">
@@ -502,7 +502,7 @@ export default function ProgressPage() {
                         <p className="text-xs text-zinc-400 mb-1">Quiz Score</p>
                         <p className={`text-lg font-bold ${
                           chapter.quiz_score >= 80
-                            ? 'text-emerald-400'
+                            ? 'text-cyan-400'
                             : chapter.quiz_score >= 60
                             ? 'text-yellow-400'
                             : 'text-red-400'
@@ -513,14 +513,14 @@ export default function ProgressPage() {
                     )}
                     <div className="w-16 h-16 rounded-full border-4 flex items-center justify-center bg-zinc-800" style={{
                       borderColor: chapter.completion_status === 'completed'
-                        ? '#10b981'
+                        ? '#06b6d4'
                         : chapter.completion_status === 'in_progress'
                         ? '#3b82f6'
                         : '#3f3f46'
                     }}>
                       <span className={`text-lg font-bold ${
                         chapter.completion_status === 'completed'
-                          ? 'text-emerald-400'
+                          ? 'text-cyan-400'
                           : chapter.completion_status === 'in_progress'
                           ? 'text-blue-400'
                           : 'text-zinc-500'
@@ -542,7 +542,7 @@ export default function ProgressPage() {
                     style={{
                       width: `${chapter.completion_percent || chapter.completion_status === 'completed' ? 100 : chapter.completion_status === 'in_progress' ? 50 : 0}%`,
                       backgroundColor: chapter.completion_percent === 100 || chapter.completion_status === 'completed'
-                        ? '#10b981'
+                        ? '#06b6d4'
                         : chapter.completion_percent === 50 || chapter.completion_status === 'in_progress'
                         ? '#3b82f6'
                         : '#3f3f46'
@@ -577,7 +577,7 @@ export default function ProgressPage() {
         </div>
 
         {/* Actionable Insights */}
-        <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up delay-100">
+        <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-100">
           <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
             <Target className="w-6 h-6 text-blue-400" />
             Personalized Recommendations
@@ -586,9 +586,9 @@ export default function ProgressPage() {
             {/* Continue Learning */}
             {nextChapter && (
               <Link href={`/chapters/chapter-${nextChapter}`} className="block">
-                <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg hover-lift cursor-pointer">
+                <div className="p-4 bg-cyan-500/10 border border-cyan-500/30 rounded-lg hover-lift cursor-pointer">
                   <div className="flex items-center gap-3 mb-2">
-                    <BookOpen className="w-5 h-5 text-emerald-400" />
+                    <BookOpen className="w-5 h-5 text-cyan-400" />
                     <p className="text-white font-semibold">Continue Learning</p>
                   </div>
                   <p className="text-sm text-zinc-400 mb-3">

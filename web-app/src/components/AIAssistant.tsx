@@ -26,8 +26,8 @@ export function AIAssistant({ chapter, quiz }: AIAssistantProps) {
         <Card className="glow-box">
           <CardHeader>
             <div className="flex items-center gap-2 mb-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                <Sparkles className="h-4 w-4 text-emerald-400" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+                <Sparkles className="h-4 w-4 text-cyan-400" />
               </div>
               <CardTitle className="text-lg">AI Assistant</CardTitle>
             </div>
@@ -63,7 +63,7 @@ export function AIAssistant({ chapter, quiz }: AIAssistantProps) {
                 </Link>
               </div>
             ) : (
-              <div className="p-3 rounded-lg bg-gradient-to-br from-emerald-500/5 to-emerald-500/10 border border-emerald-500/10">
+              <div className="p-3 rounded-lg bg-gradient-to-br from-cyan-500/5 to-cyan-500/10 border border-cyan-500/10">
                 <p className="text-xs text-zinc-400 mb-2">Unlock premium AI features:</p>
                 <ul className="space-y-1 text-xs text-zinc-300">
                   <li>• Personalized learning paths</li>
@@ -110,7 +110,7 @@ export function AIAssistant({ chapter, quiz }: AIAssistantProps) {
           <div className="flex justify-between">
             <span className="text-zinc-400">Content</span>
             <span className="text-white">
-              {chapter.sections && chapter.sections.length > 0
+              {chapter.sections && Array.isArray(chapter.sections) && chapter.sections.length > 0
                 ? `${chapter.sections.length} sections`
                 : chapter.content
                 ? 'Full chapter'
@@ -119,7 +119,7 @@ export function AIAssistant({ chapter, quiz }: AIAssistantProps) {
           </div>
           <div className="flex justify-between">
             <span className="text-zinc-400">Access</span>
-            <span className={`capitalize ${chapter.access_tier === 'premium' ? 'text-emerald-400' : 'text-zinc-300'}`}>
+            <span className={`capitalize ${chapter.access_tier === 'premium' ? 'text-cyan-400' : 'text-zinc-300'}`}>
               {chapter.access_tier}
             </span>
           </div>

@@ -36,9 +36,9 @@ function PaymentSuccessContent() {
           {/* Success Icon */}
           <div className="mb-8 flex justify-center">
             <div className="relative">
-              <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
-              <div className="relative p-6 bg-emerald-500/10 rounded-full border border-emerald-500/30">
-                <CheckCircle2 className="w-20 h-20 text-emerald-400" />
+              <div className="absolute inset-0 bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
+              <div className="relative p-6 bg-cyan-500/10 rounded-full border border-cyan-500/30">
+                <CheckCircle2 className="w-20 h-20 text-cyan-400" />
               </div>
             </div>
           </div>
@@ -52,23 +52,23 @@ function PaymentSuccessContent() {
           </p>
 
           {/* Features Unlocked */}
-          <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 mb-8">
+          <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 mb-8">
             <h2 className="text-lg font-bold text-white mb-4">Premium Features Unlocked:</h2>
             <ul className="space-y-3 text-left">
               <li className="flex items-center gap-3 text-zinc-300">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0" />
                 <span>All 6 chapters of course content</span>
               </li>
               <li className="flex items-center gap-3 text-zinc-300">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0" />
                 <span>AI-powered adaptive learning paths</span>
               </li>
               <li className="flex items-center gap-3 text-zinc-300">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0" />
                 <span>LLM-graded assessments with detailed feedback</span>
               </li>
               <li className="flex items-center gap-3 text-zinc-300">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0" />
                 <span>Advanced analytics and insights</span>
               </li>
             </ul>
@@ -78,14 +78,14 @@ function PaymentSuccessContent() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               onClick={() => router.push('/dashboard')}
-              className="bg-emerald-500 hover:bg-emerald-400 text-white font-semibold py-3 px-8 rounded-lg transition-all hover:scale-105"
+              className="bg-cyan-500 hover:bg-cyan-400 text-white font-semibold py-3 px-8 rounded-lg transition-all hover:scale-105"
             >
               Go to Dashboard
             </Button>
             <Button
-              onClick={() => router.push('/chapters/chapter-4')}
+              onClick={() => router.push('/library')}
               variant="outline"
-              className="border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-600 py-3 px-8 rounded-lg transition-all"
+              className="border-cyan-700 text-zinc-400 hover:text-white hover:border-cyan-600 py-3 px-8 rounded-lg transition-all"
             >
               Start Learning
             </Button>

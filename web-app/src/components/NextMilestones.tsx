@@ -38,7 +38,7 @@ export function NextMilestones({
     <div className={className}>
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
-        <Target className="h-5 w-5 text-emerald-400" />
+        <Target className="h-5 w-5 text-cyan-400" />
         <h3 className="text-lg font-semibold text-white">Next Milestones</h3>
       </div>
 
@@ -55,7 +55,7 @@ export function NextMilestones({
 
       {/* Motivation */}
       <div className="mt-4 flex items-center gap-2 text-sm text-zinc-400 bg-zinc-900/30 rounded-lg p-3">
-        <TrendingUp className="h-4 w-4 text-emerald-400" />
+        <TrendingUp className="h-4 w-4 text-cyan-400" />
         <span>
           {nextMilestones.length === 1
             ? 'You\'re close to your next achievement!'
@@ -94,7 +94,7 @@ export function NextMilestonesCard({ className = '' }: { className?: string }) {
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Target className="h-4 w-4 text-emerald-400" />
+          <Target className="h-4 w-4 text-cyan-400" />
           <h4 className="text-sm font-semibold text-white">Up Next</h4>
         </div>
         <span className="text-xs text-zinc-500">
@@ -113,7 +113,7 @@ export function NextMilestonesCard({ className = '' }: { className?: string }) {
           </div>
           <div className="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
             <div
-              className="bg-gradient-to-r from-emerald-500 to-emerald-400 h-full rounded-full transition-all duration-500"
+              className="bg-gradient-to-r from-cyan-500 to-cyan-400 h-full rounded-full transition-all duration-500"
               style={{ width: `${nextMilestones[0].progress_percent || 0}%` }}
             />
           </div>
@@ -122,7 +122,7 @@ export function NextMilestonesCard({ className = '' }: { className?: string }) {
 
       {/* Second milestone */}
       {nextMilestones[1] && (
-        <div className="pt-3 border-t border-zinc-800">
+        <div className="pt-3 border-t border-cyan-800">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-lg opacity-70">{nextMilestones[1].icon}</span>

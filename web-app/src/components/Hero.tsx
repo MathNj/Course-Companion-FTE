@@ -25,16 +25,16 @@ export function Hero() {
       {/* Floating Orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <Float duration={4}>
-          <div className="absolute top-20 left-[10%] w-4 h-4 rounded-full bg-emerald-500/20 blur-xl" />
+          <div className="absolute top-20 left-[10%] w-4 h-4 rounded-full bg-cyan-500/20 blur-xl" />
         </Float>
         <Float duration={6}>
-          <div className="absolute top-40 right-[15%] w-6 h-6 rounded-full bg-emerald-400/10 blur-xl" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-40 right-[15%] w-6 h-6 rounded-full bg-cyan-400/10 blur-xl" style={{ animationDelay: '1s' }} />
         </Float>
         <Float duration={5}>
-          <div className="absolute bottom-40 left-[20%] w-3 h-3 rounded-full bg-emerald-300/15 blur-xl" style={{ animationDelay: '2s' }} />
+          <div className="absolute bottom-40 left-[20%] w-3 h-3 rounded-full bg-cyan-300/15 blur-xl" style={{ animationDelay: '2s' }} />
         </Float>
         <Float duration={7}>
-          <div className="absolute bottom-20 right-[10%] w-5 h-5 rounded-full bg-emerald-500/10 blur-xl" style={{ animationDelay: '1.5s' }} />
+          <div className="absolute bottom-20 right-[10%] w-5 h-5 rounded-full bg-cyan-500/10 blur-xl" style={{ animationDelay: '1.5s' }} />
         </Float>
       </div>
 
@@ -43,9 +43,9 @@ export function Hero() {
           <div className="mx-auto max-w-3xl text-center">
             {/* Badge */}
             <StaggerItem>
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 hover:bg-emerald-500/20 transition-all duration-300 hover:scale-105">
-                <Sparkles className="h-4 w-4 text-emerald-400 animate-pulse" />
-                <span className="text-sm font-medium text-emerald-400">Generative AI Fundamentals</span>
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-4 py-2 hover:bg-cyan-500/20 transition-all duration-300 hover:scale-105">
+                <Sparkles className="h-4 w-4 text-cyan-400 animate-pulse" />
+                <span className="text-sm font-medium text-cyan-400">Generative AI Fundamentals</span>
               </div>
             </StaggerItem>
 
@@ -53,7 +53,7 @@ export function Hero() {
             <StaggerItem>
               <h1 className="mb-6 text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
                 Master the Future of{' '}
-                <span className="bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent glow-text gradient-animate">
+                <span className="bg-gradient-to-r from-cyan-400 to-cyan-600 bg-clip-text text-transparent glow-text gradient-animate">
                   AI Learning
                 </span>
               </h1>
@@ -70,7 +70,7 @@ export function Hero() {
             {/* CTA Buttons */}
             <StaggerItem>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/chapters/chapter-1">
+                <Link href="/library">
                   <button className="btn-primary glow-box hover:scale-105 active:scale-95 transition-all duration-300 ripple">
                     Start Learning Free
                   </button>
@@ -89,19 +89,19 @@ export function Hero() {
             <StaggerItem>
               <div className="mt-16 grid grid-cols-3 gap-8 sm:gap-12">
                 <div className="group cursor-pointer">
-                  <div className="text-3xl font-bold text-white group-hover:text-emerald-400 transition-colors duration-300">
+                  <div className="text-3xl font-bold text-white group-hover:text-cyan-400 transition-colors duration-300">
                     <CountUp end={6} />
                   </div>
                   <div className="text-sm text-zinc-400">Comprehensive Chapters</div>
                 </div>
                 <div className="group cursor-pointer">
-                  <div className="text-3xl font-bold text-white group-hover:text-emerald-400 transition-colors duration-300">
+                  <div className="text-3xl font-bold text-white group-hover:text-cyan-400 transition-colors duration-300">
                     <CountUp end={60} suffix="+" />
                   </div>
                   <div className="text-sm text-zinc-400">Quiz Questions</div>
                 </div>
                 <div className="group cursor-pointer">
-                  <div className="text-3xl font-bold text-white group-hover:text-emerald-400 transition-colors duration-300">
+                  <div className="text-3xl font-bold text-white group-hover:text-cyan-400 transition-colors duration-300">
                     ∞
                   </div>
                   <div className="text-sm text-zinc-400">Learning Possibilities</div>

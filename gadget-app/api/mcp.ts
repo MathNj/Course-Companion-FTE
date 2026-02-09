@@ -64,7 +64,7 @@ export const createMCPServer = async (request: FastifyRequest) => {
     async (params) => {
       try {
         // Use local backend for testing (change to production when deployed)
-        const response = await fetch("http://localhost:8000/api/v1/chapters", {
+        const response = await fetch("https://course-companion-fte.fly.dev/api/v1/chapters", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -109,7 +109,7 @@ export const createMCPServer = async (request: FastifyRequest) => {
       }
 
       try {
-        const response = await fetch(`http://localhost:8000/api/v1/chapters/${chapter_id}`, {
+        const response = await fetch(`https://course-companion-fte.fly.dev/api/v1/chapters/${chapter_id}`, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -149,7 +149,7 @@ export const createMCPServer = async (request: FastifyRequest) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8000/api/v1/chapters/search?query=${encodeURIComponent(query)}&limit=${limit}`,
+          `https://course-companion-fte.fly.dev/api/v1/chapters/search?query=${encodeURIComponent(query)}&limit=${limit}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -190,7 +190,7 @@ export const createMCPServer = async (request: FastifyRequest) => {
       }
 
       try {
-        const response = await fetch(`http://localhost:8000/api/v1/quizzes/${quiz_id}`, {
+        const response = await fetch(`https://course-companion-fte.fly.dev/api/v1/quizzes/${quiz_id}`, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -221,7 +221,7 @@ export const createMCPServer = async (request: FastifyRequest) => {
     },
     async (params) => {
       try {
-        const response = await fetch("http://localhost:8000/api/v1/progress", {
+        const response = await fetch("https://course-companion-fte.fly.dev/api/v1/progress", {
           headers: {
             "Content-Type": "application/json",
           },

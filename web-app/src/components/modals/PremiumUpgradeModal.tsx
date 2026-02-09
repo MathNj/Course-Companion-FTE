@@ -85,7 +85,7 @@ export function PremiumUpgradeModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-      <div className="relative bg-zinc-900 rounded-2xl border border-zinc-800 max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-fade-in-up">
+      <div className="relative bg-zinc-900 rounded-2xl border border-cyan-700/50 max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-fade-in-up">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -96,7 +96,7 @@ export function PremiumUpgradeModal({
         </button>
 
         {/* Header */}
-        <div className="p-8 pb-4 border-b border-zinc-800">
+        <div className="p-8 pb-4 border-b border-cyan-700/50">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl">
               <Crown className="w-8 h-8 text-yellow-400" />
@@ -118,7 +118,7 @@ export function PremiumUpgradeModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {/* Free Plan */}
             <div className={`p-6 rounded-xl border-2 transition-all ${
-              currentPlan === 'free' ? 'border-zinc-700 bg-zinc-800/50' : 'border-zinc-700'
+              currentPlan === 'free' ? 'border-cyan-700 bg-zinc-800/50' : 'border-cyan-700'
             }`}>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold text-white">Free</h3>
@@ -149,7 +149,7 @@ export function PremiumUpgradeModal({
 
             {/* Premium Plan */}
             <div className={`p-6 rounded-xl border-2 transition-all relative ${
-              selectedPlan === 'premium' ? 'border-purple-500 bg-purple-500/5' : 'border-zinc-700'
+              selectedPlan === 'premium' ? 'border-purple-500 bg-purple-500/5' : 'border-cyan-700'
             }`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
@@ -169,7 +169,7 @@ export function PremiumUpgradeModal({
               <ul className="space-y-3">
                 {features.premium.map((feature, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="font-semibold text-white">{feature.name}</p>
                       <p className="text-sm text-zinc-400">{feature.description}</p>
@@ -181,7 +181,7 @@ export function PremiumUpgradeModal({
 
             {/* Pro Plan */}
             <div className={`p-6 rounded-xl border-2 transition-all relative ${
-              selectedPlan === 'pro' ? 'border-blue-500 bg-blue-500/5' : 'border-zinc-700'
+              selectedPlan === 'pro' ? 'border-blue-500 bg-blue-500/5' : 'border-cyan-700'
             }`}>
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-sm font-bold rounded-full">
                 POPULAR
@@ -204,7 +204,7 @@ export function PremiumUpgradeModal({
               <ul className="space-y-3">
                 {features.pro.map((feature, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="font-semibold text-white">{feature.name}</p>
                       <p className="text-sm text-zinc-400">{feature.description}</p>
@@ -216,15 +216,15 @@ export function PremiumUpgradeModal({
 
             {/* Team Plan */}
             <div className={`p-6 rounded-xl border-2 transition-all relative ${
-              selectedPlan === 'team' ? 'border-emerald-500 bg-emerald-500/5' : 'border-zinc-700'
+              selectedPlan === 'team' ? 'border-cyan-500 bg-cyan-500/5' : 'border-cyan-700'
             }`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <h3 className="text-xl font-bold text-white">Team</h3>
-                  <Award className="w-5 h-5 text-emerald-400" />
+                  <Award className="w-5 h-5 text-cyan-400" />
                 </div>
                 {currentPlan === 'team' && (
-                  <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full">
+                  <span className="px-3 py-1 bg-cyan-500/20 text-cyan-400 text-xs font-semibold rounded-full">
                     Current
                   </span>
                 )}
@@ -236,7 +236,7 @@ export function PremiumUpgradeModal({
               <ul className="space-y-3">
                 {features.team.map((feature, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="font-semibold text-white">{feature.name}</p>
                       <p className="text-sm text-zinc-400">{feature.description}</p>
@@ -269,7 +269,7 @@ export function PremiumUpgradeModal({
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Award className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <Award className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="font-semibold text-white">Advanced Analytics</p>
                   <p className="text-sm text-zinc-400">Deep performance insights</p>
@@ -319,7 +319,7 @@ export function PremiumUpgradeModal({
                 <Button
                   onClick={() => handleUpgrade('team')}
                   disabled={isProcessing}
-                  className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-semibold py-3 px-6 rounded-lg transition-all hover:scale-105 active:scale-95"
+                  className="bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 text-white font-semibold py-3 px-6 rounded-lg transition-all hover:scale-105 active:scale-95"
                 >
                   {isProcessing && selectedPlan === 'team' ? (
                     <>
@@ -335,8 +335,8 @@ export function PremiumUpgradeModal({
                 </Button>
               </div>
             ) : (
-              <div className="w-full p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-center">
-                <p className="text-emerald-400 font-semibold mb-2">
+              <div className="w-full p-4 bg-cyan-500/10 border border-cyan-500/30 rounded-lg text-center">
+                <p className="text-cyan-400 font-semibold mb-2">
                   You&apos;re already a {currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)} member!
                 </p>
                 <p className="text-sm text-zinc-400">Manage your subscription in account settings.</p>
@@ -347,15 +347,15 @@ export function PremiumUpgradeModal({
           {/* Trust Badges */}
           <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-zinc-500">
             <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-emerald-400" />
+              <Check className="w-4 h-4 text-cyan-400" />
               <span>Cancel anytime</span>
             </div>
             <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-emerald-400" />
+              <Check className="w-4 h-4 text-cyan-400" />
               <span>Secure payment</span>
             </div>
             <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-emerald-400" />
+              <Check className="w-4 h-4 text-cyan-400" />
               <span>30-day guarantee</span>
             </div>
           </div>

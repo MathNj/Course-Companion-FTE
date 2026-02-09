@@ -4,6 +4,7 @@ Application Configuration
 Loads environment variables and provides configuration settings.
 """
 
+import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List
 
@@ -29,8 +30,22 @@ class Settings(BaseSettings):
     api_host: str = "0.0.0.0"
     api_port: int = 8000
 
-    # Database
-    database_url: str = "postgresql+asyncpg://user:password@localhost:5432/course_companion"
+    # Database - with postgres:// to postgresql+asyncpg:// conversion for Fly.io
+    @property
+    def database_url(self) -> str:
+        """Get database URL, converting postgres:// to postgresql+asyncpg:// for SQLAlchemy 2.0+"""
+        db_url = os.getenv("DATABASE_URL", "postgresql+asyncpg://user:password@localhost:5432/course_companion")
+
+        # Convert postgres:// or postgresql:// to postgresql+asyncpg:// for async SQLAlchemy
+        if db_url.startswith("postgres://"):
+            # Replace postgres:// with postgresql+asyncpg://
+            db_url = db_url.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif db_url.startswith("postgresql://"):
+            # Add asyncpg driver
+            db_url = db_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+
+        return db_url
+
     database_pool_size: int = 10
     database_max_overflow: int = 20
 
@@ -58,6 +73,9 @@ class Settings(BaseSettings):
         "http://localhost:3002",
         "http://localhost:3003",
         "http://localhost:8000",
+        "https://course-companion-web.fly.dev",
+        "https://chat.openai.com",
+        "https://chatgpt.com",
     ]
     cors_allow_credentials: bool = True
 

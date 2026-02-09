@@ -97,14 +97,14 @@ export default function StudentDashboard() {
         <Header />
         <main className="container mx-auto px-4 py-16">
           <div className="max-w-md mx-auto text-center">
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800">
               <h2 className="text-2xl font-bold text-white mb-4">Unable to Load Progress</h2>
               <p className="text-zinc-400 mb-6">
                 We couldn't load your progress data. This might be because you haven't started learning yet.
               </p>
               <div className="flex gap-3 justify-center">
                 <Button onClick={() => refetch()}>Try Again</Button>
-                <Link href="/chapters/chapter-1">
+                <Link href="/library">
                   <Button variant="outline">Start Learning</Button>
                 </Link>
               </div>
@@ -162,7 +162,7 @@ export default function StudentDashboard() {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-emerald-500 text-emerald-400 hover:bg-emerald-500 hover:text-white hover:scale-105 active:scale-95 transition-all duration-300"
+                className="border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-white hover:scale-105 active:scale-95 transition-all duration-300"
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
                 View Analytics
@@ -188,7 +188,7 @@ export default function StudentDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Visual Progress Overview */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 flex flex-col items-center justify-center animate-fade-in-up">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 flex flex-col items-center justify-center animate-fade-in-up">
               <div className="relative w-48 h-48 mb-4">
                 <svg className="w-full h-full transform -rotate-90">
                   <circle
@@ -210,7 +210,7 @@ export default function StudentDashboard() {
                     strokeDasharray={`${2 * Math.PI * 88}`}
                     strokeDashoffset={`${2 * Math.PI * 88 * (1 - completionPercentage / 100)}`}
                     strokeLinecap="round"
-                    className="text-emerald-500 transition-all duration-1000"
+                    className="text-cyan-500 transition-all duration-1000"
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -225,15 +225,15 @@ export default function StudentDashboard() {
             </div>
 
             {/* Current & Next Chapter */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up delay-100">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-100">
               <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-emerald-400" />
+                <BookOpen className="w-5 h-5 text-cyan-400" />
                 Current & Next
               </h3>
               <div className="space-y-4">
                 {completedChapters < totalChapters ? (
                   <>
-                    <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
+                    <div className="p-4 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
                       <p className="text-sm text-zinc-400 mb-1">Continue Learning</p>
                       <p className="text-white font-semibold mb-2">Chapter {nextChapter}</p>
                       <Link href={`/chapters/chapter-${nextChapter}`}>
@@ -263,7 +263,7 @@ export default function StudentDashboard() {
             </div>
 
             {/* Progress Stats */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up delay-200">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-200">
               <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-purple-400" />
                 Progress Stats
@@ -279,7 +279,7 @@ export default function StudentDashboard() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-zinc-400">Completion</span>
-                  <span className="text-emerald-400 font-semibold">{completionPercentage}%</span>
+                  <span className="text-cyan-400 font-semibold">{completionPercentage}%</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-zinc-400">Total Study Time</span>
@@ -301,7 +301,7 @@ export default function StudentDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Recent Quiz Scores */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up">
               <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                 <Star className="w-5 h-5 text-yellow-400" />
                 Recent Quiz Scores
@@ -319,7 +319,7 @@ export default function StudentDashboard() {
                         <span className="text-zinc-500 text-xs ml-2">Attempt #{attempt.attempt_number}</span>
                       </div>
                       <span className={`font-bold ${
-                        parseFloat(attempt.score_percentage) >= 80 ? 'text-emerald-400' : parseFloat(attempt.score_percentage) >= 60 ? 'text-yellow-400' : 'text-red-400'
+                        parseFloat(attempt.score_percentage) >= 80 ? 'text-cyan-400' : parseFloat(attempt.score_percentage) >= 60 ? 'text-yellow-400' : 'text-red-400'
                       }`}>
                         {attempt.score_percentage}%
                       </span>
@@ -332,7 +332,7 @@ export default function StudentDashboard() {
             </div>
 
             {/* Weak Areas */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up delay-100">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-100">
               <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                 <AlertCircle className="w-5 h-5 text-orange-400" />
                 Areas to Improve
@@ -356,7 +356,7 @@ export default function StudentDashboard() {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
+                  <CheckCircle2 className="w-12 h-12 text-cyan-400 mx-auto mb-3" />
                   <p className="text-zinc-400">No weak areas identified!</p>
                   <p className="text-sm text-zinc-500">Great job on your quizzes!</p>
                 </div>
@@ -374,7 +374,7 @@ export default function StudentDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Current Streak */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up">
               <div className="flex items-center justify-between mb-4">
                 <Flame className="w-10 h-10 text-orange-400" />
                 <div className="text-right">
@@ -389,7 +389,7 @@ export default function StudentDashboard() {
             </div>
 
             {/* Longest Streak */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up delay-100">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-100">
               <div className="flex items-center justify-between mb-4">
                 <Award className="w-10 h-10 text-yellow-400" />
                 <div className="text-right">
@@ -402,7 +402,7 @@ export default function StudentDashboard() {
             </div>
 
             {/* Last Active */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up delay-200">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-200">
               <div className="flex items-center justify-between mb-4">
                 <Calendar className="w-10 h-10 text-blue-400" />
                 <div className="text-right">
@@ -511,7 +511,7 @@ export default function StudentDashboard() {
         {/* Quick Actions */}
         <div>
           <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-            <Zap className="w-6 h-6 text-emerald-400" />
+            <Zap className="w-6 h-6 text-cyan-400" />
             Quick Actions
           </h2>
 
@@ -519,10 +519,10 @@ export default function StudentDashboard() {
             {/* Continue Learning */}
             {nextChapter && (
               <Link href={`/chapters/chapter-${nextChapter}`} className="block hover-lift">
-                <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover:border-emerald-500/50 transition-all">
+                <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover:border-cyan-500/50 transition-all">
                   <div className="flex items-center gap-4 mb-3">
-                    <div className="p-3 bg-emerald-500/20 rounded-lg">
-                      <BookOpen className="w-8 h-8 text-emerald-400" />
+                    <div className="p-3 bg-cyan-500/20 rounded-lg">
+                      <BookOpen className="w-8 h-8 text-cyan-400" />
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-white">Continue Learning</h3>
@@ -537,7 +537,7 @@ export default function StudentDashboard() {
             {/* Review Weak Areas */}
             {weakAreas.length > 0 ? (
               <Link href={`/chapters/${weakAreas[0].chapterId}`} className="block hover-lift">
-                <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover:border-orange-500/50 transition-all">
+                <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover:border-orange-500/50 transition-all">
                   <div className="flex items-center gap-4 mb-3">
                     <div className="p-3 bg-orange-500/20 rounded-lg">
                       <AlertCircle className="w-8 h-8 text-orange-400" />
@@ -551,7 +551,7 @@ export default function StudentDashboard() {
                 </div>
               </Link>
             ) : (
-              <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 opacity-50">
+              <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 opacity-50">
                 <div className="flex items-center gap-4 mb-3">
                   <div className="p-3 bg-zinc-800 rounded-lg">
                     <CheckCircle2 className="w-8 h-8 text-zinc-600" />
@@ -568,7 +568,7 @@ export default function StudentDashboard() {
             {/* Take a Quiz */}
             {nextChapter && (
               <Link href={`/chapters/chapter-${nextChapter}/quiz`} className="block hover-lift">
-                <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover:border-purple-500/50 transition-all">
+                <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover:border-purple-500/50 transition-all">
                   <div className="flex items-center gap-4 mb-3">
                     <div className="p-3 bg-purple-500/20 rounded-lg">
                       <Target className="w-8 h-8 text-purple-400" />

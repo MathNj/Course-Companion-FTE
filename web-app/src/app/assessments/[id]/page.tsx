@@ -58,12 +58,14 @@ export default function AssessmentSubmitPage() {
         question_type: assessmentData.questionType,
       });
 
-      // Redirect to feedback page
-      router.push(`/assessments/feedback/${chapterId}`);
+      // Show success and redirect to dashboard
+      alert('Assessment submitted successfully! Check your dashboard for feedback.');
+      router.push('/dashboard');
     } catch (err: any) {
       // Show fallback UI for demo
       console.log('Backend not available, showing demo mode');
-      router.push(`/assessments/feedback/${chapterId}`);
+      alert('Assessment submitted! (Demo mode - backend API unavailable)');
+      router.push('/dashboard');
     } finally {
       setIsSubmitting(false);
     }
@@ -105,15 +107,15 @@ export default function AssessmentSubmitPage() {
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <div className="flex items-center gap-2 text-sm text-zinc-400">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-cyan-400" />
                   <span>Detailed grading</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-zinc-400">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-cyan-400" />
                   <span>Personalized feedback</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-zinc-400">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-cyan-400" />
                   <span>Actionable insights</span>
                 </div>
               </div>
@@ -122,7 +124,7 @@ export default function AssessmentSubmitPage() {
         </div>
 
         {/* Assessment Form */}
-        <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up">
+        <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up">
           <div className="flex items-center gap-3 mb-6">
             <FileText className="w-6 h-6 text-blue-400" />
             <h2 className="text-2xl font-bold text-white">Assessment Submission</h2>
@@ -147,7 +149,7 @@ export default function AssessmentSubmitPage() {
                 value={question || assessmentData.questionText}
                 onChange={(e) => setQuestion(e.target.value)}
                 rows={4}
-                className="w-full px-4 py-3 rounded-lg border border-zinc-700 bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full px-4 py-3 rounded-lg border border-cyan-700 bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
                 placeholder="Enter your question here..."
               />
               <p className="text-xs text-zinc-500 mt-1">The question you want to answer</p>
@@ -162,7 +164,7 @@ export default function AssessmentSubmitPage() {
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 rows={10}
-                className="w-full px-4 py-3 rounded-lg border border-zinc-700 bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full px-4 py-3 rounded-lg border border-cyan-700 bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
                 placeholder="Write your answer here..."
               />
               <div className="flex items-center justify-between mt-2">
@@ -182,7 +184,7 @@ export default function AssessmentSubmitPage() {
                 value={rubric || assessmentData.rubric}
                 onChange={(e) => setRubric(e.target.value)}
                 rows={4}
-                className="w-full px-4 py-3 rounded-lg border border-zinc-700 bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full px-4 py-3 rounded-lg border border-cyan-700 bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
                 placeholder="Describe how this should be graded..."
               />
               <p className="text-xs text-zinc-500 mt-1">
@@ -205,7 +207,7 @@ export default function AssessmentSubmitPage() {
             </div>
 
             {/* Submit Button */}
-            <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
+            <div className="flex items-center justify-between pt-4 border-t border-cyan-800">
               <div className="text-sm text-zinc-500">
                 <Clock className="w-4 h-4 inline mr-1" />
                 Estimated time: 5-10 seconds
@@ -232,7 +234,7 @@ export default function AssessmentSubmitPage() {
         </div>
 
         {/* Example Assessment */}
-        <div className="mt-8 bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up delay-100">
+        <div className="mt-8 bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-100">
           <h3 className="text-xl font-bold text-white mb-4">Example Assessment</h3>
           <div className="space-y-4 text-zinc-300">
             <div>

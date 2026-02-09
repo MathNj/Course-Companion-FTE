@@ -141,9 +141,9 @@ export function NoteEditor({ chapterId, sectionId, onClose }: NoteEditorProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-zinc-900 border border-cyan-800 rounded-xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-zinc-800">
+        <div className="flex items-center justify-between p-6 border-b border-cyan-800">
           <h2 className="text-xl font-bold text-white">
             {existingNote ? 'Edit Note' : 'New Note'}
           </h2>
@@ -168,7 +168,7 @@ export function NoteEditor({ chapterId, sectionId, onClose }: NoteEditorProps) {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Start writing your note..."
-            className="w-full h-64 px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 resize-none"
+            className="w-full h-64 px-4 py-3 bg-zinc-800 border border-cyan-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-cyan-500 resize-none"
           />
 
           {/* Tags */}
@@ -186,7 +186,7 @@ export function NoteEditor({ chapterId, sectionId, onClose }: NoteEditorProps) {
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
                 placeholder="Add tag..."
-                className="flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
+                className="flex-1 px-3 py-2 bg-zinc-800 border border-cyan-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
               />
               <button
                 onClick={handleAddTag}
@@ -273,7 +273,7 @@ export function NoteEditor({ chapterId, sectionId, onClose }: NoteEditorProps) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-6 border-t border-zinc-800">
+        <div className="flex items-center justify-between p-6 border-t border-cyan-800">
           {existingNote && (
             <button
               onClick={handleDelete}

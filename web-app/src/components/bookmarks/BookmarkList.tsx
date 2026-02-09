@@ -147,7 +147,7 @@ export default function BookmarkList({ className = '' }: BookmarkListProps) {
               value={newFolderName}
               onChange={(e) => setNewFolderName(e.target.value)}
               placeholder="Folder name"
-              className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 bg-zinc-900 border border-cyan-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
               autoFocus
               onKeyPress={(e) => e.key === 'Enter' && handleCreateFolder()}
             />
@@ -227,7 +227,7 @@ export default function BookmarkList({ className = '' }: BookmarkListProps) {
             {bookmarks.map((bookmark) => (
               <div
                 key={bookmark.id}
-                className="p-4 bg-zinc-900 border border-zinc-800 rounded-lg hover:border-zinc-700 transition-all"
+                className="p-4 bg-zinc-900 border border-cyan-800 rounded-lg hover:border-cyan-700 transition-all"
               >
                 {editingId === bookmark.id ? (
                   <div className="flex items-center gap-2">
@@ -235,7 +235,7 @@ export default function BookmarkList({ className = '' }: BookmarkListProps) {
                       type="text"
                       value={editTitle}
                       onChange={(e) => setEditTitle(e.target.value)}
-                      className="flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
+                      className="flex-1 px-3 py-2 bg-zinc-800 border border-cyan-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
                       onKeyPress={(e) => e.key === 'Enter' && handleUpdate(bookmark.id)}
                     />
                     <button

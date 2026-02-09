@@ -69,12 +69,12 @@ export default function LibraryPage() {
       <Header />
 
       {/* Hero Section */}
-      <div className="border-b border-zinc-800 bg-[#0B0C10]/50 backdrop-blur">
+      <div className="border-b border-cyan-700/50 bg-[#0B0C10]/50 backdrop-blur">
         <div className="container px-4 py-12">
           <div className="max-w-4xl">
             {/* Breadcrumb */}
             <div className="flex items-center gap-2 text-sm text-zinc-400 mb-4">
-              <Link href="/" className="hover:text-emerald-400 transition-colors">Home</Link>
+              <Link href="/" className="hover:text-cyan-400 transition-colors">Home</Link>
               <span>/</span>
               <span className="text-white font-medium">Course Library</span>
             </div>
@@ -92,7 +92,7 @@ export default function LibraryPage() {
               <div className="hidden md:flex flex-col items-end gap-2">
                 <div className="text-right">
                   <p className="text-sm text-zinc-400">Your Progress</p>
-                  <p className="text-3xl font-bold text-emerald-400">{completionPercentage}%</p>
+                  <p className="text-3xl font-bold text-cyan-400">{completionPercentage}%</p>
                 </div>
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function LibraryPage() {
             {nextChapter && (
               <div className="mt-6">
                 <Link href={`/chapters/${nextChapter.id}`}>
-                  <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700">
+                  <Button size="lg" className="bg-cyan-600 hover:bg-cyan-700">
                     <Target className="h-5 w-5 mr-2" />
                     Continue Learning: {nextChapter.title}
                     <TrendingUp className="h-5 w-5 ml-2" />
@@ -197,7 +197,7 @@ function FilterButton({
       onClick={onClick}
       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
         active
-          ? 'bg-emerald-600 text-white'
+          ? 'bg-cyan-600 text-white'
           : 'bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700'
       }`}
     >
@@ -227,19 +227,19 @@ function ChapterGridWithProgress({
             href={`/chapters/${chapter.id}`}
             className="group"
           >
-            <div className={`card-dark p-6 h-full transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-emerald-500/10 ${
-              isCompleted ? 'border-emerald-500/30' : isInProgress ? 'border-blue-500/30' : ''
+            <div className={`card-dark p-6 h-full transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/10 ${
+              isCompleted ? 'border-cyan-500/30' : isInProgress ? 'border-blue-500/30' : ''
             }`}>
               {/* Chapter Number */}
               <div className="flex items-center justify-between mb-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 group-hover:bg-emerald-500/20 group-hover:scale-110 transition-all duration-300">
-                  <span className="text-lg font-bold text-emerald-400">{index + 1}</span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-500/20 group-hover:bg-cyan-500/20 group-hover:scale-110 transition-all duration-300">
+                  <span className="text-lg font-bold text-cyan-400">{index + 1}</span>
                 </div>
                 {isLocked && <Lock className="h-4 w-4 text-zinc-500" />}
               </div>
 
               {/* Title */}
-              <h3 className="mb-2 text-lg font-bold text-white group-hover:text-emerald-400 transition-colors duration-300">
+              <h3 className="mb-2 text-lg font-bold text-white group-hover:text-cyan-400 transition-colors duration-300">
                 {chapter.title}
               </h3>
 
@@ -256,7 +256,7 @@ function ChapterGridWithProgress({
               {/* Status Badge */}
               <div className="flex items-center justify-between">
                 {isCompleted ? (
-                  <span className="flex items-center gap-1.5 text-xs font-medium text-emerald-400">
+                  <span className="flex items-center gap-1.5 text-xs font-medium text-cyan-400">
                     <Trophy className="h-3.5 w-3.5" />
                     Completed
                   </span>
@@ -273,7 +273,7 @@ function ChapterGridWithProgress({
                 ) : (
                   <span className="text-xs text-zinc-500">Not started</span>
                 )}
-                <ArrowRight className="h-4 w-4 text-zinc-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all duration-300" />
+                <ArrowRight className="h-4 w-4 text-zinc-500 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all duration-300" />
               </div>
             </div>
           </Link>

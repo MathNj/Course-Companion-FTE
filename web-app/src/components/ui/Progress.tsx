@@ -9,7 +9,7 @@ export const Progress = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement
       {...props}
     >
       <div
-        className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500"
+        className="h-full bg-gradient-to-r from-cyan-500 to-cyan-400 transition-all duration-500"
         style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
       />
     </div>

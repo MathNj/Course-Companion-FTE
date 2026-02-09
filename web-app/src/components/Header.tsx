@@ -15,17 +15,17 @@ export function Header() {
   const { isOpen: isSearchOpen, openSearch, closeSearch } = useSearch();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-800 bg-[#0B0C10]/95 backdrop-blur supports-[backdrop-filter]:bg-[#0B0C10]/60">
+    <header className="sticky top-0 z-50 w-full border-b border-cyan-700/50 bg-[#0B0C10]/95 backdrop-blur supports-[backdrop-filter]:bg-[#0B0C10]/60">
       <div className="container flex h-16 items-center justify-between">
         <Link
           href="/"
           className="flex items-center space-x-2 group"
           onClick={() => setMobileMenuOpen(false)}
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all duration-300">
-            <BookOpen className="h-6 w-6 text-emerald-400" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-500/20 group-hover:scale-110 group-hover:bg-cyan-500/20 transition-all duration-300">
+            <BookOpen className="h-6 w-6 text-cyan-400" />
           </div>
-          <span className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors duration-300">Course Companion</span>
+          <span className="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors duration-300">Course Companion</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -43,7 +43,7 @@ export function Header() {
                     <span>{progress.current_streak} day streak</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors duration-300 group cursor-default">
-                    <Trophy className="h-4 w-4 text-emerald-400 group-hover:scale-110 transition-transform duration-300" />
+                    <Trophy className="h-4 w-4 text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
                     <span>{progress.completion_percentage}% complete</span>
                   </div>
                 </div>
@@ -115,7 +115,7 @@ export function Header() {
                   <p className="text-sm font-medium text-white">{user.email}</p>
                   <p className="text-xs text-zinc-400 capitalize">{user.subscription_tier}</p>
                 </div>
-                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center hover:scale-110 transition-transform duration-300 cursor-pointer ring-2 ring-transparent hover:ring-emerald-500/50">
+                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center hover:scale-110 transition-transform duration-300 cursor-pointer ring-2 ring-transparent hover:ring-cyan-500/50">
                   <User className="h-5 w-5 text-white" />
                 </div>
                 <Button
@@ -162,19 +162,19 @@ export function Header() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <FadeIn>
-          <div className="md:hidden border-t border-zinc-800 bg-[#0B0C10] py-4">
+          <div className="md:hidden border-t border-cyan-700/50 bg-[#0B0C10] py-4">
             <nav className="container flex flex-col gap-4">
               {user ? (
                 <>
                   {/* Progress Stats */}
                   {progress && (
-                    <div className="flex items-center justify-between text-sm py-2 border-b border-zinc-800">
+                    <div className="flex items-center justify-between text-sm py-2 border-b border-cyan-700/50">
                       <div className="flex items-center gap-1.5 text-zinc-400">
                         <Flame className="h-4 w-4 text-orange-400" />
                         <span>{progress.current_streak} day streak</span>
                       </div>
                       <div className="flex items-center gap-1.5 text-zinc-400">
-                        <Trophy className="h-4 w-4 text-emerald-400" />
+                        <Trophy className="h-4 w-4 text-cyan-400" />
                         <span>{progress.completion_percentage}% complete</span>
                       </div>
                     </div>
@@ -221,8 +221,8 @@ export function Header() {
                   </Link>
 
                   {/* User Info */}
-                  <div className="flex items-center gap-3 py-2 border-b border-zinc-800">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
+                  <div className="flex items-center gap-3 py-2 border-b border-cyan-700/50">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center">
                       <User className="h-5 w-5 text-white" />
                     </div>
                     <div>

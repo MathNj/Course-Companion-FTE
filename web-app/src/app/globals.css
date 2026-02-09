@@ -9,7 +9,7 @@
   }
 
   * {
-    border-color: hsl(var(--border));
+    border-color: rgb(6 182 212);
   }
 
   body {
@@ -27,27 +27,27 @@
 
 @layer components {
   .glow-text {
-    text-shadow: 0 0 20px rgba(52, 211, 153, 0.5);
+    text-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
   }
 
   .glow-box {
-    box-shadow: 0 0 40px rgba(52, 211, 153, 0.15);
+    box-shadow: 0 0 40px rgba(6, 182, 212, 0.15);
   }
 
   .gradient-radial {
     background: radial-gradient(
       circle,
-      rgba(52, 211, 153, 0.15) 0%,
+      rgba(6, 182, 212, 0.15) 0%,
       rgba(11, 12, 16, 0) 70%
     );
   }
 
   .card-dark {
-    @apply bg-zinc-900 border border-zinc-800 rounded-xl;
+    @apply bg-zinc-900 border border-cyan-500/50 rounded-xl;
   }
 
   .btn-primary {
-    @apply bg-emerald-500 hover:bg-emerald-400 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200;
+    @apply bg-cyan-500 hover:bg-cyan-400 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200;
   }
 
   .btn-secondary {
@@ -73,10 +73,10 @@
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(52, 211, 153, 0.2);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
   }
   50% {
-    box-shadow: 0 0 40px rgba(52, 211, 153, 0.4);
+    box-shadow: 0 0 40px rgba(6, 182, 212, 0.4);
   }
 }
 
@@ -185,7 +185,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(52, 211, 153, 0.1),
+    rgba(6, 182, 212, 0.1),
     transparent
   );
   background-size: 200% 100%;
@@ -241,7 +241,7 @@
 }
 
 .hover-glow:hover {
-  box-shadow: 0 0 30px rgba(52, 211, 153, 0.3);
+  box-shadow: 0 0 30px rgba(6, 182, 212, 0.3);
 }
 
 /* Click/Active Effects */
@@ -269,9 +269,9 @@
 .progress-bar-animated {
   background: linear-gradient(
     90deg,
-    #10b981 0%,
-    #34d399 50%,
-    #10b981 100%
+    #06b6d4 0%,
+    #22d3ee 50%,
+    #06b6d4 100%
   );
   background-size: 200% 100%;
   animation: shimmer 2s linear infinite;
@@ -304,12 +304,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-zinc-800 rounded-full;
+  @apply bg-cyan-600 rounded-full;
   transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-zinc-700;
+  @apply bg-cyan-500;
 }
 
 /* Custom Scrollbar for Quiz Content */
@@ -322,11 +322,11 @@
 }
 
 .quiz-content::-webkit-scrollbar-thumb {
-  @apply bg-zinc-700 rounded-full;
+  @apply bg-cyan-600 rounded-full;
 }
 
 .quiz-content::-webkit-scrollbar-thumb:hover {
-  @apply bg-zinc-600;
+  @apply bg-cyan-500;
 }
 
 /* Smooth Scroll */
@@ -336,16 +336,16 @@ html {
 
 /* Code Highlighting */
 .prose pre {
-  @apply bg-zinc-950 border border-zinc-800 rounded-lg;
+  @apply bg-zinc-950 border border-cyan-500/50 rounded-lg;
   transition: all 0.3s ease;
 }
 
 .prose pre:hover {
-  border-color: rgba(52, 211, 153, 0.3);
+  border-color: rgba(6, 182, 212, 0.5);
 }
 
 .prose code {
-  @apply text-emerald-400;
+  @apply text-cyan-400;
 }
 
 /* Syntax Highlighting - Dark Theme */
@@ -363,7 +363,7 @@ html {
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-subst {
-  color: #34d399;
+  color: #06b6d4;
   font-weight: bold;
 }
 
@@ -389,7 +389,7 @@ html {
 
 .hljs-type,
 .hljs-class .hljs-title {
-  color: #34d399;
+  color: #06b6d4;
 }
 
 .hljs-tag,
@@ -439,33 +439,33 @@ html {
   --tw-prose-body: theme('colors.zinc.300');
   --tw-prose-headings: theme('colors.white');
   --tw-prose-lead: theme('colors.zinc.400');
-  --tw-prose-links: theme('colors.emerald.400');
+  --tw-prose-links: theme('colors.cyan.400');
   --tw-prose-bold: theme('colors.white');
   --tw-prose-counters: theme('colors.zinc.500');
   --tw-prose-bullets: theme('colors.zinc.600');
-  --tw-prose-hr: theme('colors.zinc.800');
+  --tw-prose-hr: theme('colors.cyan.800');
   --tw-prose-quotes: theme('colors.zinc.400');
-  --tw-prose-quote-borders: theme('colors.emerald.500');
-  --tw-prose-code: theme('colors.emerald.400');
+  --tw-prose-quote-borders: theme('colors.cyan.500');
+  --tw-prose-code: theme('colors.cyan.400');
   --tw-prose-pre-code: theme('colors.zinc.300');
   --tw-prose-pre-bg: theme('colors.zinc.950');
-  --tw-prose-th-borders: theme('colors.zinc.700');
-  --tw-prose-td-borders: theme('colors.zinc.800');
+  --tw-prose-th-borders: theme('colors.cyan.700');
+  --tw-prose-td-borders: theme('colors.cyan.800');
   --tw-prose-invert-body: theme('colors.zinc.300');
   --tw-prose-invert-headings: theme('colors.white');
   --tw-prose-invert-lead: theme('colors.zinc.400');
-  --tw-prose-invert-links: theme('colors.emerald.400');
+  --tw-prose-invert-links: theme('colors.cyan.400');
   --tw-prose-invert-bold: theme('colors.white');
   --tw-prose-invert-counters: theme('colors.zinc.500');
   --tw-prose-invert-bullets: theme('colors.zinc.600');
-  --tw-prose-invert-hr: theme('colors.zinc.800');
+  --tw-prose-invert-hr: theme('colors.cyan.800');
   --tw-prose-invert-quotes: theme('colors.zinc.400');
-  --tw-prose-invert-quote-borders: theme('colors.emerald.500');
-  --tw-prose-invert-code: theme('colors.emerald.400');
+  --tw-prose-invert-quote-borders: theme('colors.cyan.500');
+  --tw-prose-invert-code: theme('colors.cyan.400');
   --tw-prose-invert-pre-code: theme('colors.zinc.300');
   --tw-prose-invert-pre-bg: theme('colors.zinc.950');
-  --tw-prose-invert-th-borders: theme('colors.zinc.700');
-  --tw-prose-invert-td-borders: theme('colors.zinc.800');
+  --tw-prose-invert-th-borders: theme('colors.cyan.700');
+  --tw-prose-invert-td-borders: theme('colors.cyan.800');
 }
 
 /* Enhanced Chapter Content Styling */
@@ -508,7 +508,7 @@ html {
   font-size: 2.5rem; /* 40px - Main chapter title */
   margin-top: 3rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgb(63 63 70);
+  border-bottom: 1px solid rgb(6 182 212);
 }
 
 .chapter-content h2 {
@@ -571,14 +571,14 @@ html {
   background-color: rgb(39 39 42);
   padding: 0.2em 0.4em;
   border-radius: 0.25rem;
-  border: 1px solid rgb(63 63 70);
+  border: 1px solid rgb(6 182 212);
 }
 
 .chapter-content pre {
   margin: 1.5rem 0;
   line-height: 1.6;
   background-color: rgb(9 9 11);
-  border: 1px solid rgb(39 39 42);
+  border: 1px solid rgb(6 182 212);
   border-radius: 0.5rem;
   padding: 1rem;
   overflow-x: auto;
@@ -594,7 +594,7 @@ html {
 .chapter-content blockquote {
   margin: 1.5rem 0;
   padding: 1rem 1.5rem;
-  border-left: 4px solid rgb(16 185 129);
+  border-left: 4px solid rgb(6 182 212);
   background-color: rgb(24 24 27 / 0.5);
   border-radius: 0 0.5rem 0.5rem 0;
   color: rgb(212 212 216);
@@ -604,16 +604,16 @@ html {
 }
 
 .chapter-content a {
-  color: rgb(52 211 153);
+  color: rgb(6 182 212);
   text-decoration: underline;
   text-underline-offset: 0.2em;
   text-decoration-thickness: 1px;
-  text-decoration-color: rgb(52 211 153 / 0.3);
+  text-decoration-color: rgb(132 204 22 / 0.3);
   transition: text-decoration-color 0.2s ease;
 }
 
 .chapter-content a:hover {
-  text-decoration-color: rgb(52 211 153);
+  text-decoration-color: rgb(6 182 212);
 }
 
 .chapter-content table {
@@ -621,7 +621,7 @@ html {
   font-size: 0.875rem; /* Slightly smaller than body */
   width: 100%;
   border-collapse: collapse;
-  border: 1px solid rgb(63 63 70);
+  border: 1px solid rgb(6 182 212);
   border-radius: 0.5rem;
   overflow: hidden;
 }
@@ -635,7 +635,7 @@ html {
   text-align: left;
   font-weight: 600;
   color: rgb(228 228 231);
-  border-bottom: 1px solid rgb(63 63 70);
+  border-bottom: 1px solid rgb(6 182 212);
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 0.05em;
@@ -643,7 +643,7 @@ html {
 
 .chapter-content td {
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid rgb(39 39 42);
+  border-bottom: 1px solid rgb(6 182 212);
   color: rgb(212 212 216);
 }
 
@@ -677,7 +677,7 @@ html {
 
 .chapter-content hr {
   border: none;
-  border-top: 1px solid rgb(63 63 70);
+  border-top: 1px solid rgb(6 182 212);
   margin: 2rem 0;
 }
 
@@ -734,7 +734,7 @@ html {
   top: 0;
   left: 0;
   pointer-events: none;
-  background-image: radial-gradient(circle, rgba(52, 211, 153, 0.3) 10%, transparent 10.01%);
+  background-image: radial-gradient(circle, rgba(6, 182, 212, 0.3) 10%, transparent 10.01%);
   background-repeat: no-repeat;
   background-position: 50%;
   transform: scale(10, 10);

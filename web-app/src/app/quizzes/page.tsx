@@ -111,7 +111,7 @@ export default function QuizzesPage() {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-emerald-400';
+    if (score >= 80) return 'text-cyan-400';
     if (score >= 60) return 'text-yellow-400';
     return 'text-red-400';
   };
@@ -121,11 +121,11 @@ export default function QuizzesPage() {
       <Header />
 
       {/* Hero Section */}
-      <div className="border-b border-zinc-800 bg-[#0B0C10]/50 backdrop-blur">
+      <div className="border-b border-cyan-700/50 bg-[#0B0C10]/50 backdrop-blur">
         <div className="container px-4 py-12">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-sm text-zinc-400 mb-4">
-            <Link href="/" className="hover:text-emerald-400 transition-colors">Home</Link>
+            <Link href="/" className="hover:text-cyan-400 transition-colors">Home</Link>
             <span>/</span>
             <span className="text-white font-medium">All Quizzes</span>
           </div>
@@ -153,7 +153,7 @@ export default function QuizzesPage() {
               <span className="text-zinc-400">{stats.inProgress} in progress</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Trophy className="h-4 w-4 text-emerald-400" />
+              <Trophy className="h-4 w-4 text-cyan-400" />
               <span className="text-zinc-400">{stats.passed} passed</span>
             </div>
             {!isPremium && (
@@ -219,8 +219,8 @@ export default function QuizzesPage() {
                     isLocked ? 'opacity-60' : ''
                   }`}
                 >
-                  <div className={`card-dark p-6 h-full transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-emerald-500/10 ${
-                    status === 'passed' ? 'border-emerald-500/30' : status === 'in-progress' ? 'border-blue-500/30' : ''
+                  <div className={`card-dark p-6 h-full transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/10 ${
+                    status === 'passed' ? 'border-cyan-500/30' : status === 'in-progress' ? 'border-blue-500/30' : ''
                   }`}>
                     {/* Lock Overlay */}
                     {isLocked && (
@@ -239,15 +239,15 @@ export default function QuizzesPage() {
 
                     {/* Chapter Number */}
                     <div className="flex items-center justify-between mb-4">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 group-hover:bg-emerald-500/20 group-hover:scale-110 transition-all duration-300">
-                        <span className="text-lg font-bold text-emerald-400">{chapter.number}</span>
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-500/20 group-hover:bg-cyan-500/20 group-hover:scale-110 transition-all duration-300">
+                        <span className="text-lg font-bold text-cyan-400">{chapter.number}</span>
                       </div>
-                      {status === 'passed' && <Trophy className="h-5 w-5 text-emerald-400" />}
+                      {status === 'passed' && <Trophy className="h-5 w-5 text-cyan-400" />}
                       {status === 'in-progress' && <Flame className="h-5 w-5 text-blue-400" />}
                     </div>
 
                     {/* Title */}
-                    <h3 className="mb-2 text-lg font-bold text-white group-hover:text-emerald-400 transition-colors duration-300">
+                    <h3 className="mb-2 text-lg font-bold text-white group-hover:text-cyan-400 transition-colors duration-300">
                       {chapter.title}
                     </h3>
 
@@ -255,7 +255,7 @@ export default function QuizzesPage() {
                     <div className="mb-4">
                       <span className={`text-xs font-medium px-2 py-1 rounded ${
                         chapter.difficulty === 'Beginner'
-                          ? 'bg-emerald-500/20 text-emerald-400'
+                          ? 'bg-cyan-500/20 text-cyan-400'
                           : chapter.difficulty === 'Intermediate'
                           ? 'bg-yellow-500/20 text-yellow-400'
                           : 'bg-red-500/20 text-red-400'
@@ -282,7 +282,7 @@ export default function QuizzesPage() {
 
                     {/* Score Display */}
                     {score !== undefined && (
-                      <div className="mb-4 p-3 bg-zinc-900 rounded-lg border border-zinc-800">
+                      <div className="mb-4 p-3 bg-zinc-900 rounded-lg border border-cyan-800">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-xs text-zinc-400">Best Score</span>
                           <span className={`text-lg font-bold ${getScoreColor(score)}`}>
@@ -294,7 +294,7 @@ export default function QuizzesPage() {
                             className="h-full rounded-full transition-all duration-500"
                             style={{
                               width: `${score}%`,
-                              backgroundColor: score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#ef4444'
+                              backgroundColor: score >= 80 ? '#06b6d4' : score >= 60 ? '#f59e0b' : '#ef4444'
                             }}
                           />
                         </div>
@@ -304,7 +304,7 @@ export default function QuizzesPage() {
                     {/* Status Badge */}
                     <div className="flex items-center justify-between mb-4">
                       {status === 'passed' ? (
-                        <span className="flex items-center gap-1.5 text-xs font-medium text-emerald-400">
+                        <span className="flex items-center gap-1.5 text-xs font-medium text-cyan-400">
                           <CheckCircle className="h-3.5 w-3.5" />
                           Passed
                         </span>
@@ -328,7 +328,7 @@ export default function QuizzesPage() {
                         className="w-full"
                         disabled={isLocked}
                         variant={status === 'passed' ? 'outline' : 'default'}
-                        className={status === 'passed' ? 'border-emerald-500 text-emerald-400 hover:bg-emerald-500/10' : ''}
+                        className={status === 'passed' ? 'border-cyan-500 text-cyan-400 hover:bg-cyan-500/10' : ''}
                       >
                         {status === 'passed' ? (
                           <>
@@ -368,7 +368,7 @@ function FilterButton({
       onClick={onClick}
       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
         active
-          ? 'bg-emerald-600 text-white'
+          ? 'bg-cyan-600 text-white'
           : 'bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700'
       }`}
     >

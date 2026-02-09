@@ -232,7 +232,7 @@ export default function SettingsPage() {
           className="w-full flex items-center justify-between p-6 text-left"
         >
           <div className="flex items-center gap-3">
-            <Icon className="h-5 w-5 text-emerald-400" />
+            <Icon className="h-5 w-5 text-cyan-400" />
             <h3 className="text-lg font-semibold text-white">{title}</h3>
           </div>
           {isExpanded ? (
@@ -242,7 +242,7 @@ export default function SettingsPage() {
           )}
         </button>
 
-        {isExpanded && <div className="px-6 pb-6 border-t border-zinc-800 pt-6">{children}</div>}
+        {isExpanded && <div className="px-6 pb-6 border-t border-cyan-800 pt-6">{children}</div>}
       </div>
     );
   };
@@ -269,7 +269,7 @@ export default function SettingsPage() {
                 <label className="block text-sm font-medium text-zinc-400 mb-2">
                   Subscription Plan
                 </label>
-                <div className="flex items-center justify-between p-4 bg-zinc-900 rounded-lg border border-zinc-800">
+                <div className="flex items-center justify-between p-4 bg-zinc-900 rounded-lg border border-cyan-800">
                   <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-lg ${
                       user.subscription_tier === 'free'
@@ -316,7 +316,7 @@ export default function SettingsPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="flex-1 px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-500 focus:border-emerald-500 focus:outline-none"
+                    className="flex-1 px-4 py-3 bg-zinc-900 border border-cyan-700 rounded-lg text-white placeholder:text-zinc-500 focus:border-cyan-500 focus:outline-none"
                     placeholder="your@email.com"
                   />
                   <Button
@@ -343,7 +343,7 @@ export default function SettingsPage() {
                 <select
                   value={timezone}
                   onChange={(e) => setTimezone(e.target.value)}
-                  className="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:border-emerald-500 focus:outline-none"
+                  className="w-full px-4 py-3 bg-zinc-900 border border-cyan-700 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
                 >
                   <option value="UTC">UTC (Coordinated Universal Time)</option>
                   <option value="America/New_York">Eastern Time (ET)</option>
@@ -363,7 +363,7 @@ export default function SettingsPage() {
           {/* Security Section */}
           <SectionCard id="security" title="Security" icon={Lock}>
             <div className="space-y-6">
-              <div className="flex items-center gap-3 p-4 bg-zinc-900 rounded-lg border border-zinc-800">
+              <div className="flex items-center gap-3 p-4 bg-zinc-900 rounded-lg border border-cyan-800">
                 <Shield className="h-5 w-5 text-zinc-400" />
                 <div>
                   <p className="text-sm text-zinc-400">Password last changed</p>
@@ -382,7 +382,7 @@ export default function SettingsPage() {
                       type="password"
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
-                      className="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-500 focus:border-emerald-500 focus:outline-none"
+                      className="w-full px-4 py-3 bg-zinc-900 border border-cyan-700 rounded-lg text-white placeholder:text-zinc-500 focus:border-cyan-500 focus:outline-none"
                       placeholder="Enter current password"
                     />
                   </div>
@@ -394,7 +394,7 @@ export default function SettingsPage() {
                       type="password"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-500 focus:border-emerald-500 focus:outline-none"
+                      className="w-full px-4 py-3 bg-zinc-900 border border-cyan-700 rounded-lg text-white placeholder:text-zinc-500 focus:border-cyan-500 focus:outline-none"
                       placeholder="Enter new password (min 8 characters)"
                     />
                   </div>
@@ -406,7 +406,7 @@ export default function SettingsPage() {
                       type="password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-500 focus:border-emerald-500 focus:outline-none"
+                      className="w-full px-4 py-3 bg-zinc-900 border border-cyan-700 rounded-lg text-white placeholder:text-zinc-500 focus:border-cyan-500 focus:outline-none"
                       placeholder="Confirm new password"
                     />
                   </div>
@@ -429,7 +429,7 @@ export default function SettingsPage() {
           {/* Notifications Section */}
           <SectionCard id="notifications" title="Notifications" icon={Bell}>
             <div className="space-y-6">
-              <div className="flex items-center justify-between p-4 bg-zinc-900 rounded-lg border border-zinc-800">
+              <div className="flex items-center justify-between p-4 bg-zinc-900 rounded-lg border border-cyan-800">
                 <div>
                   <p className="text-white font-medium">Email Notifications</p>
                   <p className="text-sm text-zinc-500">Receive updates about your progress</p>
@@ -437,7 +437,7 @@ export default function SettingsPage() {
                 <button
                   onClick={() => setEmailNotifications(!emailNotifications)}
                   className={`relative w-12 h-6 rounded-full transition-colors ${
-                    emailNotifications ? 'bg-emerald-600' : 'bg-zinc-700'
+                    emailNotifications ? 'bg-cyan-600' : 'bg-zinc-700'
                   }`}
                 >
                   <span
@@ -448,7 +448,7 @@ export default function SettingsPage() {
                 </button>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-zinc-900 rounded-lg border border-zinc-800">
+              <div className="flex items-center justify-between p-4 bg-zinc-900 rounded-lg border border-cyan-800">
                 <div>
                   <p className="text-white font-medium">Streak Reminders</p>
                   <p className="text-sm text-zinc-500">Get reminded to maintain your streak</p>
@@ -456,7 +456,7 @@ export default function SettingsPage() {
                 <button
                   onClick={() => setStreakReminders(!streakReminders)}
                   className={`relative w-12 h-6 rounded-full transition-colors ${
-                    streakReminders ? 'bg-emerald-600' : 'bg-zinc-700'
+                    streakReminders ? 'bg-cyan-600' : 'bg-zinc-700'
                   }`}
                 >
                   <span
@@ -467,7 +467,7 @@ export default function SettingsPage() {
                 </button>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-zinc-900 rounded-lg border border-zinc-800">
+              <div className="flex items-center justify-between p-4 bg-zinc-900 rounded-lg border border-cyan-800">
                 <div>
                   <p className="text-white font-medium">Weekly Progress Report</p>
                   <p className="text-sm text-zinc-500">Summary of your weekly learning activity</p>
@@ -475,7 +475,7 @@ export default function SettingsPage() {
                 <button
                   onClick={() => setWeeklyReport(!weeklyReport)}
                   className={`relative w-12 h-6 rounded-full transition-colors ${
-                    weeklyReport ? 'bg-emerald-600' : 'bg-zinc-700'
+                    weeklyReport ? 'bg-cyan-600' : 'bg-zinc-700'
                   }`}
                 >
                   <span
@@ -498,7 +498,7 @@ export default function SettingsPage() {
                 <select
                   value={dailyGoalMinutes}
                   onChange={(e) => setDailyGoalMinutes(parseInt(e.target.value))}
-                  className="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:border-emerald-500 focus:outline-none"
+                  className="w-full px-4 py-3 bg-zinc-900 border border-cyan-700 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
                 >
                   <option value={15}>15 minutes</option>
                   <option value={30}>30 minutes</option>
@@ -517,7 +517,7 @@ export default function SettingsPage() {
                   type="time"
                   value={reminderTime}
                   onChange={(e) => setReminderTime(e.target.value)}
-                  className="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:border-emerald-500 focus:outline-none"
+                  className="w-full px-4 py-3 bg-zinc-900 border border-cyan-700 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
                 />
                 <p className="text-sm text-zinc-500 mt-1">When to send daily learning reminders</p>
               </div>
@@ -548,7 +548,7 @@ export default function SettingsPage() {
         {/* Save Status Banner */}
         {saveStatus !== 'idle' && (
           <div className={`fixed bottom-4 right-4 p-4 rounded-lg shadow-lg flex items-center gap-3 ${
-            saveStatus === 'success' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'
+            saveStatus === 'success' ? 'bg-cyan-600 text-white' : 'bg-red-600 text-white'
           }`}>
             {saveStatus === 'success' ? (
               <CheckCircle className="h-5 w-5" />

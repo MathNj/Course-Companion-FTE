@@ -30,18 +30,18 @@ function ChapterCard({ chapter, index }: { chapter: Chapter; index: number }) {
   return (
     <HoverCard className="interactive-card group card-dark overflow-hidden">
       {/* Chapter Number Badge */}
-      <div className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 group-hover:border-emerald-500/30 transition-all duration-300">
+      <div className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-cyan-700 group-hover:border-cyan-500/30 transition-all duration-300">
         <span className="text-sm font-bold text-zinc-300">{index + 1}</span>
       </div>
 
       <div className="p-6">
         {/* Icon */}
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 group-hover:bg-emerald-500/20 group-hover:scale-110 transition-all duration-300">
-          <BookOpen className="h-6 w-6 text-emerald-400" />
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-500/20 group-hover:bg-cyan-500/20 group-hover:scale-110 transition-all duration-300">
+          <BookOpen className="h-6 w-6 text-cyan-400" />
         </div>
 
         {/* Title */}
-        <h3 className="mb-2 text-xl font-bold text-white group-hover:text-emerald-400 transition-colors duration-300">
+        <h3 className="mb-2 text-xl font-bold text-white group-hover:text-cyan-400 transition-colors duration-300">
           {chapter.title}
         </h3>
 
@@ -57,7 +57,7 @@ function ChapterCard({ chapter, index }: { chapter: Chapter; index: number }) {
           <div className="flex items-center gap-1.5 group-hover:text-zinc-400 transition-colors duration-300">
             <BookOpen className="h-4 w-4" />
             <span>
-              {chapter.sections && chapter.sections.length > 0
+              {chapter.sections && Array.isArray(chapter.sections) && chapter.sections.length > 0
                 ? `${chapter.sections.length} sections`
                 : chapter.content
                 ? 'Full chapter'
@@ -70,7 +70,7 @@ function ChapterCard({ chapter, index }: { chapter: Chapter; index: number }) {
         <div className="mb-4">
           <span
             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-all duration-300
-              ${chapter.difficulty === 'beginner' ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20' : ''}
+              ${chapter.difficulty === 'beginner' ? 'bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20' : ''}
               ${chapter.difficulty === 'intermediate' ? 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20' : ''}
               ${chapter.difficulty === 'advanced' ? 'bg-purple-500/10 text-purple-400 hover:bg-purple-500/20' : ''}
             `}
@@ -90,7 +90,7 @@ function ChapterCard({ chapter, index }: { chapter: Chapter; index: number }) {
               <span className="text-sm font-medium">Premium</span>
             </button>
           ) : (
-            <Link href={`/chapters/${chapter.id}`} className="flex items-center gap-2 text-emerald-400 font-medium text-sm hover:text-emerald-300 transition-all duration-300 group-hover:gap-3">
+            <Link href={`/chapters/${chapter.id}`} className="flex items-center gap-2 text-cyan-400 font-medium text-sm hover:text-cyan-300 transition-all duration-300 group-hover:gap-3">
               <span>Start Learning</span>
               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
@@ -99,7 +99,7 @@ function ChapterCard({ chapter, index }: { chapter: Chapter; index: number }) {
       </div>
 
       {/* Hover Glow Effect */}
-      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
     </HoverCard>
   );
 }

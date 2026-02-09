@@ -29,7 +29,7 @@ export function PremiumGate({ feature = 'this feature' }: PremiumGateProps) {
 
         {/* Premium Benefits */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 max-w-2xl">
-          <div className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
+          <div className="p-4 bg-zinc-800/50 rounded-lg border border-cyan-700">
             <div className="p-2 bg-purple-500/20 rounded-lg w-fit mb-3">
               <Zap className="w-5 h-5 text-purple-400" />
             </div>
@@ -37,7 +37,7 @@ export function PremiumGate({ feature = 'this feature' }: PremiumGateProps) {
             <p className="text-sm text-zinc-400">Personalized study paths</p>
           </div>
 
-          <div className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
+          <div className="p-4 bg-zinc-800/50 rounded-lg border border-cyan-700">
             <div className="p-2 bg-blue-500/20 rounded-lg w-fit mb-3">
               <Crown className="w-5 h-5 text-blue-400" />
             </div>
@@ -45,9 +45,9 @@ export function PremiumGate({ feature = 'this feature' }: PremiumGateProps) {
             <p className="text-sm text-zinc-400">Full course access</p>
           </div>
 
-          <div className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
-            <div className="p-2 bg-emerald-500/20 rounded-lg w-fit mb-3">
-              <Crown className="w-5 h-5 text-emerald-400" />
+          <div className="p-4 bg-zinc-800/50 rounded-lg border border-cyan-700">
+            <div className="p-2 bg-cyan-500/20 rounded-lg w-fit mb-3">
+              <Crown className="w-5 h-5 text-cyan-400" />
             </div>
             <p className="font-semibold text-white mb-1">AI Assessments</p>
             <p className="text-sm text-zinc-400">Detailed answer feedback</p>
@@ -65,7 +65,7 @@ export function PremiumGate({ feature = 'this feature' }: PremiumGateProps) {
           </Button>
           <Button
             variant="outline"
-            className="border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-600 py-3 px-8 rounded-lg transition-all"
+            className="border-cyan-700 text-zinc-400 hover:text-white hover:border-cyan-600 py-3 px-8 rounded-lg transition-all"
           >
             Learn More
           </Button>

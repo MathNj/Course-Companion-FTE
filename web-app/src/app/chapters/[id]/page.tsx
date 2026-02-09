@@ -51,7 +51,7 @@ export default function ChapterPage() {
     if (chapter) {
       setCurrentChapter(chapter);
       // Only set selected section if structured sections exist
-      if (chapter.sections && chapter.sections.length > 0) {
+      if (chapter.sections && Array.isArray(chapter.sections) && chapter.sections.length > 0) {
         setSelectedSection(chapter.sections[0] || null);
       }
       // Try to record activity (don't fail if it errors)
@@ -91,7 +91,7 @@ export default function ChapterPage() {
         <Header />
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-2xl mx-auto text-center">
-            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700">
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-800 border border-cyan-700">
               <Lock className="h-10 w-10 text-zinc-500" />
             </div>
             <h1 className="text-3xl font-bold text-white mb-4">Premium Content</h1>
@@ -116,14 +116,14 @@ export default function ChapterPage() {
       <Header />
 
       {/* Breadcrumb */}
-      <div className="border-b border-zinc-800 bg-[#0B0C10]/50 backdrop-blur">
+      <div className="border-b border-cyan-700/50 bg-[#0B0C10]/50 backdrop-blur">
         <div className="container px-4 py-3">
           <div className="flex items-center gap-2 text-sm text-zinc-400">
-            <button onClick={() => router.push('/')} className="hover:text-emerald-400 transition-colors">
+            <button onClick={() => router.push('/')} className="hover:text-cyan-400 transition-colors">
               Home
             </button>
             <span>/</span>
-            <button onClick={() => router.push('/library')} className="hover:text-emerald-400 transition-colors">
+            <button onClick={() => router.push('/library')} className="hover:text-cyan-400 transition-colors">
               Chapters
             </button>
             <span>/</span>
@@ -173,7 +173,7 @@ export default function ChapterPage() {
                 <div className="max-w-none">
                   <div className="card-dark p-8 md:p-12">
                     {/* Chapter Title */}
-                    <div className="mb-8 pb-6 border-b border-zinc-800">
+                    <div className="mb-8 pb-6 border-b border-cyan-800">
                       {(() => {
                         const { main: titleMain, subtitle: titleSubtitle } = parseTitle(chapter.title);
                         return (
@@ -193,12 +193,12 @@ export default function ChapterPage() {
                         <span>•</span>
                         <span>{chapter.estimated_time}</span>
                         <span>•</span>
-                        <span className="text-emerald-400">{chapter.access_tier} tier</span>
+                        <span className="text-cyan-400">{chapter.access_tier} tier</span>
                       </div>
                     </div>
 
                     {/* Markdown Content with Book-Like Typography */}
-                    <div className="prose prose-lg prose-invert prose-emerald max-w-none">
+                    <div className="prose prose-lg prose-invert prose-cyan max-w-none">
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         rehypePlugins={[rehypeHighlight]}
@@ -257,20 +257,20 @@ export default function ChapterPage() {
                                 {children}
                               </code>
                             ) : (
-                              <code className="bg-zinc-800 text-emerald-400 px-2 py-1 rounded text-sm font-mono" {...props}>
+                              <code className="bg-zinc-800 text-cyan-400 px-2 py-1 rounded text-sm font-mono" {...props}>
                                 {children}
                               </code>
                             );
                           },
                           pre: ({ children }) => (
-                            <pre className="bg-zinc-950 border border-zinc-800 rounded-lg p-6 mb-6 overflow-x-auto">
+                            <pre className="bg-zinc-950 border border-cyan-800 rounded-lg p-6 mb-6 overflow-x-auto">
                               {children}
                             </pre>
                           ),
 
                           // Blockquotes
                           blockquote: ({ children }) => (
-                            <blockquote className="border-l-4 border-emerald-500 pl-6 py-2 my-6 italic text-zinc-400 bg-zinc-900/50 rounded-r">
+                            <blockquote className="border-l-4 border-cyan-500 pl-6 py-2 my-6 italic text-zinc-400 bg-zinc-900/50 rounded-r">
                               {children}
                             </blockquote>
                           ),
@@ -279,7 +279,7 @@ export default function ChapterPage() {
                           a: ({ href, children }) => (
                             <a
                               href={href}
-                              className="text-emerald-400 hover:text-emerald-300 underline transition-colors"
+                              className="text-cyan-400 hover:text-cyan-300 underline transition-colors"
                               target="_blank"
                               rel="noopener noreferrer"
                             >
@@ -296,12 +296,12 @@ export default function ChapterPage() {
                           ),
 
                           // Horizontal rule
-                          hr: () => <hr className="my-10 border-zinc-800" />,
+                          hr: () => <hr className="my-10 border-cyan-800" />,
 
                           // Tables
                           table: ({ children }) => (
                             <div className="overflow-x-auto mb-6">
-                              <table className="min-w-full border border-zinc-800 rounded-lg overflow-hidden">
+                              <table className="min-w-full border border-cyan-800 rounded-lg overflow-hidden">
                                 {children}
                               </table>
                             </div>

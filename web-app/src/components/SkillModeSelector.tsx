@@ -11,7 +11,7 @@ interface SkillModeSelectorProps {
 const skillModes = [
   { type: 'explainer' as SkillType, label: 'Explainer', icon: Lightbulb, color: 'text-yellow-400' },
   { type: 'quiz' as SkillType, label: 'Quiz', icon: FileQuestion, color: 'text-blue-400' },
-  { type: 'socratic' as SkillType, label: 'Socratic', icon: Target, color: 'text-emerald-400' },
+  { type: 'socratic' as SkillType, label: 'Socratic', icon: Target, color: 'text-cyan-400' },
   { type: 'progress' as SkillType, label: 'Progress', icon: Trophy, color: 'text-purple-400' },
 ];
 
@@ -27,7 +27,7 @@ export function SkillModeSelector({ currentMode, onModeChange }: SkillModeSelect
             onClick={() => onModeChange(mode.type)}
             className={`p-2 rounded-lg transition-all duration-200 ${
               isActive
-                ? 'bg-emerald-500/20 text-emerald-400'
+                ? 'bg-cyan-500/20 text-cyan-400'
                 : 'text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800'
             }`}
             title={mode.label}

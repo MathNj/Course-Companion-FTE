@@ -212,7 +212,7 @@ export default function NoteList({ className = '' }: NoteListProps) {
             {notes.map((note) => (
               <div
                 key={note.id}
-                className="p-5 bg-zinc-900 border border-zinc-800 rounded-lg hover:border-zinc-700 transition-all"
+                className="p-5 bg-zinc-900 border border-cyan-800 rounded-lg hover:border-cyan-700 transition-all"
               >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-3">
@@ -270,7 +270,7 @@ export default function NoteList({ className = '' }: NoteListProps) {
                 )}
 
                 {/* Actions */}
-                <div className="flex items-center gap-2 pt-3 border-t border-zinc-800">
+                <div className="flex items-center gap-2 pt-3 border-t border-cyan-800">
                   <button
                     onClick={() => handleTogglePublic(note)}
                     className="text-sm text-zinc-400 hover:text-white transition-colors"

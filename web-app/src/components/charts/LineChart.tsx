@@ -33,7 +33,7 @@ interface LineChartProps {
   title?: string;
 }
 
-export function LineChart({ data, labels, label = 'Value', color = '#10b981', title }: LineChartProps) {
+export function LineChart({ data, labels, label = 'Value', color = '#06b6d4', title }: LineChartProps) {
   const chartData = {
     labels,
     datasets: [

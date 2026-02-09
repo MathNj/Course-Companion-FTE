@@ -88,11 +88,11 @@ export default function MilestonesPage() {
       <Header />
 
       {/* Hero Section */}
-      <div className="border-b border-zinc-800 bg-[#0B0C10]/50 backdrop-blur">
+      <div className="border-b border-cyan-700/50 bg-[#0B0C10]/50 backdrop-blur">
         <div className="container px-4 py-12">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-sm text-zinc-400 mb-4">
-            <Link href="/" className="hover:text-emerald-400 transition-colors">Home</Link>
+            <Link href="/" className="hover:text-cyan-400 transition-colors">Home</Link>
             <span>/</span>
             <span className="text-white font-medium">Milestones</span>
           </div>
@@ -116,7 +116,7 @@ export default function MilestonesPage() {
               <span className="text-zinc-400">{summary?.total_achieved || 0} of {summary?.total_possible || 18} milestones</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Award className="h-4 w-4 text-emerald-400" />
+              <Award className="h-4 w-4 text-cyan-400" />
               <span className="text-zinc-400">{summary?.completion_percentage || 0}% complete</span>
             </div>
           </div>
@@ -131,7 +131,7 @@ export default function MilestonesPage() {
             onClick={() => setActiveTab('achieved')}
             className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
               activeTab === 'achieved'
-                ? 'bg-emerald-600 text-white'
+                ? 'bg-cyan-600 text-white'
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
@@ -142,7 +142,7 @@ export default function MilestonesPage() {
             onClick={() => setActiveTab('upcoming')}
             className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
               activeTab === 'upcoming'
-                ? 'bg-emerald-600 text-white'
+                ? 'bg-cyan-600 text-white'
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
@@ -162,7 +162,7 @@ export default function MilestonesPage() {
                 onClick={() => setCategoryFilter(cat.key)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                   categoryFilter === cat.key
-                    ? 'bg-emerald-600 text-white'
+                    ? 'bg-cyan-600 text-white'
                     : 'bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700'
                 }`}
               >
@@ -211,7 +211,7 @@ export default function MilestonesPage() {
           <div>
             {filteredUpcoming.length === 0 ? (
               <div className="text-center py-16">
-                <Trophy className="h-16 w-16 text-emerald-400 mx-auto mb-4" />
+                <Trophy className="h-16 w-16 text-cyan-400 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-white mb-2">
                   {categoryFilter === 'all' ? 'All milestones achieved!' : `All ${categoryFilter} milestones achieved!`}
                 </h3>
@@ -235,7 +235,7 @@ export default function MilestonesPage() {
 
         {/* Quick Actions */}
         {activeTab === 'achieved' && filteredAchieved.length > 0 && (
-          <div className="mt-12 pt-8 border-t border-zinc-800">
+          <div className="mt-12 pt-8 border-t border-cyan-800">
             <h3 className="text-lg font-semibold text-white mb-4">Continue Your Journey</h3>
             <div className="flex flex-wrap gap-3">
               <Link href="/library">

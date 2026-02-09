@@ -86,7 +86,7 @@ export default function AdaptivePathPage() {
         <Header />
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-2xl mx-auto">
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800">
               <div className="flex items-center gap-3 mb-4">
                 <AlertCircle className="w-8 h-8 text-yellow-400" />
                 <h1 className="text-2xl font-bold text-white">Adaptive Learning Feature</h1>
@@ -133,18 +133,18 @@ export default function AdaptivePathPage() {
             </div>
             <div className="text-right">
               <p className="text-sm text-zinc-500">Cost</p>
-              <p className="text-lg font-bold text-emerald-400">${adaptivePath.cost_usd.toFixed(4)}</p>
+              <p className="text-lg font-bold text-cyan-400">${adaptivePath.cost_usd.toFixed(4)}</p>
               <p className="text-xs text-zinc-500">{adaptivePath.tokens_used} tokens</p>
             </div>
           </div>
 
           {/* View Tabs */}
-          <div className="flex gap-2 border-b border-zinc-800">
+          <div className="flex gap-2 border-b border-cyan-800">
             <button
               onClick={() => setSelectedView('roadmap')}
               className={`px-4 py-2 font-semibold transition-colors ${
                 selectedView === 'roadmap'
-                  ? 'text-emerald-400 border-b-2 border-emerald-400'
+                  ? 'text-cyan-400 border-b-2 border-cyan-400'
                   : 'text-zinc-400 hover:text-white'
               }`}
             >
@@ -155,7 +155,7 @@ export default function AdaptivePathPage() {
               onClick={() => setSelectedView('gaps')}
               className={`px-4 py-2 font-semibold transition-colors ${
                 selectedView === 'gaps'
-                  ? 'text-emerald-400 border-b-2 border-emerald-400'
+                  ? 'text-cyan-400 border-b-2 border-cyan-400'
                   : 'text-zinc-400 hover:text-white'
               }`}
             >
@@ -166,7 +166,7 @@ export default function AdaptivePathPage() {
               onClick={() => setSelectedView('plan')}
               className={`px-4 py-2 font-semibold transition-colors ${
                 selectedView === 'plan'
-                  ? 'text-emerald-400 border-b-2 border-emerald-400'
+                  ? 'text-cyan-400 border-b-2 border-cyan-400'
                   : 'text-zinc-400 hover:text-white'
               }`}
             >
@@ -177,7 +177,7 @@ export default function AdaptivePathPage() {
         </div>
 
         {/* Motivation Message */}
-        <div className="bg-gradient-to-r from-emerald-500/10 to-blue-500/10 rounded-xl p-6 border border-emerald-500/30 mb-8 animate-fade-in-up">
+        <div className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl p-6 border border-cyan-500/30 mb-8 animate-fade-in-up">
           <div className="flex items-start gap-4">
             <Zap className="w-8 h-8 text-yellow-400 flex-shrink-0" />
             <div>
@@ -190,7 +190,7 @@ export default function AdaptivePathPage() {
         {/* Roadmap View */}
         {selectedView === 'roadmap' && (
           <div className="space-y-6 animate-fade-in-up">
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                 <Route className="w-6 h-6 text-blue-400" />
                 Your Personalized Learning Roadmap
@@ -203,23 +203,23 @@ export default function AdaptivePathPage() {
                     key={index}
                     className={`flex items-start gap-4 p-6 rounded-lg border transition-all hover-lift ${
                       item.priority === 'high'
-                        ? 'bg-emerald-500/10 border-emerald-500/30'
+                        ? 'bg-cyan-500/10 border-cyan-500/30'
                         : item.priority === 'medium'
                         ? 'bg-blue-500/10 border-blue-500/30'
-                        : 'bg-zinc-800 border-zinc-700'
+                        : 'bg-zinc-800 border-cyan-700'
                     }`}
                   >
                     <div className="flex-shrink-0">
                       <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
                         item.priority === 'high'
-                          ? 'bg-emerald-500/20'
+                          ? 'bg-cyan-500/20'
                           : item.priority === 'medium'
                           ? 'bg-blue-500/20'
                           : 'bg-zinc-700'
                       }`}>
                         <span className={`text-2xl font-bold ${
                           item.priority === 'high'
-                            ? 'text-emerald-400'
+                            ? 'text-cyan-400'
                             : item.priority === 'medium'
                             ? 'text-blue-400'
                             : 'text-zinc-400'
@@ -234,7 +234,7 @@ export default function AdaptivePathPage() {
                         <h3 className="text-lg font-bold text-white">{item.title}</h3>
                         <span className={`px-2 py-1 rounded text-xs font-semibold ${
                           item.priority === 'high'
-                            ? 'bg-emerald-500/20 text-emerald-400'
+                            ? 'bg-cyan-500/20 text-cyan-400'
                             : item.priority === 'medium'
                             ? 'bg-blue-500/20 text-blue-400'
                             : 'bg-zinc-700 text-zinc-400'
@@ -273,7 +273,7 @@ export default function AdaptivePathPage() {
         {/* Knowledge Gaps View */}
         {selectedView === 'gaps' && (
           <div className="space-y-6 animate-fade-in-up">
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                 <Target className="w-6 h-6 text-purple-400" />
                 Knowledge Gap Analysis
@@ -314,7 +314,7 @@ export default function AdaptivePathPage() {
                         {gap.recommended_resources.map((resource, i) => (
                           <span
                             key={i}
-                            className="px-3 py-1 bg-zinc-800 border border-zinc-700 rounded-full text-sm text-zinc-300"
+                            className="px-3 py-1 bg-zinc-800 border border-cyan-700 rounded-full text-sm text-zinc-300"
                           >
                             {resource}
                           </span>
@@ -332,7 +332,7 @@ export default function AdaptivePathPage() {
         {selectedView === 'plan' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in-up">
             {/* This Week */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800">
               <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-blue-400" />
                 This Week
@@ -340,7 +340,7 @@ export default function AdaptivePathPage() {
               <div className="space-y-3">
                 {learningPath.study_plan.this_week.map((task, index) => (
                   <div key={index} className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
                     <p className="text-zinc-300">{task}</p>
                   </div>
                 ))}
@@ -348,7 +348,7 @@ export default function AdaptivePathPage() {
             </div>
 
             {/* Next Week */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800">
               <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-purple-400" />
                 Next Week
@@ -364,7 +364,7 @@ export default function AdaptivePathPage() {
             </div>
 
             {/* Usage Stats */}
-            <div className="md:col-span-2 bg-zinc-900 rounded-xl p-8 border border-zinc-800">
+            <div className="md:col-span-2 bg-zinc-900 rounded-xl p-8 border border-cyan-800">
               <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                 <Zap className="w-5 h-5 text-yellow-400" />
                 Usage Statistics
@@ -376,7 +376,7 @@ export default function AdaptivePathPage() {
                 </div>
                 <div>
                   <p className="text-sm text-zinc-500 mb-1">Cost</p>
-                  <p className="text-2xl font-bold text-emerald-400">${adaptivePath.cost_usd.toFixed(4)}</p>
+                  <p className="text-2xl font-bold text-cyan-400">${adaptivePath.cost_usd.toFixed(4)}</p>
                 </div>
                 <div>
                   <p className="text-sm text-zinc-500 mb-1">Generated</p>

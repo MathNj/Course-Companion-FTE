@@ -57,8 +57,8 @@ export default function RegisterPage() {
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-              <BookOpen className="h-8 w-8 text-emerald-400" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+              <BookOpen className="h-8 w-8 text-cyan-400" />
             </div>
             <h1 className="text-2xl font-bold text-white">Create an account</h1>
             <p className="mt-2 text-sm text-zinc-400">
@@ -93,7 +93,7 @@ export default function RegisterPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full px-4 py-2.5 rounded-lg border border-zinc-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                    className="w-full px-4 py-2.5 rounded-lg border border-cyan-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -108,7 +108,7 @@ export default function RegisterPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full px-4 py-2.5 rounded-lg border border-zinc-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                    className="w-full px-4 py-2.5 rounded-lg border border-cyan-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
                     placeholder="••••••••"
                   />
                   <p className="text-xs text-zinc-500">Must be at least 8 characters</p>
@@ -124,7 +124,7 @@ export default function RegisterPage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
-                    className="w-full px-4 py-2.5 rounded-lg border border-zinc-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                    className="w-full px-4 py-2.5 rounded-lg border border-cyan-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
                     placeholder="••••••••"
                   />
                 </div>
@@ -143,7 +143,7 @@ export default function RegisterPage() {
 
               <div className="mt-6 text-center text-sm">
                 <span className="text-zinc-400">Already have an account?</span>{' '}
-                <Link href="/login" className="text-emerald-400 hover:text-emerald-300 font-medium">
+                <Link href="/login" className="text-cyan-400 hover:text-cyan-300 font-medium">
                   Sign in
                 </Link>
               </div>
@@ -153,19 +153,19 @@ export default function RegisterPage() {
           {/* Benefits */}
           <div className="mt-6 space-y-3">
             <div className="flex items-center gap-3 text-sm text-zinc-400">
-              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
+              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500/10 border border-cyan-500/20">
                 ✓
               </div>
               <span>Free access to Chapters 1-3</span>
             </div>
             <div className="flex items-center gap-3 text-sm text-zinc-400">
-              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
+              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500/10 border border-cyan-500/20">
                 ✓
               </div>
               <span>Interactive quizzes & progress tracking</span>
             </div>
             <div className="flex items-center gap-3 text-sm text-zinc-400">
-              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
+              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500/10 border border-cyan-500/20">
                 ✓
               </div>
               <span>Learning streaks & achievements</span>

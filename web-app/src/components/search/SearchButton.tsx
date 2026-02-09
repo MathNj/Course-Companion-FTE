@@ -18,7 +18,7 @@ export function SearchButton({ className }: SearchButtonProps) {
     >
       <Search className="w-4 h-4" />
       <span className="hidden sm:inline text-sm">Search...</span>
-      <kbd className="hidden lg:inline-block px-2 py-0.5 text-xs bg-zinc-700 rounded border border-zinc-600">
+      <kbd className="hidden lg:inline-block px-2 py-0.5 text-xs bg-zinc-700 rounded border border-cyan-600">
         ⌘K
       </kbd>
     </button>

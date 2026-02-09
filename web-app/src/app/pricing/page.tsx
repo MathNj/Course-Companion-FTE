@@ -163,11 +163,11 @@ export default function PricingPage() {
       <Header />
 
       {/* Hero Section */}
-      <div className="border-b border-zinc-800 bg-[#0B0C10]/50 backdrop-blur">
+      <div className="border-b border-cyan-700/50 bg-[#0B0C10]/50 backdrop-blur">
         <div className="container px-4 py-16">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-sm text-zinc-400 mb-6">
-            <Link href="/" className="hover:text-emerald-400 transition-colors">Home</Link>
+            <Link href="/" className="hover:text-cyan-400 transition-colors">Home</Link>
             <span>/</span>
             <span className="text-white font-medium">Pricing</span>
           </div>
@@ -196,7 +196,7 @@ export default function PricingPage() {
                 onClick={() => setBillingPeriod('annual')}
                 className={`relative px-6 py-2 rounded-full text-sm font-medium transition-all ${
                   billingPeriod === 'annual'
-                    ? 'bg-emerald-600 text-white'
+                    ? 'bg-cyan-600 text-white'
                     : 'bg-zinc-800 text-zinc-400 hover:text-white'
                 }`}
               >
@@ -226,7 +226,7 @@ export default function PricingPage() {
                 className={`relative rounded-2xl p-8 transition-all duration-300 ${
                   tier.popular
                     ? 'bg-gradient-to-b from-purple-900/50 to-zinc-900 border-2 border-purple-500/50 shadow-xl shadow-purple-500/10 scale-105'
-                    : 'bg-zinc-900 border border-zinc-800 hover:border-zinc-700'
+                    : 'bg-zinc-900 border border-cyan-800 hover:border-cyan-700'
                 }`}
               >
                 {tier.popular && (
@@ -258,7 +258,7 @@ export default function PricingPage() {
                     <span className="text-zinc-400">/month</span>
                   </div>
                   {savings && (
-                    <p className="text-sm text-emerald-400 mt-1">
+                    <p className="text-sm text-cyan-400 mt-1">
                       Save ${tier.annualSavings}/year with annual billing
                     </p>
                   )}
@@ -269,7 +269,7 @@ export default function PricingPage() {
                   {tier.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-3">
                       {feature.included ? (
-                        <Check className="h-5 w-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                        <Check className="h-5 w-5 text-cyan-400 flex-shrink-0 mt-0.5" />
                       ) : (
                         <X className="h-5 w-5 text-zinc-600 flex-shrink-0 mt-0.5" />
                       )}
@@ -296,7 +296,7 @@ export default function PricingPage() {
                       ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white'
                       : tier.id === 'free'
                       ? 'bg-zinc-800 hover:bg-zinc-700 text-white'
-                      : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                      : 'bg-cyan-600 hover:bg-cyan-700 text-white'
                   }`}
                 >
                   {tier.cta}
@@ -308,7 +308,7 @@ export default function PricingPage() {
       </div>
 
       {/* Feature Comparison */}
-      <div className="bg-zinc-900/50 border-y border-zinc-800">
+      <div className="bg-zinc-900/50 border-y border-cyan-800">
         <div className="container px-4 py-16">
           <h2 className="text-3xl font-bold text-white text-center mb-12">
             Feature Comparison
@@ -317,7 +317,7 @@ export default function PricingPage() {
           <div className="overflow-x-auto">
             <table className="w-full max-w-4xl mx-auto">
               <thead>
-                <tr className="border-b border-zinc-800">
+                <tr className="border-b border-cyan-800">
                   <th className="text-left py-4 px-4 text-zinc-400 font-medium">Feature</th>
                   <th className="py-4 px-4 text-zinc-400 font-medium">Free</th>
                   <th className="py-4 px-4 text-purple-400 font-medium">Premium</th>
@@ -341,13 +341,13 @@ export default function PricingPage() {
                   <tr key={index} className="hover:bg-zinc-800/50">
                     <td className="py-4 px-4 text-white">{row.feature}</td>
                     <td className="py-4 px-4 text-center">
-                      {row.free ? <Check className="h-5 w-5 text-emerald-400 mx-auto" /> : <X className="h-5 w-5 text-zinc-600 mx-auto" />}
+                      {row.free ? <Check className="h-5 w-5 text-cyan-400 mx-auto" /> : <X className="h-5 w-5 text-zinc-600 mx-auto" />}
                     </td>
                     <td className="py-4 px-4 text-center">
-                      {row.premium ? <Check className="h-5 w-5 text-emerald-400 mx-auto" /> : <X className="h-5 w-5 text-zinc-600 mx-auto" />}
+                      {row.premium ? <Check className="h-5 w-5 text-cyan-400 mx-auto" /> : <X className="h-5 w-5 text-zinc-600 mx-auto" />}
                     </td>
                     <td className="py-4 px-4 text-center">
-                      {row.pro ? <Check className="h-5 w-5 text-emerald-400 mx-auto" /> : <X className="h-5 w-5 text-zinc-600 mx-auto" />}
+                      {row.pro ? <Check className="h-5 w-5 text-cyan-400 mx-auto" /> : <X className="h-5 w-5 text-zinc-600 mx-auto" />}
                     </td>
                   </tr>
                 ))}
@@ -367,7 +367,7 @@ export default function PricingPage() {
           {FAQ_ITEMS.map((item, index) => (
             <div
               key={index}
-              className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden"
+              className="bg-zinc-900 rounded-xl border border-cyan-800 overflow-hidden"
             >
               <button
                 onClick={() => setOpenFaq(openFaq === index ? null : index)}
@@ -391,7 +391,7 @@ export default function PricingPage() {
       </div>
 
       {/* Educational Discount */}
-      <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border-y border-zinc-800">
+      <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border-y border-cyan-800">
         <div className="container px-4 py-12">
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex p-3 bg-blue-500/20 rounded-xl mb-4">
@@ -428,7 +428,7 @@ export default function PricingPage() {
               </Button>
             </Link>
             <Link href="/register">
-              <Button size="lg" variant="outline" className="border-emerald-500 text-emerald-400 hover:bg-emerald-500 hover:text-white hover:scale-105 active:scale-95 transition-all">
+              <Button size="lg" variant="outline" className="border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-white hover:scale-105 active:scale-95 transition-all">
                 Create Account
               </Button>
             </Link>

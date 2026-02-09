@@ -5,7 +5,7 @@ import { Search, X, Filter, BookOpen, FileText, Hash, Clock, TrendingUp } from '
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { useRouter } from 'next/navigation';
-import debounce from 'lodash/debounce';
+import debounce from 'lodash.debounce';
 
 interface SearchResult {
   chapter_id: string;
@@ -149,7 +149,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-black/70 backdrop-blur-sm animate-fade-in">
       <div className="w-full max-w-3xl mx-4 animate-fade-in-up">
         {/* Search Box */}
-        <div className="bg-zinc-900 rounded-t-xl border border-zinc-800 p-4">
+        <div className="bg-zinc-900 rounded-t-xl border border-cyan-700/50 p-4">
           <div className="flex items-center gap-3">
             <Search className="w-5 h-5 text-zinc-400" />
             <input
@@ -184,14 +184,14 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
           {/* Filters */}
           {showFilters && (
-            <div className="mt-4 pt-4 border-t border-zinc-800 animate-fade-in">
+            <div className="mt-4 pt-4 border-t border-cyan-700/50 animate-fade-in">
               <div className="flex gap-4 mb-4">
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-zinc-400 mb-2">Sort By</label>
                   <select
                     value={filters.sort_by}
                     onChange={(e) => setFilters({ ...filters, sort_by: e.target.value as any })}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white outline-none focus:border-purple-500"
+                    className="w-full bg-zinc-800 border border-cyan-700 rounded-lg px-3 py-2 text-white outline-none focus:border-cyan-500"
                   >
                     <option value="relevance">Relevance</option>
                     <option value="chapter_order">Chapter Order</option>
@@ -203,7 +203,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   <select
                     value={filters.min_relevance || ''}
                     onChange={(e) => setFilters({ ...filters, min_relevance: e.target.value ? parseFloat(e.target.value) : undefined })}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white outline-none focus:border-purple-500"
+                    className="w-full bg-zinc-800 border border-cyan-700 rounded-lg px-3 py-2 text-white outline-none focus:border-cyan-500"
                   >
                     <option value="">All</option>
                     <option value="50">High (50+)</option>
@@ -236,7 +236,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         </div>
 
         {/* Results */}
-        <div className="bg-zinc-900 rounded-b-xl border border-t-0 border-zinc-800 max-h-[60vh] overflow-y-auto">
+        <div className="bg-zinc-900 rounded-b-xl border border-t-0 border-cyan-700/50 max-h-[60vh] overflow-y-auto">
           {isSearching ? (
             <div className="p-8 text-center text-zinc-400">
               <div className="inline-block w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mb-3"></div>
@@ -258,11 +258,11 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 Type to search through chapters, sections, and concepts across all course material.
               </p>
               <div className="mt-6 grid grid-cols-2 gap-3 max-w-sm mx-auto text-left">
-                <div className="p-3 bg-zinc-800/50 rounded-lg border border-zinc-700">
+                <div className="p-3 bg-zinc-800/50 rounded-lg border border-cyan-700">
                   <p className="text-xs text-zinc-500 mb-1">💡 Tip</p>
                   <p className="text-sm text-zinc-400">Use specific terms for better results</p>
                 </div>
-                <div className="p-3 bg-zinc-800/50 rounded-lg border border-zinc-700">
+                <div className="p-3 bg-zinc-800/50 rounded-lg border border-cyan-700">
                   <p className="text-xs text-zinc-500 mb-1">⌨️ Keyboard</p>
                   <p className="text-sm text-zinc-400">↑↓ to navigate, Enter to open</p>
                 </div>
@@ -319,7 +319,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         </div>
 
         {/* Footer */}
-        <div className="bg-zinc-900/95 backdrop-blur-sm rounded-b-xl border border-t-0 border-zinc-800 p-2 flex items-center justify-between text-xs text-zinc-500">
+        <div className="bg-zinc-900/95 backdrop-blur-sm rounded-b-xl border border-t-0 border-cyan-700/50 p-2 flex items-center justify-between text-xs text-zinc-500">
           <div className="flex items-center gap-3">
             <span>Esc to close</span>
             <span>•</span>

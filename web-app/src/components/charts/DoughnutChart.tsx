@@ -29,7 +29,7 @@ export function DoughnutChart({
   title,
   centerText
 }: DoughnutChartProps) {
-  const defaultColors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+  const defaultColors = ['#06b6d4', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
   const chartData = {
     labels,

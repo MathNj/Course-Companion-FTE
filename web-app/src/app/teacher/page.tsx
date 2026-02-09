@@ -243,9 +243,9 @@ export default function TeacherDashboard() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Average Completion Rate */}
-            <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover-lift animate-fade-in-up">
+            <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover-lift animate-fade-in-up">
               <div className="flex items-center justify-between mb-4">
-                <TrendingUp className="w-8 h-8 text-emerald-400" />
+                <TrendingUp className="w-8 h-8 text-cyan-400" />
                 <span className="text-xs text-zinc-500">Class Average</span>
               </div>
               <h3 className="text-3xl font-bold text-white mb-2">{averageCompletion.toFixed(1)}%</h3>
@@ -253,7 +253,7 @@ export default function TeacherDashboard() {
             </div>
 
             {/* Average Quiz Score */}
-            <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover-lift animate-fade-in-up delay-100">
+            <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover-lift animate-fade-in-up delay-100">
               <div className="flex items-center justify-between mb-4">
                 <Target className="w-8 h-8 text-purple-400" />
                 <span className="text-xs text-zinc-500">Class Average</span>
@@ -263,7 +263,7 @@ export default function TeacherDashboard() {
             </div>
 
             {/* Active Students */}
-            <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover-lift animate-fade-in-up delay-200">
+            <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover-lift animate-fade-in-up delay-200">
               <div className="flex items-center justify-between mb-4">
                 <Flame className="w-8 h-8 text-orange-400" />
                 <span className="text-xs text-zinc-500">Last 7 days</span>
@@ -273,7 +273,7 @@ export default function TeacherDashboard() {
             </div>
 
             {/* Total Students */}
-            <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover-lift animate-fade-in-up delay-300">
+            <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover-lift animate-fade-in-up delay-300">
               <div className="flex items-center justify-between mb-4">
                 <GraduationCap className="w-8 h-8 text-blue-400" />
                 <span className="text-xs text-zinc-500">Total</span>
@@ -287,7 +287,7 @@ export default function TeacherDashboard() {
         {/* Student Insights */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-            <BarChart3 className="w-6 h-6 text-emerald-400" />
+            <BarChart3 className="w-6 h-6 text-cyan-400" />
             Student Insights
             <span className="text-sm font-normal text-zinc-500 ml-2">
               ({filteredStudents.length} students)
@@ -303,13 +303,13 @@ export default function TeacherDashboard() {
                 placeholder="Search by student ID or email..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-lg border border-zinc-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                className="w-full pl-10 pr-4 py-3 rounded-lg border border-cyan-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
               />
             </div>
           </div>
 
           {/* Student List */}
-          <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
+          <div className="bg-zinc-900 rounded-xl border border-cyan-800 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-zinc-800">
@@ -338,7 +338,7 @@ export default function TeacherDashboard() {
 
                       return (
                         <React.Fragment key={student.id}>
-                          <tr className="border-b border-zinc-800 hover:bg-zinc-800/50 transition-colors">
+                          <tr className="border-b border-cyan-800 hover:bg-zinc-800/50 transition-colors">
                             <td className="px-6 py-4">
                               <div>
                                 <p className="text-white font-medium">{student.email}</p>
@@ -350,7 +350,7 @@ export default function TeacherDashboard() {
                                 <div className="w-24 bg-zinc-800 rounded-full h-2">
                                   <div
                                     className={`h-2 rounded-full ${
-                                      student.progress.completion_percentage >= 80 ? 'bg-emerald-500' :
+                                      student.progress.completion_percentage >= 80 ? 'bg-cyan-500' :
                                       student.progress.completion_percentage >= 50 ? 'bg-yellow-500' : 'bg-red-500'
                                     }`}
                                     style={{ width: `${student.progress.completion_percentage}%` }}
@@ -372,7 +372,7 @@ export default function TeacherDashboard() {
                             </td>
                             <td className="px-6 py-4">
                               <span className={`text-sm font-semibold ${
-                                avgQuiz !== 'N/A' && parseFloat(avgQuiz) >= 80 ? 'text-emerald-400' :
+                                avgQuiz !== 'N/A' && parseFloat(avgQuiz) >= 80 ? 'text-cyan-400' :
                                 avgQuiz !== 'N/A' && parseFloat(avgQuiz) >= 60 ? 'text-yellow-400' :
                                 'text-red-400'
                               }`}>
@@ -380,7 +380,7 @@ export default function TeacherDashboard() {
                               </span>
                             </td>
                             <td className="px-6 py-4">
-                              <span className={`text-sm ${daysSinceActivity <= 7 ? 'text-emerald-400' : daysSinceActivity <= 30 ? 'text-yellow-400' : 'text-red-400'}`}>
+                              <span className={`text-sm ${daysSinceActivity <= 7 ? 'text-cyan-400' : daysSinceActivity <= 30 ? 'text-yellow-400' : 'text-red-400'}`}>
                                 {daysSinceActivity === 0 ? 'Today' :
                                  daysSinceActivity === 1 ? 'Yesterday' :
                                  `${daysSinceActivity} days ago`}
@@ -422,7 +422,7 @@ export default function TeacherDashboard() {
                                           <div key={chapter} className="flex items-center justify-between text-sm">
                                             <span className="text-zinc-400">{chapter}</span>
                                             <span className={`font-semibold ${
-                                              quizData.score >= 80 ? 'text-emerald-400' : quizData.score >= 60 ? 'text-yellow-400' : 'text-red-400'
+                                              quizData.score >= 80 ? 'text-cyan-400' : quizData.score >= 60 ? 'text-yellow-400' : 'text-red-400'
                                             }`}>
                                               {quizData.score}%
                                             </span>
@@ -489,7 +489,7 @@ export default function TeacherDashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Topic Difficulty Analysis - Real Data */}
-          <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up">
+          <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up">
             <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
               <AlertCircle className="w-6 h-6 text-red-400" />
               Topic Difficulty Analysis
@@ -515,7 +515,7 @@ export default function TeacherDashboard() {
                                 topic.incorrect_rate >= 30 ? 'bg-red-500' :
                                 topic.incorrect_rate >= 20 ? 'bg-orange-500' :
                                 topic.incorrect_rate >= 10 ? 'bg-yellow-500' :
-                                'bg-emerald-500'
+                                'bg-cyan-500'
                               }`}
                               style={{ width: `${Math.max(topic.incorrect_rate, 5)}%` }}
                             >
@@ -554,7 +554,7 @@ export default function TeacherDashboard() {
           </div>
 
           {/* Engagement Monitoring */}
-          <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up delay-100">
+          <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-100">
             <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
               <Activity className="w-6 h-6 text-blue-400" />
               Engagement Monitoring
@@ -588,8 +588,8 @@ export default function TeacherDashboard() {
             <div>
               <h3 className="text-sm font-semibold text-white mb-4">Activity Distribution</h3>
               <div className="grid grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
-                  <p className="text-2xl font-bold text-emerald-400">{activeStudentsWeekly}</p>
+                <div className="text-center p-4 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
+                  <p className="text-2xl font-bold text-cyan-400">{activeStudentsWeekly}</p>
                   <p className="text-xs text-zinc-400">Active (7d)</p>
                 </div>
                 <div className="text-center p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
@@ -624,7 +624,7 @@ export default function TeacherDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Adaptive Path Usage */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-purple-500/20 rounded-lg">
@@ -658,7 +658,7 @@ export default function TeacherDashboard() {
             </div>
 
             {/* Assessment Usage */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up delay-100">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-100">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-blue-500/20 rounded-lg">
@@ -692,11 +692,11 @@ export default function TeacherDashboard() {
             </div>
 
             {/* Total Premium Students */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 animate-fade-in-up delay-200">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-200">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-emerald-500/20 rounded-lg">
-                    <GraduationCap className="w-8 h-8 text-emerald-400" />
+                  <div className="p-3 bg-cyan-500/20 rounded-lg">
+                    <GraduationCap className="w-8 h-8 text-cyan-400" />
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-white">Premium Students</h3>
@@ -750,7 +750,7 @@ export default function TeacherDashboard() {
             {/* CSV Export */}
             <Button
               onClick={handleExportCSV}
-              className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 p-6 text-left hover-lift animate-fade-in-up"
+              className="bg-zinc-900 hover:bg-zinc-800 border border-cyan-800 p-6 text-left hover-lift animate-fade-in-up"
             >
               <div className="flex items-center gap-4 mb-2">
                 <Download className="w-8 h-8 text-blue-400" />
@@ -767,10 +767,10 @@ export default function TeacherDashboard() {
                 setRefreshKey(prev => prev + 1);
                 refetch();
               }}
-              className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 p-6 text-left hover-lift animate-fade-in-up delay-100"
+              className="bg-zinc-900 hover:bg-zinc-800 border border-cyan-800 p-6 text-left hover-lift animate-fade-in-up delay-100"
             >
               <div className="flex items-center gap-4 mb-2">
-                <RefreshCw className="w-8 h-8 text-emerald-400" />
+                <RefreshCw className="w-8 h-8 text-cyan-400" />
                 <div>
                   <h3 className="text-lg font-bold text-white">Refresh Data</h3>
                   <p className="text-sm text-zinc-400">Fetch latest student data</p>
@@ -779,7 +779,7 @@ export default function TeacherDashboard() {
             </Button>
 
             {/* Student Count */}
-            <div className="bg-zinc-900 border border-zinc-800 p-6 hover-lift animate-fade-in-up delay-200">
+            <div className="bg-zinc-900 border border-cyan-800 p-6 hover-lift animate-fade-in-up delay-200">
               <div className="flex items-center gap-4 mb-2">
                 <Users className="w-8 h-8 text-purple-400" />
                 <div>

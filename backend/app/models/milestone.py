@@ -94,7 +94,7 @@ class Milestone(Base, TimestampMixin):
     )
 
     # Additional data (chapter_id, score, etc.)
-    metadata: Mapped[Optional[dict]] = mapped_column(
+    extra_data: Mapped[Optional[dict]] = mapped_column(
         JSONType,
         nullable=True,
     )

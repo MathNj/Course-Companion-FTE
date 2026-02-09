@@ -54,8 +54,8 @@ export function MilestoneList({
     : [];
 
   const displayedAchieved = limit
-    ? achievedMilestones?.slice(0, limit)
-    : achievedMilestones || [];
+    ? (achievedMilestones || []).slice(0, limit)
+    : (achievedMilestones || []);
 
   const displayedUpcoming = limit
     ? allUpcoming.slice(0, limit)
@@ -70,23 +70,23 @@ export function MilestoneList({
             onClick={() => setActiveTab('achieved')}
             className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
               activeTab === 'achieved'
-                ? 'bg-emerald-600 text-white'
+                ? 'bg-cyan-600 text-white'
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
             <Trophy className="h-4 w-4" />
-            Achieved ({displayedAchieved.length})
+            Achieved ({displayedAchieved?.length || 0})
           </button>
           <button
             onClick={() => setActiveTab('upcoming')}
             className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
               activeTab === 'upcoming'
-                ? 'bg-emerald-600 text-white'
+                ? 'bg-cyan-600 text-white'
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
             <Target className="h-4 w-4" />
-            Upcoming ({allUpcoming.length})
+            Upcoming ({displayedUpcoming?.length || 0})
           </button>
         </div>
       )}
@@ -94,7 +94,7 @@ export function MilestoneList({
       {/* Achieved Milestones */}
       {activeTab === 'achieved' && (
         <div className="space-y-3">
-          {displayedAchieved.length === 0 ? (
+          {!displayedAchieved || displayedAchieved.length === 0 ? (
             <div className="text-center py-12">
               <Trophy className="h-12 w-12 text-zinc-700 mx-auto mb-3" />
               <h3 className="text-lg font-semibold text-white mb-2">
@@ -105,7 +105,7 @@ export function MilestoneList({
               </p>
             </div>
           ) : (
-            displayedAchieved.map((milestone) => (
+            displayedAchieved?.map((milestone) => (
               <MilestoneBadge
                 key={milestone.id}
                 milestone={milestone}
@@ -119,7 +119,7 @@ export function MilestoneList({
       {/* Upcoming Milestones */}
       {activeTab === 'upcoming' && showUpcoming && (
         <div className="space-y-3">
-          {displayedUpcoming.length === 0 ? (
+          {!displayedUpcoming || displayedUpcoming.length === 0 ? (
             <div className="text-center py-12">
               <Target className="h-12 w-12 text-zinc-700 mx-auto mb-3" />
               <h3 className="text-lg font-semibold text-white mb-2">
@@ -130,7 +130,7 @@ export function MilestoneList({
               </p>
             </div>
           ) : (
-            displayedUpcoming.map((milestone, index) => (
+            displayedUpcoming?.map((milestone, index) => (
               <UpcomingMilestoneBadge
                 key={`${milestone.type}-${index}`}
                 milestone={milestone}

@@ -138,7 +138,7 @@ function CheckoutContent() {
       <main className="container px-4 py-12">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-zinc-400 mb-8">
-          <button onClick={() => router.push('/pricing')} className="hover:text-emerald-400 transition-colors">
+          <button onClick={() => router.push('/pricing')} className="hover:text-cyan-400 transition-colors">
             Pricing
           </button>
           <span>/</span>
@@ -195,7 +195,7 @@ function CheckoutContent() {
                     onClick={() => setBillingPeriod('annual')}
                     className={`relative px-6 py-2 rounded-full text-sm font-medium transition-all ${
                       billingPeriod === 'annual'
-                        ? 'bg-emerald-600 text-white'
+                        ? 'bg-cyan-600 text-white'
                         : 'bg-zinc-800 text-zinc-400 hover:text-white'
                     }`}
                   >
@@ -214,7 +214,7 @@ function CheckoutContent() {
                   <ul className="space-y-2">
                     {plan.features.map((feature, index) => (
                       <li key={index} className="flex items-start gap-2 text-sm text-zinc-300">
-                        <Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                        <Check className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
                         <span>{feature}</span>
                       </li>
                     ))}
@@ -226,7 +226,7 @@ function CheckoutContent() {
               <div className="card-dark p-6">
                 <h3 className="text-lg font-semibold text-white mb-4">Account</h3>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center">
                     <span className="text-white font-medium">
                       {user?.email?.[0]?.toUpperCase() || 'U'}
                     </span>
@@ -245,9 +245,9 @@ function CheckoutContent() {
 
               <div className="card-dark p-6">
                 {/* Stripe Security Notice */}
-                <div className="flex items-center gap-2 mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
-                  <Lock className="w-5 h-5 text-emerald-400" />
-                  <p className="text-sm text-emerald-400">
+                <div className="flex items-center gap-2 mb-6 p-4 bg-cyan-500/10 border border-cyan-500/20 rounded-lg">
+                  <Lock className="w-5 h-5 text-cyan-400" />
+                  <p className="text-sm text-cyan-400">
                     Secure payment powered by Stripe
                   </p>
                 </div>
@@ -269,7 +269,7 @@ function CheckoutContent() {
                 </div>
 
                 {/* Price Summary */}
-                <div className="border-t border-zinc-800 pt-6 space-y-3">
+                <div className="border-t border-cyan-800 pt-6 space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-zinc-400">Subtotal</span>
                     <span className="text-white">${totalPrice}</span>
@@ -277,14 +277,14 @@ function CheckoutContent() {
                   {billingPeriod === 'annual' && (
                     <div className="flex justify-between text-sm">
                       <span className="text-zinc-400">Annual Savings</span>
-                      <span className="text-emerald-400">-${(plan.monthlyPrice * 12 - plan.annualPrice).toFixed(2)}</span>
+                      <span className="text-cyan-400">-${(plan.monthlyPrice * 12 - plan.annualPrice).toFixed(2)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm">
                     <span className="text-zinc-400">Tax</span>
                     <span className="text-zinc-400">Calculated at checkout</span>
                   </div>
-                  <div className="border-t border-zinc-800 pt-3">
+                  <div className="border-t border-cyan-800 pt-3">
                     <div className="flex justify-between">
                       <span className="text-lg font-semibold text-white">Total Due</span>
                       <span className="text-lg font-bold text-white">${totalPrice}</span>
@@ -320,7 +320,7 @@ function CheckoutContent() {
                 </button>
 
                 {/* Guarantee */}
-                <div className="mt-6 p-4 bg-zinc-900 rounded-lg border border-zinc-800">
+                <div className="mt-6 p-4 bg-zinc-900 rounded-lg border border-cyan-800">
                   <p className="text-sm text-zinc-400 text-center">
                     🛡️ 30-day money-back guarantee. Cancel anytime.
                   </p>

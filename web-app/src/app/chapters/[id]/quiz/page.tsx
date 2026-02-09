@@ -153,7 +153,7 @@ export default function QuizPage() {
       <Header />
 
       {/* Quiz Header */}
-      <div className="border-b border-zinc-800 bg-[#0B0C10]/50 backdrop-blur">
+      <div className="border-b border-cyan-700/50 bg-[#0B0C10]/50 backdrop-blur">
         <div className="container px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
@@ -163,7 +163,7 @@ export default function QuizPage() {
             <div className="flex items-center gap-4">
               <div className="text-right">
                 <p className="text-sm text-zinc-400">Answered</p>
-                <p className="text-lg font-bold text-emerald-400">{answeredCount}/{quiz.questions.length}</p>
+                <p className="text-lg font-bold text-cyan-400">{answeredCount}/{quiz.questions.length}</p>
               </div>
             </div>
           </div>
@@ -172,7 +172,7 @@ export default function QuizPage() {
           <div className="mt-4">
             <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-300"
+                className="h-full bg-gradient-to-r from-cyan-500 to-cyan-400 transition-all duration-300"
                 style={{ width: `${((currentQuestion + 1) / quiz.questions.length) * 100}%` }}
               />
             </div>
@@ -194,8 +194,8 @@ export default function QuizPage() {
                     {(question.question_type === 'short_answer' || question.type === 'short_answer') && 'Type your answer'}
                   </CardDescription>
                 </div>
-                <div className="ml-4 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                  <span className="text-sm font-medium text-emerald-400">{question.points} pts</span>
+                <div className="ml-4 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20">
+                  <span className="text-sm font-medium text-cyan-400">{question.points} pts</span>
                 </div>
               </div>
             </CardHeader>
@@ -219,15 +219,15 @@ export default function QuizPage() {
                         onClick={() => handleAnswerChange(question.id, option.id)}
                         className={`w-full text-left p-4 rounded-lg border transition-all ${
                           isSelected
-                            ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
-                            : 'border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-zinc-600 hover:bg-zinc-800'
+                            ? 'border-cyan-500 bg-cyan-500/10 text-cyan-400'
+                            : 'border-cyan-700 bg-zinc-900 text-zinc-300 hover:border-cyan-600 hover:bg-zinc-800'
                         }`}
                       >
                         <div className="flex items-start gap-3">
                           <div className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                            isSelected ? 'border-emerald-500 bg-emerald-500/20' : 'border-zinc-600'
+                            isSelected ? 'border-cyan-500 bg-cyan-500/20' : 'border-cyan-600'
                           }`}>
-                            {isSelected && <div className="w-2 h-2 rounded-full bg-emerald-400" />}
+                            {isSelected && <div className="w-2 h-2 rounded-full bg-cyan-400" />}
                           </div>
                           <span className="flex-1">{option.text}</span>
                         </div>
@@ -247,8 +247,8 @@ export default function QuizPage() {
                         onClick={() => handleAnswerChange(question.id, option)}
                         className={`p-6 rounded-lg border text-center font-medium transition-all ${
                           isSelected
-                            ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
-                            : 'border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-zinc-600 hover:bg-zinc-800'
+                            ? 'border-cyan-500 bg-cyan-500/10 text-cyan-400'
+                            : 'border-cyan-700 bg-zinc-900 text-zinc-300 hover:border-cyan-600 hover:bg-zinc-800'
                         }`}
                       >
                         {option}
@@ -263,7 +263,7 @@ export default function QuizPage() {
                   value={answers[question.id] as string || ''}
                   onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                   placeholder="Type your answer here..."
-                  className="w-full h-32 px-4 py-3 rounded-lg border border-zinc-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  className="w-full h-32 px-4 py-3 rounded-lg border border-cyan-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
                 />
               )}
             </CardContent>
@@ -289,10 +289,10 @@ export default function QuizPage() {
                     onClick={() => setCurrentQuestion(index)}
                     className={`w-10 h-10 rounded-lg border transition-all ${
                       index === currentQuestion
-                        ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
+                        ? 'border-cyan-500 bg-cyan-500/20 text-cyan-400'
                         : isAnswered
-                        ? 'border-zinc-600 bg-zinc-800 text-zinc-300'
-                        : 'border-zinc-800 bg-zinc-900 text-zinc-600'
+                        ? 'border-cyan-600 bg-zinc-800 text-zinc-300'
+                        : 'border-cyan-800 bg-zinc-900 text-zinc-600'
                     }`}
                     title={!isAnswered ? 'Question not answered' : undefined}
                   >
@@ -347,13 +347,13 @@ function QuizResult({ quiz, result, onRetry }: { quiz: QuizType; result: QuizAtt
       <div className="container py-8">
         <div className="max-w-3xl mx-auto space-y-6">
           {/* Result Header */}
-          <Card className={`glow-box ${passed ? 'border-emerald-500/50' : 'border-red-500/50'}`}>
+          <Card className={`glow-box ${passed ? 'border-cyan-500/50' : 'border-red-500/50'}`}>
             <CardHeader className="text-center">
               <div className={`mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full ${
-                passed ? 'bg-emerald-500/20' : 'bg-red-500/20'
+                passed ? 'bg-cyan-500/20' : 'bg-red-500/20'
               }`}>
                 {passed ? (
-                  <CheckCircle className="h-10 w-10 text-emerald-400" />
+                  <CheckCircle className="h-10 w-10 text-cyan-400" />
                 ) : (
                   <XCircle className="h-10 w-10 text-red-400" />
                 )}
@@ -371,7 +371,7 @@ function QuizResult({ quiz, result, onRetry }: { quiz: QuizType; result: QuizAtt
             <CardContent className="space-y-6">
               {/* Score */}
               <div className="text-center">
-                <div className={`text-5xl font-bold ${passed ? 'text-emerald-400' : 'text-red-400'}`}>
+                <div className={`text-5xl font-bold ${passed ? 'text-cyan-400' : 'text-red-400'}`}>
                   {score}%
                 </div>
                 <p className="text-zinc-400 mt-2">
@@ -380,7 +380,7 @@ function QuizResult({ quiz, result, onRetry }: { quiz: QuizType; result: QuizAtt
               </div>
 
               {/* Passing Score */}
-              <div className="p-4 rounded-lg bg-zinc-800/50 border border-zinc-700">
+              <div className="p-4 rounded-lg bg-zinc-800/50 border border-cyan-700">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-zinc-400">Passing Score</span>
                   <span className="text-white font-medium">{quiz.passing_score}%</span>
@@ -395,10 +395,10 @@ function QuizResult({ quiz, result, onRetry }: { quiz: QuizType; result: QuizAtt
                   const isCorrect = detail.is_correct !== undefined ? detail.is_correct : detail.correct;
                   const studentAnswer = detail.student_answer !== undefined ? detail.student_answer : detail.user_answer;
                   return (
-                    <div key={question.id} className="p-4 rounded-lg border border-zinc-800 bg-zinc-900/50">
+                    <div key={question.id} className="p-4 rounded-lg border border-cyan-800 bg-zinc-900/50">
                       <div className="flex items-start gap-3">
                         {isCorrect ? (
-                          <CheckCircle className="h-5 w-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                          <CheckCircle className="h-5 w-5 text-cyan-400 flex-shrink-0 mt-0.5" />
                         ) : (
                           <XCircle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
                         )}
@@ -406,7 +406,7 @@ function QuizResult({ quiz, result, onRetry }: { quiz: QuizType; result: QuizAtt
                           <p className="text-sm text-white font-medium">{question.question || question.question_text}</p>
                           <div className="text-sm space-y-1">
                             <p className="text-zinc-400">
-                              Your answer: <span className={isCorrect ? 'text-emerald-400' : 'text-red-400'}>
+                              Your answer: <span className={isCorrect ? 'text-cyan-400' : 'text-red-400'}>
                                 {Array.isArray(studentAnswer)
                                   ? studentAnswer.join(', ')
                                   : studentAnswer || 'Not answered'}
@@ -414,7 +414,7 @@ function QuizResult({ quiz, result, onRetry }: { quiz: QuizType; result: QuizAtt
                             </p>
                             {!isCorrect && detail.correct_answer !== undefined && (
                               <p className="text-zinc-400">
-                                Correct answer: <span className="text-emerald-400 font-medium">
+                                Correct answer: <span className="text-cyan-400 font-medium">
                                   {Array.isArray(detail.correct_answer)
                                     ? detail.correct_answer.join(', ')
                                     : detail.correct_answer}
@@ -423,9 +423,9 @@ function QuizResult({ quiz, result, onRetry }: { quiz: QuizType; result: QuizAtt
                             )}
                           </div>
                           {detail.explanation && (
-                            <div className="mt-2 p-3 rounded bg-zinc-800/50 border-l-2 border-emerald-500">
+                            <div className="mt-2 p-3 rounded bg-zinc-800/50 border-l-2 border-cyan-500">
                               <p className="text-sm text-zinc-300">
-                                <span className="font-medium text-emerald-400">Explanation:</span> {detail.explanation}
+                                <span className="font-medium text-cyan-400">Explanation:</span> {detail.explanation}
                               </p>
                             </div>
                           )}

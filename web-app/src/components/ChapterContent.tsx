@@ -68,12 +68,12 @@ export function ChapterContent({ chapter, section, onNext, onPrevious, hasQuiz }
 
           {/* Learning Objectives */}
           {currentSectionIndex === 0 && chapter.learning_objectives && chapter.learning_objectives.length > 0 && (
-            <div className="p-4 rounded-lg bg-emerald-500/5 border border-emerald-500/10 animate-fade-in-up delay-200">
-              <h3 className="text-sm font-semibold text-emerald-400 mb-2">Learning Objectives</h3>
+            <div className="p-4 rounded-lg bg-cyan-500/5 border border-cyan-500/10 animate-fade-in-up delay-200">
+              <h3 className="text-sm font-semibold text-cyan-400 mb-2">Learning Objectives</h3>
               <ul className="space-y-1">
                 {chapter.learning_objectives.map((objective, index) => (
                   <li key={index} className="text-sm text-zinc-300 flex items-start gap-2 animate-fade-in-up" style={{ animationDelay: `${200 + (index * 50)}ms` }}>
-                    <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="h-4 w-4 text-cyan-400 flex-shrink-0 mt-0.5" />
                     <span>{objective}</span>
                   </li>
                 ))}
@@ -88,6 +88,8 @@ export function ChapterContent({ chapter, section, onNext, onPrevious, hasQuiz }
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeHighlight]}
+              skipHtml={false}
+              unwrapDisallowed={false}
               components={{
                 // Enhanced typography for book-like reading experience
                 p: ({ children }) => (
@@ -146,7 +148,7 @@ export function ChapterContent({ chapter, section, onNext, onPrevious, hasQuiz }
                     <code className={className} {...props}>{children}</code>
                   ) : (
                     <code
-                      className="bg-zinc-800/50 text-emerald-400 px-2 py-1 rounded-md text-sm font-mono border border-zinc-700/50"
+                      className="bg-zinc-800/50 text-cyan-400 px-2 py-1 rounded-md text-sm font-mono border border-cyan-700/50"
                       {...props}
                     >
                       {children}
@@ -154,19 +156,19 @@ export function ChapterContent({ chapter, section, onNext, onPrevious, hasQuiz }
                   );
                 },
                 pre: ({ children }) => (
-                  <pre className="bg-zinc-950 border border-zinc-800 rounded-lg p-5 overflow-x-auto my-6 shadow-lg text-sm">
+                  <pre className="bg-zinc-950 border border-cyan-800 rounded-lg p-5 overflow-x-auto my-6 shadow-lg text-sm">
                     {children}
                   </pre>
                 ),
                 blockquote: ({ children }) => (
-                  <blockquote className="border-l-4 border-emerald-500/50 bg-zinc-900/30 pl-6 pr-4 py-4 rounded-r-lg my-6 text-zinc-300 italic leading-relaxed text-base">
+                  <blockquote className="border-l-4 border-cyan-500/50 bg-zinc-900/30 pl-6 pr-4 py-4 rounded-r-lg my-6 text-zinc-300 italic leading-relaxed text-base">
                     {children}
                   </blockquote>
                 ),
                 a: ({ href, children }) => (
                   <a
                     href={href}
-                    className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2 decoration-emerald-400/30 hover:decoration-emerald-300 transition-colors"
+                    className="text-cyan-400 hover:text-cyan-300 underline underline-offset-2 decoration-cyan-400/30 hover:decoration-cyan-300 transition-colors"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -184,7 +186,7 @@ export function ChapterContent({ chapter, section, onNext, onPrevious, hasQuiz }
                   </em>
                 ),
                 hr: () => (
-                  <hr className="my-8 border-zinc-700/50" />
+                  <hr className="my-8 border-cyan-700/50" />
                 ),
                 table: ({ children }) => (
                   <div className="my-6 overflow-x-auto">
@@ -228,7 +230,7 @@ export function ChapterContent({ chapter, section, onNext, onPrevious, hasQuiz }
         </div>
 
         {/* Navigation */}
-        <div className="flex items-center justify-between pt-6 border-t border-zinc-800 animate-fade-in-up delay-400">
+        <div className="flex items-center justify-between pt-6 border-t border-cyan-800 animate-fade-in-up delay-400">
           <Button
             variant="secondary"
             onClick={onPrevious}
@@ -263,7 +265,7 @@ export function ChapterContent({ chapter, section, onNext, onPrevious, hasQuiz }
             </div>
             <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 progress-bar-animated transition-all duration-700 ease-out"
+                className="h-full bg-gradient-to-r from-cyan-500 to-cyan-400 progress-bar-animated transition-all duration-700 ease-out"
                 style={{ width: `${((currentSectionIndex + 1) / sections.length) * 100}%` }}
               />
             </div>

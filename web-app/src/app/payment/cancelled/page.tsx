@@ -29,7 +29,7 @@ export default function PaymentCancelledPage() {
           </p>
 
           {/* Why Upgrade? */}
-          <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 mb-8 text-left">
+          <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 mb-8 text-left">
             <h2 className="text-lg font-bold text-white mb-4">Why Go Premium?</h2>
             <ul className="space-y-3">
               <li className="flex items-center gap-3 text-zinc-300">
@@ -54,15 +54,15 @@ export default function PaymentCancelledPage() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
-              onClick={() => router.push('/')}
+              onClick={() => router.push('/pricing')}
               className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-semibold py-3 px-8 rounded-lg transition-all hover:scale-105"
             >
               Try Again
             </Button>
             <Button
-              onClick={() => router.push('/chapters/chapter-1')}
+              onClick={() => router.push('/library')}
               variant="outline"
-              className="border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-600 py-3 px-8 rounded-lg transition-all"
+              className="border-cyan-700 text-zinc-400 hover:text-white hover:border-cyan-600 py-3 px-8 rounded-lg transition-all"
             >
               Continue Free
             </Button>

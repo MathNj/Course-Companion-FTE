@@ -37,7 +37,7 @@ export function MilestoneBadge({
 
   return (
     <div
-      className={`card-dark rounded-xl ${sizeClasses[size]} transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/10`}
+      className={`card-dark rounded-xl ${sizeClasses[size]} transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/10`}
     >
       <div className="flex items-start gap-3">
         {/* Icon */}
@@ -138,7 +138,7 @@ export function UpcomingMilestoneBadge({
             </div>
             <div className="w-full bg-zinc-800 rounded-full h-2 overflow-hidden">
               <div
-                className="bg-gradient-to-r from-emerald-500 to-emerald-400 h-full rounded-full transition-all duration-500 ease-out"
+                className="bg-gradient-to-r from-cyan-500 to-cyan-400 h-full rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>

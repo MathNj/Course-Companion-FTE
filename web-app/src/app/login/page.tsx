@@ -45,8 +45,8 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-              <BookOpen className="h-8 w-8 text-emerald-400" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+              <BookOpen className="h-8 w-8 text-cyan-400" />
             </div>
             <h1 className="text-2xl font-bold text-white">Welcome back</h1>
             <p className="mt-2 text-sm text-zinc-400">
@@ -81,7 +81,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full px-4 py-2.5 rounded-lg border border-zinc-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                    className="w-full px-4 py-2.5 rounded-lg border border-cyan-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -96,7 +96,7 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full px-4 py-2.5 rounded-lg border border-zinc-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                    className="w-full px-4 py-2.5 rounded-lg border border-cyan-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
                     placeholder="••••••••"
                   />
                 </div>
@@ -115,7 +115,7 @@ export default function LoginPage() {
 
               <div className="mt-6 text-center text-sm">
                 <span className="text-zinc-400">Don&apos;t have an account?</span>{' '}
-                <Link href="/register" className="text-emerald-400 hover:text-emerald-300 font-medium">
+                <Link href="/register" className="text-cyan-400 hover:text-cyan-300 font-medium">
                   Sign up
                 </Link>
               </div>
@@ -123,7 +123,7 @@ export default function LoginPage() {
           </Card>
 
           {/* Demo Account Info */}
-          <div className="mt-6 p-4 rounded-lg bg-zinc-900/50 border border-zinc-800">
+          <div className="mt-6 p-4 rounded-lg bg-zinc-900/50 border border-cyan-800">
             <p className="text-xs text-zinc-500 text-center">
               Demo: Use any email/password to create an account
             </p>

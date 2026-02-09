@@ -14,7 +14,7 @@ export function ProgressRing({
   progress,
   size = 200,
   strokeWidth = 12,
-  color = '#10b981',
+  color = '#06b6d4',
   backgroundColor = '#27272a',
   showPercentage = true,
   animated = true,
