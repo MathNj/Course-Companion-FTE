@@ -87,14 +87,34 @@ export default function SettingsPage() {
   const handleUpdateProfile = async () => {
     setSaveStatus('saving');
     try {
-      // TODO: Implement API call
-      // await updateProfile({ email, timezone });
+      // Call the API to update profile
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/auth/me`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        },
+        body: JSON.stringify({ email, timezone }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Failed to update profile');
+      }
+
+      // Update user in store
+      const updatedUser = await response.json();
+      // Update store with new user data if needed
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem('user_email', email);
+      }
+
       setSaveStatus('success');
       setSaveMessage('Profile updated successfully');
       setTimeout(() => setSaveStatus('idle'), 3000);
-    } catch (error) {
+    } catch (error: any) {
       setSaveStatus('error');
-      setSaveMessage('Failed to update profile');
+      setSaveMessage(error.message || 'Failed to update profile');
       setTimeout(() => setSaveStatus('idle'), 3000);
     }
   };
@@ -116,17 +136,33 @@ export default function SettingsPage() {
 
     setSaveStatus('saving');
     try {
-      // TODO: Implement API call
-      // await changePassword({ current_password: currentPassword, new_password: newPassword });
+      // Call the API to change password
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/auth/change-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        },
+        body: JSON.stringify({
+          current_password: currentPassword,
+          new_password: newPassword,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Failed to change password');
+      }
+
       setSaveStatus('success');
       setSaveMessage('Password changed successfully');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
       setTimeout(() => setSaveStatus('idle'), 3000);
-    } catch (error) {
+    } catch (error: any) {
       setSaveStatus('error');
-      setSaveMessage('Failed to change password');
+      setSaveMessage(error.message || 'Failed to change password');
       setTimeout(() => setSaveStatus('idle'), 3000);
     }
   };
@@ -144,18 +180,31 @@ export default function SettingsPage() {
       '• Quiz scores and certificates\n' +
       '• Streaks and milestones\n' +
       '• Notes and bookmarks\n\n' +
-      'Type "DELETE" to confirm:'
+      'Click OK to confirm account deletion.'
     );
 
-    if (doubleConfirmed !== 'DELETE') return;
+    if (!doubleConfirmed) return;
 
     try {
-      // TODO: Implement API call
-      // await deleteAccount();
+      // Call the API to delete account
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/auth/me`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Failed to delete account');
+      }
+
+      // Logout and redirect to home
       logout();
       router.push('/');
-    } catch (error) {
-      alert('Failed to delete account. Please contact support.');
+    } catch (error: any) {
+      alert(error.message || 'Failed to delete account. Please contact support.');
     }
   };
 

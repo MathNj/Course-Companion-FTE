@@ -33,7 +33,7 @@ class AdaptivePath(Base):
     path_id = Column(UUIDType(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
 
     # Foreign Keys
-    student_id = Column(UUIDType(as_uuid=True), ForeignKey("students.student_id", ondelete="CASCADE"), nullable=False, index=True)
+    student_id = Column(UUIDType(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
 
     # Metadata
     generated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
@@ -103,7 +103,7 @@ class AssessmentSubmission(Base):
     submission_id = Column(UUIDType(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
 
     # Foreign Keys
-    student_id = Column(UUIDType(as_uuid=True), ForeignKey("students.student_id", ondelete="CASCADE"), nullable=False, index=True)
+    student_id = Column(UUIDType(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     question_id = Column(String(50), nullable=False, index=True)
     previous_submission_id = Column(UUIDType(as_uuid=True), ForeignKey("assessment_submissions.submission_id"), nullable=True)
 
@@ -158,7 +158,7 @@ class AssessmentFeedback(Base):
 
     # Foreign Keys
     submission_id = Column(UUIDType(as_uuid=True), ForeignKey("assessment_submissions.submission_id", ondelete="CASCADE"), nullable=False, unique=True)
-    human_reviewer_id = Column(UUIDType(as_uuid=True), ForeignKey("students.student_id"), nullable=True)
+    human_reviewer_id = Column(UUIDType(as_uuid=True), ForeignKey("users.id"), nullable=True)
 
     # Grading Results
     quality_score = Column(Numeric(3, 1), nullable=False)

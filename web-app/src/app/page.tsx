@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useStore } from '@/store/useStore';
 import { getChapters, getProgress } from '@/lib/api';
-import { mockChapters } from '@/lib/mockData';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { ChapterGrid } from '@/components/ChapterGrid';
@@ -16,15 +15,7 @@ export default function HomePage() {
 
   const { data: chapters, isLoading: chaptersLoading } = useQuery({
     queryKey: ['chapters'],
-    queryFn: async () => {
-      try {
-        return await getChapters();
-      } catch (err) {
-        // Use mock data if API fails
-        console.log('Using mock data due to API error');
-        return mockChapters;
-      }
-    },
+    queryFn: () => getChapters(),
   });
 
   const { data: progress } = useQuery({
@@ -63,7 +54,7 @@ export default function HomePage() {
               Master Generative AI through our comprehensive curriculum
             </p>
           </div>
-          <ChapterGrid chapters={chapters || mockChapters} />
+          <ChapterGrid chapters={chapters || []} />
         </div>
       </main>
 

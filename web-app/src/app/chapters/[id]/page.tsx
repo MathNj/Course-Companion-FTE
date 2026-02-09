@@ -5,7 +5,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { useStore } from '@/store/useStore';
 import { getChapter, getQuiz, recordActivity } from '@/lib/api';
-import { mockChapters } from '@/lib/mockData';
 import { cleanTitle, parseTitle } from '@/lib/utils';
 import { Chapter as ChapterType, Quiz as QuizType, Section } from '@/types';
 import { Header } from '@/components/Header';
@@ -39,15 +38,7 @@ export default function ChapterPage() {
 
   const { data: chapter, isLoading } = useQuery({
     queryKey: ['chapter', chapterId],
-    queryFn: async () => {
-      try {
-        return await getChapter(chapterId);
-      } catch (err) {
-        // Use mock data if API fails
-        console.log('Using mock data for chapter');
-        return mockChapters.find(c => c.id === chapterId) || mockChapters[0];
-      }
-    },
+    queryFn: () => getChapter(chapterId),
   });
 
   const { data: quiz } = useQuery({

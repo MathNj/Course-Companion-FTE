@@ -635,11 +635,22 @@ async def get_all_students(
         )
 
         # Get premium usage
-        # Note: AdaptivePath uses student_id, not user_id
-        adaptive_paths_count = 0  # TODO: Implement when AdaptivePath is properly linked to User model
+        # Note: AdaptivePath and AssessmentSubmission now properly link to User.id via student_id
+        from app.models.llm import AdaptivePath, AssessmentSubmission
 
-        # Note: AssessmentSubmission uses student_id, not user_id
-        assessments_count = 0  # TODO: Implement when AssessmentSubmission is properly linked to User model
+        # Count adaptive paths for this student
+        adaptive_result = await db.execute(
+            select(func.count(AdaptivePath.path_id))
+            .where(AdaptivePath.student_id == student.id)
+        )
+        adaptive_paths_count = adaptive_result.scalar() or 0
+
+        # Count assessment submissions for this student
+        assessments_result = await db.execute(
+            select(func.count(AssessmentSubmission.submission_id))
+            .where(AssessmentSubmission.student_id == student.id)
+        )
+        assessments_count = assessments_result.scalar() or 0
 
         # Calculate engagement metrics
         total_time_minutes = sum([p.time_spent_seconds or 0 for p in all_progress]) // 60

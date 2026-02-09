@@ -77,6 +77,12 @@ class ChapterProgress(Base, TimestampMixin):
         String(100),
         nullable=True,
     )
+    completed_sections: Mapped[dict] = mapped_column(
+        JSONType,
+        nullable=False,
+        default=dict,
+        server_default="{}",
+    )
     completion_percentage: Mapped[int] = mapped_column(
         Integer,
         nullable=False,

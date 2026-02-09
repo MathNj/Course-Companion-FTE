@@ -4,7 +4,9 @@ import { Chapter, Section } from '@/types';
 import { Check, ChevronRight, Lock } from 'lucide-react';
 import { cn, parseTitle } from '@/lib/utils';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getChapterProgress, markSectionComplete } from '@/lib/api';
+import { useStore } from '@/store/useStore';
 
 interface ChapterSidebarProps {
   chapter: Chapter;
@@ -14,6 +16,39 @@ interface ChapterSidebarProps {
 
 export function ChapterSidebar({ chapter, selectedSection, onSectionSelect }: ChapterSidebarProps) {
   const [hoveredSection, setHoveredSection] = useState<string | null>(null);
+  const [completedSections, setCompletedSections] = useState<Record<string, string>>({});
+  const { user } = useStore();
+
+  // Fetch chapter progress to get completed sections
+  useEffect(() => {
+    if (user) {
+      getChapterProgress(chapter.id)
+        .then((progress) => {
+          if (progress.completed_sections) {
+            setCompletedSections(progress.completed_sections);
+          }
+        })
+        .catch(() => {
+          // Silently fail - user might not have progress yet
+        });
+    }
+  }, [chapter.id, user]);
+
+  const handleSectionSelect = (section: Section) => {
+    onSectionSelect(section);
+
+    // Mark section as complete if user is logged in
+    if (user && !completedSections[section.id]) {
+      markSectionComplete(chapter.id, section.id).then(() => {
+        setCompletedSections((prev) => ({
+          ...prev,
+          [section.id]: new Date().toISOString(),
+        }));
+      }).catch(() => {
+        // Silently fail - section will be marked on next load
+      });
+    }
+  };
 
   // Parse title for multi-line display
   const { main: titleMain, subtitle: titleSubtitle } = parseTitle(chapter.title);
@@ -50,12 +85,12 @@ export function ChapterSidebar({ chapter, selectedSection, onSectionSelect }: Ch
           {chapter.sections.map((section, index) => {
             const isSelected = selectedSection?.id === section.id;
             const isHovered = hoveredSection === section.id;
-            const isCompleted = false; // TODO: Track completion
+            const isCompleted = !!completedSections[section.id];
 
             return (
               <button
                 key={section.id}
-                onClick={() => onSectionSelect(section)}
+                onClick={() => handleSectionSelect(section)}
                 onMouseEnter={() => setHoveredSection(section.id)}
                 onMouseLeave={() => setHoveredSection(null)}
                 className={cn(

@@ -79,6 +79,16 @@ export async function recordActivity(chapterId?: string) {
   return response.data;
 }
 
+export async function getChapterProgress(chapterId: string) {
+  const response = await api.get(`/api/v1/progress/chapters/${chapterId}`);
+  return response.data;
+}
+
+export async function markSectionComplete(chapterId: string, sectionId: string) {
+  const response = await api.post(`/api/v1/progress/chapters/${chapterId}/sections/${sectionId}/complete`);
+  return response.data;
+}
+
 // Milestones
 export interface Milestone {
   id: string;

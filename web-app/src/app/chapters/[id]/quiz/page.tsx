@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { getQuiz, submitQuiz } from '@/lib/api';
-import { mockQuizzes } from '@/lib/mockData';
 import { Quiz as QuizType, QuizAttempt } from '@/types';
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -26,34 +25,26 @@ export default function QuizPage() {
   const { data: quiz, isLoading } = useQuery({
     queryKey: ['quiz', chapterId],
     queryFn: async () => {
-      try {
-        // Convert chapter-1 to chapter-1-quiz for the backend
-        const quizId = chapterId.endsWith('-quiz') ? chapterId : `${chapterId}-quiz`;
-        const data = await getQuiz(quizId);
-        // Normalize question objects to have both type and question_type
-        if (data?.questions) {
-          data.questions = data.questions.map((q: any) => ({
-            ...q,
-            question_text: q.question_text || q.question || '',
-            question: q.question || q.question_text || '',
-            question_type: q.question_type || q.type || 'multiple_choice',
-            type: q.type || q.question_type || 'multiple_choice',
-            // Keep options as objects with id and text
-            options: q.options?.map((opt: any) =>
-              typeof opt === 'string'
-                ? { id: opt, text: opt }  // Convert string to object
-                : { id: opt.id || opt, text: opt.text || opt }  // Keep object structure
-            ),
-          }));
-        }
-        return data;
-      } catch (err) {
-        // Use mock data if API fails
-        console.log('Using mock quiz data for:', chapterId);
-        const mockQuiz = mockQuizzes[chapterId] || mockQuizzes['chapter-1'];
-        console.log('Quiz data:', JSON.stringify(mockQuiz, null, 2));
-        return mockQuiz;
+      // Convert chapter-1 to chapter-1-quiz for the backend
+      const quizId = chapterId.endsWith('-quiz') ? chapterId : `${chapterId}-quiz`;
+      const data = await getQuiz(quizId);
+      // Normalize question objects to have both type and question_type
+      if (data?.questions) {
+        data.questions = data.questions.map((q: any) => ({
+          ...q,
+          question_text: q.question_text || q.question || '',
+          question: q.question || q.question_text || '',
+          question_type: q.question_type || q.type || 'multiple_choice',
+          type: q.type || q.question_type || 'multiple_choice',
+          // Keep options as objects with id and text
+          options: q.options?.map((opt: any) =>
+            typeof opt === 'string'
+              ? { id: opt, text: opt }  // Convert string to object
+              : { id: opt.id || opt, text: opt.text || opt }  // Keep object structure
+          ),
+        }));
       }
+      return data;
     },
   });
 

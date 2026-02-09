@@ -43,6 +43,7 @@ class UserCreate(UserBase):
 class UserUpdate(BaseModel):
     """Schema for updating user profile."""
 
+    email: Optional[EmailStr] = Field(None, description="User's new email address")
     full_name: Optional[str] = Field(None, max_length=255)
     timezone: Optional[str] = Field(None, max_length=50)
     preferences: Optional[dict] = None
@@ -50,12 +51,29 @@ class UserUpdate(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
+                "email": "newemail@example.com",
                 "full_name": "Jane Smith",
                 "timezone": "Europe/London",
                 "preferences": {
                     "theme": "light",
                     "language": "en"
                 }
+            }
+        }
+    )
+
+
+class ChangePasswordRequest(BaseModel):
+    """Schema for changing user password."""
+
+    current_password: str = Field(..., min_length=1, description="Current password for verification")
+    new_password: str = Field(..., min_length=8, max_length=100, description="New password (min 8 characters)")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "current_password": "OldPass123!",
+                "new_password": "NewPass456!"
             }
         }
     )

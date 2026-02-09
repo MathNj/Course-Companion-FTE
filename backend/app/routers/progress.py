@@ -149,6 +149,7 @@ async def get_chapter_progress(
         - Time spent
         - Quiz attempts for this chapter
         - Start and completion timestamps
+        - Completed sections
     """
     from app.models.progress import ChapterProgress
     from app.models.quiz import QuizAttempt
@@ -186,6 +187,7 @@ async def get_chapter_progress(
             "started_at": None,
             "completed_at": None,
             "quiz_attempts": [],
+            "completed_sections": [],
         }
 
     # Fetch quiz attempts for this chapter
@@ -226,9 +228,83 @@ async def get_chapter_progress(
         "started_at": chapter_progress.started_at.isoformat(),
         "completed_at": chapter_progress.completed_at.isoformat() if chapter_progress.completed_at else None,
         "current_section_id": chapter_progress.current_section_id,
+        "completed_sections": chapter_progress.completed_sections or {},
         "quiz_attempts": quiz_attempts_summary,
         "best_quiz_score": max((a["score_percentage"] for a in quiz_attempts_summary), default=None),
         "quiz_passed": any(a["passed"] for a in quiz_attempts_summary),
+    }
+
+
+@router.post("/chapters/{chapter_id}/sections/{section_id}/complete", response_model=Dict[str, Any])
+async def mark_section_complete(
+    chapter_id: str,
+    section_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Mark a section as completed for the current user.
+
+    Args:
+        chapter_id: Chapter identifier (e.g., "chapter-1")
+        section_id: Section identifier (e.g., "section-1-1")
+
+    Returns:
+        Updated chapter progress with completion status
+    """
+    from app.models.progress import ChapterProgress
+    from datetime import datetime
+    from sqlalchemy import select
+
+    logger.info(f"Marking section {section_id} as complete for user {current_user.id}")
+
+    # Get or create chapter progress
+    result = await db.execute(
+        select(ChapterProgress)
+        .where(ChapterProgress.user_id == current_user.id)
+        .where(ChapterProgress.chapter_id == chapter_id)
+    )
+    chapter_progress = result.scalar_one_or_none()
+
+    if not chapter_progress:
+        # Create new progress record
+        chapter_progress = ChapterProgress(
+            user_id=current_user.id,
+            chapter_id=chapter_id,
+            started_at=datetime.utcnow(),
+            current_section_id=section_id,
+            completed_sections={section_id: datetime.utcnow().isoformat()},
+            time_spent_seconds=0,
+            completion_percentage=10,  # Initial progress
+        )
+        db.add(chapter_progress)
+    else:
+        # Update existing progress
+        if not chapter_progress.completed_sections:
+            chapter_progress.completed_sections = {}
+
+        # Mark section as complete if not already marked
+        if section_id not in chapter_progress.completed_sections:
+            chapter_progress.completed_sections[section_id] = datetime.utcnow().isoformat()
+
+        # Update current section
+        chapter_progress.current_section_id = section_id
+
+        # Recalculate completion percentage based on completed sections
+        total_sections = len(chapter_progress.completed_sections)
+        # Assume roughly 5 sections per chapter for progress calculation
+        chapter_progress.completion_percentage = min(95, total_sections * 20)
+
+    await db.commit()
+    await db.refresh(chapter_progress)
+
+    return {
+        "chapter_id": chapter_id,
+        "section_id": section_id,
+        "completed": True,
+        "completed_sections": chapter_progress.completed_sections,
+        "completion_percentage": chapter_progress.completion_percentage,
+        "message": "Section marked as complete",
     }
 
 

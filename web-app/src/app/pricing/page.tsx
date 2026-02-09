@@ -151,11 +151,11 @@ export default function PricingPage() {
 
   const handleUpgrade = (tierId: string) => {
     if (!user) {
-      window.location.href = '/register';
+      router.push('/register');
       return;
     }
-    // TODO: Implement upgrade flow with payment processing
-    window.location.href = `/payment/checkout?tier=${tierId}&period=${billingPeriod}`;
+    // Redirect to checkout page with tier parameter
+    router.push(`/payment/checkout?tier=${tierId}&period=${billingPeriod}`);
   };
 
   return (
