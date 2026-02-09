@@ -2,16 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   // output: 'standalone', // Commented out for local development
-  eslint: {
-    // Disable ESLint during production builds
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     // Disable type checking during production builds for faster deployment
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ['localhost', '*.fly.dev'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -26,7 +21,13 @@ const nextConfig = {
   experimental: {
     // Optimize package imports
     optimizePackageImports: ['lucide-react', '@tanstack/react-query'],
+    // Set Turbopack root to avoid lockfile warnings
+    turbopack: {
+      root: process.cwd(),
+    },
   },
 }
+
+module.exports = nextConfig
 
 module.exports = nextConfig
