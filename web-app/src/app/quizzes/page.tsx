@@ -201,7 +201,7 @@ export default function QuizzesPage() {
           </div>
         ) : filteredChapters.length === 0 ? (
           <div className="text-center py-20">
-            <Target className="h-16 w-16 text-zinc-700 mx-auto mb-4" />
+            <Target className="h-16 w-16 text-zinc-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-white mb-2">No quizzes found</h3>
             <p className="text-zinc-400">Try selecting a different filter</p>
           </div>

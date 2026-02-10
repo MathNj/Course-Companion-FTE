@@ -244,7 +244,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             </div>
           ) : query && query.length >= 2 && results.length === 0 ? (
             <div className="p-8 text-center">
-              <FileText className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
+              <FileText className="w-12 h-12 text-zinc-400 mx-auto mb-4" />
               <p className="text-zinc-400 mb-2">No results found</p>
               <p className="text-sm text-zinc-500">
                 Try different keywords or check your spelling
@@ -252,7 +252,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             </div>
           ) : !query || query.length < 2 ? (
             <div className="p-8 text-center">
-              <Search className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
+              <Search className="w-12 h-12 text-zinc-400 mx-auto mb-4" />
               <p className="text-zinc-400 mb-2">Search Course Content</p>
               <p className="text-sm text-zinc-500 max-w-md mx-auto">
                 Type to search through chapters, sections, and concepts across all course material.

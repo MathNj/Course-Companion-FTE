@@ -363,7 +363,7 @@ export default function TeacherDashboard() {
                             </td>
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-2">
-                                <Flame className={`w-4 h-4 ${student.streak.current_streak >= 3 ? 'text-orange-400' : 'text-zinc-600'}`} />
+                                <Flame className={`w-4 h-4 ${student.streak.current_streak >= 3 ? 'text-orange-400' : 'text-zinc-400'}`} />
                                 <span className="text-sm text-white">{student.streak.current_streak} day</span>
                                 {student.streak.current_streak >= 7 && (
                                   <Award className="w-4 h-4 text-yellow-400" />

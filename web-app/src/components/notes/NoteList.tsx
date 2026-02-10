@@ -277,7 +277,7 @@ export default function NoteList({ className = '' }: NoteListProps) {
                   >
                     {note.is_public ? 'Make Private' : 'Make Public'}
                   </button>
-                  <span className="text-zinc-700">•</span>
+                  <span className="text-zinc-400">•</span>
                   <button
                     onClick={() => handleDelete(note.id)}
                     className="text-sm text-red-400 hover:text-red-300 transition-colors"

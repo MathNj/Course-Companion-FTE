@@ -333,11 +333,11 @@ export function AchievementBadge({ icon, title, description, unlocked = true }: 
       >
         {icon}
       </motion.div>
-      <h4 className={`text-sm font-bold ${unlocked ? 'text-white' : 'text-zinc-500'}`}>
+      <h4 className={`text-sm font-bold ${unlocked ? 'text-white' : 'text-zinc-300'}`}>
         {title}
       </h4>
       {description && (
-        <p className={`text-xs ${unlocked ? 'text-zinc-400' : 'text-zinc-600'}`}>
+        <p className={`text-xs ${unlocked ? 'text-zinc-400' : 'text-zinc-500'}`}>
           {description}
         </p>
       )}
@@ -360,7 +360,7 @@ export function StreakFlame({ days, isOnFire = true }: StreakFlameProps) {
         } : {}}
         transition={{ duration: 0.5, repeat: isOnFire ? Infinity : 0 }}
       >
-        <Flame className={`h-8 w-8 ${isOnFire ? 'text-orange-400' : 'text-zinc-600'}`} />
+        <Flame className={`h-8 w-8 ${isOnFire ? 'text-orange-400' : 'text-zinc-400'}`} />
       </motion.div>
       <div>
         <p className="text-2xl font-bold text-white">{days}</p>

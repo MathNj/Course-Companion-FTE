@@ -78,7 +78,7 @@ function PaymentSuccessContent() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               onClick={() => router.push('/dashboard')}
-              className="bg-cyan-500 hover:bg-cyan-400 text-white font-semibold py-3 px-8 rounded-lg transition-all hover:scale-105"
+              className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-3 px-8 rounded-lg transition-all hover:scale-105"
             >
               Go to Dashboard
             </Button>

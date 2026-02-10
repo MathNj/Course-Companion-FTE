@@ -13,8 +13,12 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background;
     font-feature-settings: "rlig" 1, "calt" 1;
+    padding: 0;
+    margin: 0;
+    min-height: 100vh;
+    color: rgb(228 228 231);
   }
 
   /* Improve text rendering */
@@ -22,6 +26,31 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  /* Common text elements - light color */
+  p, span, div, li, td, th, label, small, strong, em, b, i, mark, code, pre {
+    color: rgb(212 212 216);
+  }
+
+  /* Headings should be bright */
+  h1, h2, h3, h4, h5, h6 {
+    color: rgb(255 255 255);
+  }
+
+  /* Links default to cyan */
+  a {
+    color: rgb(6 182 212);
+  }
+
+  /* Input fields should have white text */
+  input, textarea, select {
+    color: rgb(255 255 255);
+  }
+
+  /* Buttons should have proper text color */
+  button {
+    color: inherit;
   }
 }
 
@@ -47,7 +76,7 @@
   }
 
   .btn-primary {
-    @apply bg-cyan-500 hover:bg-cyan-400 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200;
+    @apply bg-cyan-500 hover:bg-cyan-600 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200;
   }
 
   .btn-secondary {
@@ -58,6 +87,16 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Consistent content padding for all pages */
+  .content-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Consistent container padding */
+  .container-padding {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
   }
 }
 

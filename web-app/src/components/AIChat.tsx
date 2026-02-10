@@ -738,7 +738,7 @@ Is there anything specific about ${context.en} you'd like to explore further?`,
                 </>
               )}
             </p>
-            <p className="text-xs text-zinc-600">
+            <p className="text-xs text-zinc-300">
               {soundEnabled ? '🔊 Sound on' : '🔇 Sound off'}
             </p>
           </div>

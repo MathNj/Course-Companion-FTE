@@ -271,7 +271,7 @@ export default function PricingPage() {
                       {feature.included ? (
                         <Check className="h-5 w-5 text-cyan-400 flex-shrink-0 mt-0.5" />
                       ) : (
-                        <X className="h-5 w-5 text-zinc-600 flex-shrink-0 mt-0.5" />
+                        <X className="h-5 w-5 text-zinc-400 flex-shrink-0 mt-0.5" />
                       )}
                       <span
                         className={`text-sm ${
@@ -279,7 +279,7 @@ export default function PricingPage() {
                             ? 'text-white font-medium'
                             : feature.included
                             ? 'text-zinc-300'
-                            : 'text-zinc-600'
+                            : 'text-zinc-400'
                         }`}
                       >
                         {feature.text}
@@ -341,13 +341,13 @@ export default function PricingPage() {
                   <tr key={index} className="hover:bg-zinc-800/50">
                     <td className="py-4 px-4 text-white">{row.feature}</td>
                     <td className="py-4 px-4 text-center">
-                      {row.free ? <Check className="h-5 w-5 text-cyan-400 mx-auto" /> : <X className="h-5 w-5 text-zinc-600 mx-auto" />}
+                      {row.free ? <Check className="h-5 w-5 text-cyan-400 mx-auto" /> : <X className="h-5 w-5 text-zinc-400 mx-auto" />}
                     </td>
                     <td className="py-4 px-4 text-center">
-                      {row.premium ? <Check className="h-5 w-5 text-cyan-400 mx-auto" /> : <X className="h-5 w-5 text-zinc-600 mx-auto" />}
+                      {row.premium ? <Check className="h-5 w-5 text-cyan-400 mx-auto" /> : <X className="h-5 w-5 text-zinc-400 mx-auto" />}
                     </td>
                     <td className="py-4 px-4 text-center">
-                      {row.pro ? <Check className="h-5 w-5 text-cyan-400 mx-auto" /> : <X className="h-5 w-5 text-zinc-600 mx-auto" />}
+                      {row.pro ? <Check className="h-5 w-5 text-cyan-400 mx-auto" /> : <X className="h-5 w-5 text-zinc-400 mx-auto" />}
                     </td>
                   </tr>
                 ))}

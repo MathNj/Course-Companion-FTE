@@ -16,12 +16,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0C10] disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden',
           {
-            'bg-cyan-500 hover:bg-cyan-400 text-white shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:-translate-y-0.5 active:translate-y-0 active:shadow-md':
+            'bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:-translate-y-0.5 active:translate-y-0 active:shadow-md':
               variant === 'primary',
             'bg-zinc-800 hover:bg-zinc-700 text-white hover:-translate-y-0.5 active:translate-y-0': variant === 'secondary',
             'bg-transparent text-zinc-300 hover:text-white hover:bg-zinc-800/50': variant === 'ghost',
             'border border-cyan-700 bg-transparent text-white hover:bg-zinc-800 hover:-translate-y-0.5 active:translate-y-0': variant === 'outline',
-            'bg-white text-black hover:bg-zinc-200 hover:-translate-y-0.5 active:translate-y-0': variant === 'default',
+            'bg-white text-zinc-900 hover:bg-zinc-200 hover:-translate-y-0.5 active:translate-y-0': variant === 'default',
           },
           {
             'h-9 px-3 text-sm': size === 'sm',

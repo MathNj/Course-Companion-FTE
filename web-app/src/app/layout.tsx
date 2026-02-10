@@ -32,7 +32,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <div className="min-h-screen flex flex-col">
+          <Providers>{children}</Providers>
+        </div>
       </body>
     </html>
   );

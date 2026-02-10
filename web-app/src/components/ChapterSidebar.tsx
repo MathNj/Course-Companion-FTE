@@ -107,7 +107,7 @@ export function ChapterSidebar({ chapter, selectedSection, onSectionSelect }: Ch
                     <ChevronRight
                       className={cn(
                         'h-4 w-4 transition-all duration-300',
-                        isSelected || isHovered ? 'text-cyan-400 translate-x-1' : 'text-zinc-600'
+                        isSelected || isHovered ? 'text-cyan-400 translate-x-1' : 'text-zinc-400'
                       )}
                     />
                   )}

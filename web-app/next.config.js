@@ -21,10 +21,6 @@ const nextConfig = {
   experimental: {
     // Optimize package imports
     optimizePackageImports: ['lucide-react', '@tanstack/react-query'],
-    // Set Turbopack root to avoid lockfile warnings
-    turbopack: {
-      root: process.cwd(),
-    },
   },
 }
 

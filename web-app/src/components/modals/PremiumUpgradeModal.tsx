@@ -285,7 +285,7 @@ export function PremiumUpgradeModal({
                 <Button
                   onClick={() => handleUpgrade('premium')}
                   disabled={isProcessing}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-semibold py-3 px-6 rounded-lg transition-all hover:scale-105 active:scale-95"
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-lg transition-all hover:scale-105 active:scale-95"
                 >
                   {isProcessing && selectedPlan === 'premium' ? (
                     <>
@@ -302,7 +302,7 @@ export function PremiumUpgradeModal({
                 <Button
                   onClick={() => handleUpgrade('pro')}
                   disabled={isProcessing}
-                  className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-white font-semibold py-3 px-6 rounded-lg transition-all hover:scale-105 active:scale-95"
+                  className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold py-3 px-6 rounded-lg transition-all hover:scale-105 active:scale-95"
                 >
                   {isProcessing && selectedPlan === 'pro' ? (
                     <>
@@ -319,7 +319,7 @@ export function PremiumUpgradeModal({
                 <Button
                   onClick={() => handleUpgrade('team')}
                   disabled={isProcessing}
-                  className="bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 text-white font-semibold py-3 px-6 rounded-lg transition-all hover:scale-105 active:scale-95"
+                  className="bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white font-semibold py-3 px-6 rounded-lg transition-all hover:scale-105 active:scale-95"
                 >
                   {isProcessing && selectedPlan === 'team' ? (
                     <>

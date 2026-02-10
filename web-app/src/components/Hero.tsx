@@ -15,15 +15,15 @@ export function Hero() {
   };
 
   return (
-    <section className="relative overflow-hidden py-24 sm:py-32">
+    <section className="relative overflow-hidden py-24 sm:py-32 px-4 sm:px-6 lg:px-8">
       {/* Animated Background */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 -mx-4 sm:-mx-6 lg:-mx-8">
         <div className="gradient-radial absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] animate-pulse-glow" />
         <div className="absolute inset-0 bg-[#0B0C10]/80" />
       </div>
 
       {/* Floating Orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 -mx-4 sm:-mx-6 lg:-mx-8 overflow-hidden pointer-events-none">
         <Float duration={4}>
           <div className="absolute top-20 left-[10%] w-4 h-4 rounded-full bg-cyan-500/20 blur-xl" />
         </Float>
@@ -77,7 +77,7 @@ export function Hero() {
                 </Link>
                 <button
                   onClick={handleUpgradeClick}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95"
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95"
                 >
                   <Crown className="inline w-4 h-4 mr-2" />
                   View Plans

@@ -130,7 +130,7 @@ export function NextMilestonesCard({ className = '' }: { className?: string }) {
                 {nextMilestones[1].name}
               </span>
             </div>
-            <span className="text-xs text-zinc-600">
+            <span className="text-xs text-zinc-300">
               {nextMilestones[1].progress_percent || 0}%
             </span>
           </div>

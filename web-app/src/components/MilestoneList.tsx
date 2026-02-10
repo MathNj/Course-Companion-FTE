@@ -96,7 +96,7 @@ export function MilestoneList({
         <div className="space-y-3">
           {!displayedAchieved || displayedAchieved.length === 0 ? (
             <div className="text-center py-12">
-              <Trophy className="h-12 w-12 text-zinc-700 mx-auto mb-3" />
+              <Trophy className="h-12 w-12 text-zinc-400 mx-auto mb-3" />
               <h3 className="text-lg font-semibold text-white mb-2">
                 No milestones yet
               </h3>
@@ -121,7 +121,7 @@ export function MilestoneList({
         <div className="space-y-3">
           {!displayedUpcoming || displayedUpcoming.length === 0 ? (
             <div className="text-center py-12">
-              <Target className="h-12 w-12 text-zinc-700 mx-auto mb-3" />
+              <Target className="h-12 w-12 text-zinc-400 mx-auto mb-3" />
               <h3 className="text-lg font-semibold text-white mb-2">
                 All milestones achieved!
               </h3>

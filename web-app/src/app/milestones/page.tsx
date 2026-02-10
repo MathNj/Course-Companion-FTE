@@ -178,7 +178,7 @@ export default function MilestonesPage() {
           <div>
             {filteredAchieved.length === 0 ? (
               <div className="text-center py-16">
-                <Trophy className="h-16 w-16 text-zinc-700 mx-auto mb-4" />
+                <Trophy className="h-16 w-16 text-zinc-400 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-white mb-2">
                   {categoryFilter === 'all' ? 'No milestones yet' : `No ${categoryFilter} milestones yet`}
                 </h3>

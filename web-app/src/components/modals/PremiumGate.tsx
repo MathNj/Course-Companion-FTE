@@ -58,7 +58,7 @@ export function PremiumGate({ feature = 'this feature' }: PremiumGateProps) {
         <div className="flex flex-col sm:flex-row gap-4">
           <Button
             onClick={() => setIsModalOpen(true)}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-semibold py-3 px-8 rounded-lg transition-all hover:scale-105 active:scale-95"
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-8 rounded-lg transition-all hover:scale-105 active:scale-95"
           >
             <Crown className="w-5 h-5 mr-2" />
             View Plans

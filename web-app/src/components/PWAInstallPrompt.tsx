@@ -134,7 +134,7 @@ export function PWAInstallPrompt() {
               <Button
                 onClick={handleInstall}
                 size="sm"
-                className="bg-cyan-500 hover:bg-cyan-400 text-white text-sm"
+                className="bg-cyan-500 hover:bg-cyan-600 text-white text-sm"
               >
                 Install
               </Button>

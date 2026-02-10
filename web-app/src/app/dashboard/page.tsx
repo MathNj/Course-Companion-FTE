@@ -150,7 +150,7 @@ export default function StudentDashboard() {
   return (
     <div className="min-h-screen bg-[#0B0C10]">
       <Header />
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8 animate-fade-in">
           <div>
@@ -198,7 +198,7 @@ export default function StudentDashboard() {
                     stroke="currentColor"
                     strokeWidth="12"
                     fill="transparent"
-                    className="text-zinc-800"
+                    className="text-zinc-500"
                   />
                   <circle
                     cx="96"
@@ -554,14 +554,14 @@ export default function StudentDashboard() {
               <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 opacity-50">
                 <div className="flex items-center gap-4 mb-3">
                   <div className="p-3 bg-zinc-800 rounded-lg">
-                    <CheckCircle2 className="w-8 h-8 text-zinc-600" />
+                    <CheckCircle2 className="w-8 h-8 text-zinc-300" />
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-zinc-500">No Weak Areas</h3>
-                    <p className="text-sm text-zinc-600">All quizzes passed!</p>
+                    <p className="text-sm text-zinc-300">All quizzes passed!</p>
                   </div>
                 </div>
-                <p className="text-sm text-zinc-600">Great job!</p>
+                <p className="text-sm text-zinc-300">Great job!</p>
               </div>
             )}
 

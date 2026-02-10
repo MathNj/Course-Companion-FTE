@@ -292,7 +292,7 @@ export default function QuizPage() {
                         ? 'border-cyan-500 bg-cyan-500/20 text-cyan-400'
                         : isAnswered
                         ? 'border-cyan-600 bg-zinc-800 text-zinc-300'
-                        : 'border-cyan-800 bg-zinc-900 text-zinc-600'
+                        : 'border-cyan-800 bg-zinc-900 text-zinc-300'
                     }`}
                     title={!isAnswered ? 'Question not answered' : undefined}
                   >

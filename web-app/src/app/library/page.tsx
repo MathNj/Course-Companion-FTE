@@ -70,7 +70,7 @@ export default function LibraryPage() {
 
       {/* Hero Section */}
       <div className="border-b border-cyan-700/50 bg-[#0B0C10]/50 backdrop-blur">
-        <div className="container px-4 py-12">
+        <div className="container px-4 sm:px-6 lg:px-8 py-12">
           <div className="max-w-4xl">
             {/* Breadcrumb */}
             <div className="flex items-center gap-2 text-sm text-zinc-400 mb-4">
@@ -138,7 +138,7 @@ export default function LibraryPage() {
       </div>
 
       {/* Main Content */}
-      <div className="container px-4 py-8">
+      <div className="container px-4 sm:px-6 lg:px-8 py-8">
         {/* Filter Bar */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-2">
@@ -171,7 +171,7 @@ export default function LibraryPage() {
           </div>
         ) : filteredChapters.length === 0 ? (
           <div className="text-center py-20">
-            <BookOpen className="h-16 w-16 text-zinc-700 mx-auto mb-4" />
+            <BookOpen className="h-16 w-16 text-zinc-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-white mb-2">No chapters found</h3>
             <p className="text-zinc-400">Try selecting a different filter</p>
           </div>

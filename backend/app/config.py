@@ -30,11 +30,14 @@ class Settings(BaseSettings):
     api_host: str = "0.0.0.0"
     api_port: int = 8000
 
+    # Database - store raw URL for conversion
+    _database_url: str = "postgresql+asyncpg://user:password@localhost:5432/course_companion"
+
     # Database - with postgres:// to postgresql+asyncpg:// conversion for Fly.io
     @property
     def database_url(self) -> str:
         """Get database URL, converting postgres:// to postgresql+asyncpg:// for SQLAlchemy 2.0+"""
-        db_url = os.getenv("DATABASE_URL", "postgresql+asyncpg://user:password@localhost:5432/course_companion")
+        db_url = self._database_url
 
         # Convert postgres:// or postgresql:// to postgresql+asyncpg:// for async SQLAlchemy
         if db_url.startswith("postgres://"):

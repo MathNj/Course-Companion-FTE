@@ -356,7 +356,7 @@ export default function AdaptivePathPage() {
               <div className="space-y-3">
                 {learningPath.study_plan.next_week.map((task, index) => (
                   <div key={index} className="flex items-start gap-3">
-                    <Circle className="w-5 h-5 text-zinc-600 flex-shrink-0 mt-0.5" />
+                    <Circle className="w-5 h-5 text-zinc-400 flex-shrink-0 mt-0.5" />
                     <p className="text-zinc-300">{task}</p>
                   </div>
                 ))}
