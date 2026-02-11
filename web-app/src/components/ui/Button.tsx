@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, forwardRef, useState } from 'react';
+import { ButtonHTMLAttributes, forwardRef, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -9,12 +9,12 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'default', size = 'default', loading = false, children, disabled, ...props }, ref) => {
-    const [isClicked, setIsClicked] = useState(false);
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     return (
       <button
         className={cn(
-          'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0C10] disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden',
+          'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0C10] disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden active:scale-95',
           {
             'bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:-translate-y-0.5 active:translate-y-0 active:shadow-md':
               variant === 'primary',
@@ -28,14 +28,23 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             'h-10 px-4 py-2': size === 'default',
             'h-11 px-8 text-lg': size === 'lg',
           },
-          isClicked && 'scale-95',
           className
         )}
-        ref={ref}
+        ref={(node) => {
+          // Handle both refs
+          if (typeof ref === 'function') {
+            ref(node);
+          } else if (ref) {
+            ref.current = node;
+          }
+          buttonRef.current = node;
+        }}
         disabled={disabled || loading}
         onClick={(e) => {
-          setIsClicked(true);
-          setTimeout(() => setIsClicked(false), 150);
+          // Call the original onClick if provided
+          if (props.onClick) {
+            props.onClick(e);
+          }
         }}
         {...props}
       >

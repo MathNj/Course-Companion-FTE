@@ -8,11 +8,13 @@ primary_region = 'iad'
 
 [build]
   dockerfile = 'Dockerfile.fly'
+  [build.args]
+    NEXT_PUBLIC_API_URL = "https://course-companion-fte.fly.dev"
 
 [env]
-  NEXT_PUBLIC_API_URL = 'https://course-companion-fte.fly.dev'
-  NODE_ENV = 'production'
-  PORT = '3000'
+  NEXT_PUBLIC_API_URL = "https://course-companion-fte.fly.dev"
+  NODE_ENV = "production"
+  PORT = "3000"
 
 [http_service]
   internal_port = 3000

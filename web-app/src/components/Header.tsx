@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useStore } from '@/store/useStore';
 import { BookOpen, Flame, Trophy, LogOut, User, Menu, X, BarChart3, TrendingUp, Library, Settings } from 'lucide-react';
 import { Button } from './ui/Button';
@@ -13,6 +14,8 @@ export function Header() {
   const { user, progress, logout } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isOpen: isSearchOpen, openSearch, closeSearch } = useSearch();
+  const pathname = usePathname();
+  const isStudentDashboard = pathname === '/dashboard';
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-cyan-700/50 bg-[#0B0C10]/95 backdrop-blur supports-[backdrop-filter]:bg-[#0B0C10]/60">
@@ -98,16 +101,18 @@ export function Header() {
               </Link>
 
               {/* Teacher Dashboard Link */}
-              <Link href="/teacher">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-zinc-400 hover:text-white hover:scale-105 active:scale-95 transition-all duration-300"
-                >
-                  <BarChart3 className="h-4 w-4 mr-2" />
-                  Teacher
-                </Button>
-              </Link>
+              {!isStudentDashboard && (
+                <Link href="/teacher">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-zinc-400 hover:text-white hover:scale-105 active:scale-95 transition-all duration-300"
+                  >
+                    <BarChart3 className="h-4 w-4 mr-2" />
+                    Teacher
+                  </Button>
+                </Link>
+              )}
 
               {/* User Menu */}
               <div className="flex items-center gap-3">
@@ -213,12 +218,14 @@ export function Header() {
                   </Link>
 
                   {/* Teacher Dashboard Link */}
-                  <Link href="/teacher" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="ghost" size="sm" className="justify-start w-full">
-                      <BarChart3 className="h-4 w-4 mr-2" />
-                      Teacher
-                    </Button>
-                  </Link>
+                  {!isStudentDashboard && (
+                    <Link href="/teacher" onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="ghost" size="sm" className="justify-start w-full">
+                        <BarChart3 className="h-4 w-4 mr-2" />
+                        Teacher
+                      </Button>
+                    </Link>
+                  )}
 
                   {/* User Info */}
                   <div className="flex items-center gap-3 py-2 border-b border-cyan-700/50">
