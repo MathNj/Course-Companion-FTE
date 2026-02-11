@@ -5,7 +5,7 @@ Provides custom type definitions for UUID and JSON columns.
 """
 
 from sqlalchemy import TypeDecorator
-from sqlalchemy.dialects.postgresql import UUID, JSON
+from sqlalchemy.dialects.postgresql import UUID as PostgresUUID, JSON as PostgresJSON
 from sqlalchemy.types import VARCHAR, JSON as SQLAlchemyJSON
 
 
@@ -32,9 +32,10 @@ class UUID(TypeDecorator):
     def load_dialect_impl(self, dialect):
         """Use PostgreSQL UUID type if available."""
         if dialect.name == "postgresql":
-            return dialect.type_descriptor(UUID())
+            # Use the PostgreSQL native UUID type with as_uuid=False
+            return PostgresUUID(as_uuid=False)
         else:
-            return dialect.type_descriptor(VARCHAR(36))
+            return VARCHAR(36)
 
     def process_bind_param(self, value, dialect):
         """Process Python UUID for database storage."""
@@ -65,6 +66,6 @@ class JSON(TypeDecorator):
     def load_dialect_impl(self, dialect):
         """Use PostgreSQL JSON type if available."""
         if dialect.name == "postgresql":
-            return dialect.type_descriptor(JSON())
+            return dialect.type_descriptor(PostgresJSON())
         else:
             return dialect.type_descriptor(SQLAlchemyJSON())
