@@ -124,7 +124,8 @@ def _search_chapter_sections(
         List of search results from this chapter
     """
     results = []
-    chapter_id = chapter_content.get("id", "unknown")
+    # Content service returns "chapter_id" not "id"
+    chapter_id = chapter_content.get("id") or chapter_content.get("chapter_id", "unknown")
     chapter_title = chapter_content.get("title", "Unknown Chapter")
 
     # Check if chapter has structured sections
