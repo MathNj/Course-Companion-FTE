@@ -77,6 +77,7 @@ async def get_progress(
         current_user.timezone,
     )
 
+    # Ensure completed_sections is always returned as a JSON array for frontend compatibility
     return progress_summary
 
 

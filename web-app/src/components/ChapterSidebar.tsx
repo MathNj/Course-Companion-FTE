@@ -39,7 +39,7 @@ export function ChapterSidebar({ chapter, selectedSection, onSectionSelect }: Ch
 
     // Mark section as complete if user is logged in
     if (user && !completedSections[section.id]) {
-      markSectionComplete(chapter.id, section.id).then(() => {
+      markSectionComplete(chapter.id, section.id, chapter.id).then(() => {
         setCompletedSections((prev) => ({
           ...prev,
           [section.id]: new Date().toISOString(),

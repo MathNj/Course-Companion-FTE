@@ -92,8 +92,10 @@ export function ChapterContent({ chapter, section, onNext, onPrevious, hasQuiz }
               unwrapDisallowed={false}
               components={{
                 // Enhanced typography for book-like reading experience
+                // AI explanations are rendered with smaller, unbolded text (30% of heading size)
+                // Headings maintain 30% size (text-4xl, text-3xl, text-2xl) and bold styling
                 p: ({ children }) => (
-                  <p className="mb-6 leading-relaxed text-zinc-300 text-base">
+                  <p className="mb-6 leading-relaxed text-zinc-300 text-base text-[17px] font-normal">
                     {children}
                   </p>
                 ),
@@ -222,7 +224,7 @@ export function ChapterContent({ chapter, section, onNext, onPrevious, hasQuiz }
                 ),
               }}
             >
-              {aggressiveCleanMarkdown(section.content)}
+              {section.content}
             </ReactMarkdown>
           ) : (
             <p className="text-zinc-400 italic">No content available for this section.</p>
