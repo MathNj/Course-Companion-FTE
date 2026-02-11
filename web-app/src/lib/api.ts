@@ -150,80 +150,28 @@ export async function getMilestoneSummary(): Promise<{
 
 // Auth
 export async function register(email: string, password: string, timezone?: string) {
-  try {
-    const response = await api.post<{ access_token: string; user: User }>('/api/v1/auth/register', {
-      email,
-      password,
-      timezone,
-    });
-    return response.data;
-  } catch (error: any) {
-    // Fallback to mock registration for demo purposes
-    console.log('Backend not available, using mock registration');
-    const mockUser: User = {
-      id: 'mock-user-' + Date.now(),
-      email,
-      subscription_type: 'free',
-      created_at: new Date().toISOString(),
-      is_teacher: email === 'mathnj120@gmail.com',
-    };
-    return {
-      access_token: 'mock-token-' + Date.now(),
-      user: mockUser,
-    };
-  }
+  const response = await api.post<{ access_token: string; user: User }>('/api/v1/auth/register', {
+    email,
+    password,
+    timezone,
+  });
+  return response.data;
 }
 
 export async function login(email: string, password: string) {
-  try {
-    const response = await api.post<{ access_token: string; refresh_token: string; user: User }>(
-      '/api/v1/auth/login',
-      {
-        email,
-        password,
-      }
-    );
-    return response.data;
-  } catch (error: any) {
-    // Fallback to mock login for demo purposes
-    console.log('Backend not available, using mock login');
-    const mockUser: User = {
-      id: 'mock-user-' + Date.now(),
+  const response = await api.post<{ access_token: string; refresh_token: string; user: User }>(
+    '/api/v1/auth/login',
+    {
       email,
-      subscription_type: 'free',
-      created_at: new Date().toISOString(),
-      is_teacher: email === 'mathnj120@gmail.com',
-    };
-    return {
-      access_token: 'mock-token-' + Date.now(),
-      refresh_token: 'mock-refresh-token-' + Date.now(),
-      user: mockUser,
-    };
-  }
+      password,
+    }
+  );
+  return response.data;
 }
 
 export async function getCurrentUser() {
-  try {
-    const response = await api.get<User>('/api/v1/auth/me');
-    return response.data;
-  } catch (error: any) {
-    // Fallback to mock user for demo purposes
-    console.log('Backend not available, using mock user');
-    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-    if (!token) {
-      throw new Error('No token found');
-    }
-    // Extract email from token if it's a mock token for mathnj120@gmail.com
-    const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('user_email') : null;
-    const mockUser: User = {
-      id: 'mock-user',
-      email: storedEmail || 'demo@example.com',
-      subscription_type: 'free',
-      created_at: new Date().toISOString(),
-      is_teacher: storedEmail === 'mathnj120@gmail.com',
-    };
-    return mockUser;
-  }
+  const response = await api.get<User>('/api/v1/auth/me');
+  return response.data;
 }
 
 // Premium / Phase 2

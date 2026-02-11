@@ -188,49 +188,49 @@ export default function StudentDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Visual Progress Overview */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 flex flex-col items-center justify-center animate-fade-in-up">
-              <div className="relative w-48 h-48 mb-4">
+            <div className="bg-teal-900/30 rounded-xl p-6 border border-cyan-800 flex flex-col items-center justify-center animate-fade-in-up">
+              <div className="relative w-32 h-32 mb-3">
                 <svg className="w-full h-full transform -rotate-90">
                   <circle
-                    cx="96"
-                    cy="96"
-                    r="88"
+                    cx="64"
+                    cy="64"
+                    r="56"
                     stroke="currentColor"
-                    strokeWidth="12"
+                    strokeWidth="10"
                     fill="transparent"
                     className="text-zinc-500"
                   />
                   <circle
-                    cx="96"
-                    cy="96"
-                    r="88"
+                    cx="64"
+                    cy="64"
+                    r="56"
                     stroke="currentColor"
-                    strokeWidth="12"
+                    strokeWidth="10"
                     fill="transparent"
-                    strokeDasharray={`${2 * Math.PI * 88}`}
-                    strokeDashoffset={`${2 * Math.PI * 88 * (1 - completionPercentage / 100)}`}
+                    strokeDasharray={`${2 * Math.PI * 56}`}
+                    strokeDashoffset={`${2 * Math.PI * 56 * (1 - completionPercentage / 100)}`}
                     strokeLinecap="round"
                     className="text-cyan-500 transition-all duration-1000"
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-5xl font-bold text-white">{completionPercentage}%</span>
-                  <span className="text-sm text-zinc-400">Complete</span>
+                  <span className="text-3xl font-bold text-white">{completionPercentage}%</span>
+                  <span className="text-xs text-zinc-400">Complete</span>
                 </div>
               </div>
               <div className="text-center">
-                <p className="text-lg text-white font-semibold">{completedChapters} of {totalChapters} Chapters</p>
+                <p className="text-base text-white font-semibold">{completedChapters} of {totalChapters} Chapters</p>
                 <p className="text-sm text-zinc-400">{totalChapters - completedChapters} chapters remaining</p>
               </div>
             </div>
 
             {/* Current & Next Chapter */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-100">
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <div className="bg-teal-900/30 rounded-xl p-6 border border-cyan-800 animate-fade-in-up delay-100">
+              <h3 className="text-base font-bold text-white mb-3 flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-cyan-400" />
                 Current & Next
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {completedChapters < totalChapters ? (
                   <>
                     <div className="p-4 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
@@ -263,12 +263,12 @@ export default function StudentDashboard() {
             </div>
 
             {/* Progress Stats */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-200">
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <div className="bg-teal-900/30 rounded-xl p-6 border border-cyan-800 animate-fade-in-up delay-200">
+              <h3 className="text-base font-bold text-white mb-3 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-purple-400" />
                 Progress Stats
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-zinc-400">Completed</span>
                   <span className="text-white font-semibold">{completedChapters} chapters</span>
@@ -301,13 +301,13 @@ export default function StudentDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Recent Quiz Scores */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up">
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <div className="bg-teal-900/30 rounded-xl p-6 border border-cyan-800 animate-fade-in-up">
+              <h3 className="text-base font-bold text-white mb-3 flex items-center gap-2">
                 <Star className="w-5 h-5 text-yellow-400" />
                 Recent Quiz Scores
               </h3>
               {recentAttempts.length > 0 ? (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <div className="flex items-center justify-between p-3 bg-zinc-800 rounded-lg">
                     <span className="text-zinc-400">Average Score</span>
                     <span className="text-xl font-bold text-white">{averageQuizScore.toFixed(1)}%</span>
@@ -327,21 +327,21 @@ export default function StudentDashboard() {
                   ))}
                 </div>
               ) : (
-                <p className="text-zinc-400 text-center py-8">No quizzes taken yet</p>
+                <p className="text-zinc-400 text-center py-6">No quizzes taken yet</p>
               )}
             </div>
 
             {/* Weak Areas */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-100">
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <div className="bg-teal-900/30 rounded-xl p-6 border border-cyan-800 animate-fade-in-up delay-100">
+              <h3 className="text-base font-bold text-white mb-3 flex items-center gap-2">
                 <AlertCircle className="w-5 h-5 text-orange-400" />
                 Areas to Improve
               </h3>
               {weakAreas.length > 0 ? (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {weakAreas.map((area) => (
-                    <div key={area.chapterId} className="p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
+                    <div key={area.chapterId} className="p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                      <div className="flex items-center justify-between mb-1">
                         <span className="text-white font-semibold">Chapter {area.chapterNumber}</span>
                         <span className="text-orange-400 font-bold">{area.score}%</span>
                       </div>
@@ -355,8 +355,8 @@ export default function StudentDashboard() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <CheckCircle2 className="w-12 h-12 text-cyan-400 mx-auto mb-3" />
+                <div className="text-center py-6">
+                  <CheckCircle2 className="w-10 h-10 text-cyan-400 mx-auto mb-2" />
                   <p className="text-zinc-400">No weak areas identified!</p>
                   <p className="text-sm text-zinc-500">Great job on your quizzes!</p>
                 </div>
@@ -374,7 +374,7 @@ export default function StudentDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Current Streak */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up">
+            <div className="bg-cyan-900/30 rounded-xl p-8 border border-cyan-800 animate-fade-in-up">
               <div className="flex items-center justify-between mb-4">
                 <Flame className="w-10 h-10 text-orange-400" />
                 <div className="text-right">
@@ -389,7 +389,7 @@ export default function StudentDashboard() {
             </div>
 
             {/* Longest Streak */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-100">
+            <div className="bg-cyan-900/30 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-100">
               <div className="flex items-center justify-between mb-4">
                 <Award className="w-10 h-10 text-yellow-400" />
                 <div className="text-right">
@@ -402,7 +402,7 @@ export default function StudentDashboard() {
             </div>
 
             {/* Last Active */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-200">
+            <div className="bg-cyan-900/30 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-200">
               <div className="flex items-center justify-between mb-4">
                 <Calendar className="w-10 h-10 text-blue-400" />
                 <div className="text-right">

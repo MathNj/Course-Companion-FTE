@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import React from 'react';
+import { useState, useEffect, useMemo, Fragment } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useStore } from '@/store/useStore';
 import api from '@/lib/api';
@@ -30,6 +29,7 @@ import {
   ArrowRight,
   Activity,
   GraduationCap,
+  Diamond,
 } from 'lucide-react';
 
 export default function TeacherDashboard() {
@@ -37,28 +37,163 @@ export default function TeacherDashboard() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [expandedStudent, setExpandedStudent] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isClient, setIsClient] = useState(false);
 
-  // Check teacher status
-  const userEmail = typeof window !== 'undefined' ? localStorage.getItem('user_email') : null;
+  // Ensure client-side rendering
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Fetch students data - always call hooks unconditionally
+  const userEmail = isClient ? localStorage.getItem('user_email') : null;
   const isTeacher = userEmail === 'mathnj120@gmail.com' || user?.is_teacher;
 
-  // Fetch students data
-  const { data: studentsData, isLoading, refetch } = useQuery({
+  const { data: studentsData, isLoading, error, refetch } = useQuery({
     queryKey: ['teacher-students', refreshKey],
     queryFn: async () => {
       try {
-        const token = localStorage.getItem('access_token');
+        const token = isClient ? localStorage.getItem('access_token') : null;
+        if (!token) return { students: [], total: 0 };
         const response = await api.get('/api/v2/teacher/students', {
           headers: { Authorization: `Bearer ${token}` }
         });
+        console.log('Teacher API Response:', response.data);
         return response.data;
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to fetch student data:', error);
+        console.error('Error response:', error.response?.data);
+        // Return empty data on error to prevent UI crashes
         return { students: [], total: 0 };
       }
     },
-    enabled: !!user && isTeacher,
+    enabled: isClient && !!user && isTeacher,
   });
+
+  // Get real students or use empty array if none
+  const realStudents = studentsData?.students || [];
+
+  // Calculate cohort metrics from real data (client-side only to avoid hydration mismatch)
+  const averageCompletion = useMemo(() =>
+    realStudents.length > 0
+      ? realStudents.reduce((sum: number, s: any) => sum + (s.progress?.completion_percentage || 0), 0) / realStudents.length
+      : 0,
+    [realStudents]
+  );
+
+  // Calculate average quiz score from real data
+  const averageQuizScore = useMemo(() => {
+    const allQuizScores = realStudents.flatMap((s: any) =>
+      Object.values(s.quiz_scores || {}).map((q: any) => q?.score || 0)
+    );
+    return allQuizScores.length > 0
+      ? allQuizScores.reduce((sum: number, score: number) => sum + score, 0) / allQuizScores.length
+      : 0;
+  }, [realStudents]);
+
+  const activeStudentsWeekly = useMemo(() =>
+    isClient ? realStudents.filter((s: any) => {
+      if (!s.last_activity) return false;
+      const daysSinceActivity = (Date.now() - new Date(s.last_activity).getTime()) / (1000 * 60 * 60 * 24);
+      return daysSinceActivity <= 7;
+    }).length : 0,
+    [realStudents, isClient]
+  );
+
+  // Filter students by search
+  const filteredStudents = realStudents.filter((student: any) =>
+    student.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    student.id.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Calculate topic difficulty from actual quiz scores
+  const topicDifficultyData = useMemo(() => {
+    const topicScores: Record<string, number[]> = {};
+    const topicAttempts: Record<string, number> = {};
+
+    realStudents.forEach((student: any) => {
+      Object.entries(student.quiz_scores || {}).forEach(([chapterId, quizData]: [string, any]) => {
+        if (!topicScores[chapterId]) {
+          topicScores[chapterId] = [];
+          topicAttempts[chapterId] = 0;
+        }
+        topicScores[chapterId].push(quizData?.score || 0);
+        topicAttempts[chapterId]++;
+      });
+    });
+
+    return Object.entries(topicScores)
+      .map(([topic, scores]) => {
+        const incorrectRate = 100 - (scores.reduce((sum, score) => sum + score, 0) / scores.length);
+        return {
+          topic: topic.charAt(0).toUpperCase() + topic.slice(1).replace(/chapter-\d+/i, 'Chapter'),
+          incorrect_rate: Math.round(incorrectRate),
+          attempts: topicAttempts[topic] || 0
+        };
+      })
+      .filter(t => t.attempts > 0);
+  }, [realStudents]);
+
+  // Calculate drop-off analysis
+  const dropOffAnalysis = useMemo(() => {
+    const dropOffs: Record<string, number> = {};
+
+    realStudents.forEach((student: any) => {
+      const dropOffChapter = student.engagement?.drop_off_chapter;
+      if (dropOffChapter) {
+        dropOffs[dropOffChapter] = (dropOffs[dropOffChapter] || 0) + 1;
+      }
+    });
+
+    return dropOffs;
+  }, [realStudents]);
+
+  // Calculate premium usage
+  const totalAdaptivePaths = realStudents.reduce((sum: number, s: any) => sum + (s.premium_usage?.adaptive_paths || 0), 0);
+  const totalAssessments = realStudents.reduce((sum: number, s: any) => sum + (s.premium_usage?.assessments || 0), 0);
+  const totalPremiumStudents = realStudents.filter((s: any) =>
+    (s.premium_usage?.adaptive_paths || 0) > 0 || (s.premium_usage?.assessments || 0) > 0
+  ).length;
+
+  // Export student data as CSV
+  const handleExportCSV = () => {
+    const headers = ['Student ID', 'Email', 'Completion %', 'Chapters Completed', 'Current Streak', 'Longest Streak', 'Avg Quiz Score', 'Last Activity', 'Adaptive Paths', 'Assessments'];
+
+    const rows = realStudents.map((student: any) => {
+      const quizScores = Object.values(student.quiz_scores || {});
+      const avgQuiz = quizScores.length > 0 ? (quizScores.reduce((a: number, b: any) => a + (b?.score || 0), 0) / quizScores.length).toFixed(1) : 'N/A';
+
+      return [
+        student.id || 'N/A',
+        student.email || 'N/A',
+        student.progress?.completion_percentage || 0,
+        student.progress?.chapters_completed || 0,
+        student.streak?.current_streak || 0,
+        student.streak?.longest_streak || 0,
+        avgQuiz,
+        student.last_activity ? new Date(student.last_activity).toLocaleDateString() : 'N/A',
+        student.premium_usage?.adaptive_paths || 0,
+        student.premium_usage?.assessments || 0,
+      ].join(',');
+    });
+
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `student-data-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Wait for client-side hydration before rendering to prevent hydration mismatch
+  if (!isClient) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0B0C10]">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   if (!user) {
     return (
@@ -97,110 +232,31 @@ export default function TeacherDashboard() {
     );
   }
 
-  // Get real students or use empty array if none
-  const realStudents = studentsData?.students || [];
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#0B0C10]">
+        <Header />
+        <main className="container mx-auto px-4 py-16">
+          <div className="max-w-md mx-auto text-center">
+            <div className="bg-zinc-900 rounded-xl p-8 border border-red-800">
+              <h2 className="text-2xl font-bold text-white mb-4">Error Loading Data</h2>
+              <p className="text-zinc-400 mb-4">
+                Failed to load student data. Please try refreshing.
+              </p>
+              <p className="text-sm text-zinc-500 mb-6">
+                Error: {(error as any).message || 'Unknown error'}
+              </p>
+              <div className="flex gap-3 justify-center">
+                <Button onClick={() => refetch()}>Try Again</Button>
+                <Button variant="outline" onClick={() => window.location.href('/')}>Go Home</Button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
-  // Calculate cohort metrics from real data
-  const averageCompletion = realStudents.length > 0
-    ? realStudents.reduce((sum: number, s: any) => sum + s.progress.completion_percentage, 0) / realStudents.length
-    : 0;
-
-  // Calculate average quiz score from real data
-  const allQuizScores = realStudents.flatMap((s: any) =>
-    Object.values(s.quiz_scores).map((q: any) => q.score)
-  );
-  const averageQuizScore = allQuizScores.length > 0
-    ? allQuizScores.reduce((sum: number, score: number) => sum + score, 0) / allQuizScores.length
-    : 0;
-
-  const activeStudentsWeekly = realStudents.filter((s: any) => {
-    const daysSinceActivity = (Date.now() - new Date(s.last_activity).getTime()) / (1000 * 60 * 60 * 24);
-    return daysSinceActivity <= 7;
-  }).length;
-
-  // Filter students by search
-  const filteredStudents = realStudents.filter((student: any) =>
-    student.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    student.id.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Calculate topic difficulty from actual quiz scores
-  const topicDifficultyData = React.useMemo(() => {
-    const topicScores: Record<string, number[]> = {};
-    const topicAttempts: Record<string, number> = {};
-
-    realStudents.forEach((student: any) => {
-      Object.entries(student.quiz_scores).forEach(([chapterId, quizData]: [string, any]) => {
-        if (!topicScores[chapterId]) {
-          topicScores[chapterId] = [];
-          topicAttempts[chapterId] = 0;
-        }
-        topicScores[chapterId].push(quizData.score);
-        topicAttempts[chapterId]++;
-      });
-    });
-
-    return Object.entries(topicScores)
-      .map(([topic, scores]) => {
-        const incorrectRate = 100 - (scores.reduce((sum, score) => sum + score, 0) / scores.length);
-        return {
-          topic: topic.charAt(0).toUpperCase() + topic.slice(1).replace(/chapter-\d+/i, 'Chapter'),
-          incorrect_rate: Math.round(incorrectRate),
-          attempts: topicAttempts[topic] || 0
-        };
-      })
-      .filter(t => t.attempts > 0);
-  }, [realStudents]);
-
-  // Calculate drop-off analysis
-  const dropOffAnalysis = React.useMemo(() => {
-    const dropOffs: Record<string, number> = {};
-
-    realStudents.forEach((student: any) => {
-      const dropOffChapter = student.engagement?.drop_off_chapter;
-      if (dropOffChapter) {
-        dropOffs[dropOffChapter] = (dropOffs[dropOffChapter] || 0) + 1;
-      }
-    });
-
-    return dropOffs;
-  }, [realStudents]);
-
-  // Calculate premium usage
-  const totalAdaptivePaths = realStudents.reduce((sum: number, s: any) => sum + (s.premium_usage?.adaptive_paths || 0), 0);
-  const totalAssessments = realStudents.reduce((sum: number, s: any) => sum + (s.premium_usage?.assessments || 0), 0);
-
-  // Export student data as CSV
-  const handleExportCSV = () => {
-    const headers = ['Student ID', 'Email', 'Completion %', 'Chapters Completed', 'Current Streak', 'Longest Streak', 'Avg Quiz Score', 'Last Activity', 'Adaptive Paths', 'Assessments'];
-
-    const rows = realStudents.map((student: any) => {
-      const quizScores = Object.values(student.quiz_scores);
-      const avgQuiz = quizScores.length > 0 ? (quizScores.reduce((a: number, b: any) => a + b.score, 0) / quizScores.length).toFixed(1) : 'N/A';
-
-      return [
-        student.id,
-        student.email,
-        student.progress.completion_percentage,
-        student.progress.chapters_completed,
-        student.streak.current_streak,
-        student.streak.longest_streak,
-        avgQuiz,
-        new Date(student.last_activity).toLocaleDateString(),
-        student.premium_usage?.adaptive_paths || 0,
-        student.premium_usage?.assessments || 0,
-      ].join(',');
-    });
-
-    const csvContent = [headers.join(','), ...rows].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `student-data-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
 
   return (
     <div className="min-h-screen bg-[#0B0C10]">
@@ -226,7 +282,7 @@ export default function TeacherDashboard() {
                 setRefreshKey(prev => prev + 1);
                 refetch();
               }}
-              className="hover:scale-105 active:scale-95 transition-all duration-300"
+              className="bg-zinc-900 hover:bg-zinc-800 text-white hover:scale-105 active:scale-95 transition-all duration-300"
             >
               <RefreshCw className="w-4 h-4 mr-2" />
               Refresh
@@ -243,7 +299,7 @@ export default function TeacherDashboard() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Average Completion Rate */}
-            <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover-lift animate-fade-in-up">
+            <div className="bg-teal-900/30 rounded-xl p-6 border border-cyan-500 hover-lift animate-fade-in-up">
               <div className="flex items-center justify-between mb-4">
                 <TrendingUp className="w-8 h-8 text-cyan-400" />
                 <span className="text-xs text-zinc-500">Class Average</span>
@@ -253,7 +309,7 @@ export default function TeacherDashboard() {
             </div>
 
             {/* Average Quiz Score */}
-            <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover-lift animate-fade-in-up delay-100">
+            <div className="bg-teal-900/30 rounded-xl p-6 border border-cyan-500 hover-lift animate-fade-in-up delay-100">
               <div className="flex items-center justify-between mb-4">
                 <Target className="w-8 h-8 text-purple-400" />
                 <span className="text-xs text-zinc-500">Class Average</span>
@@ -263,7 +319,7 @@ export default function TeacherDashboard() {
             </div>
 
             {/* Active Students */}
-            <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover-lift animate-fade-in-up delay-200">
+            <div className="bg-teal-900/30 rounded-xl p-6 border border-cyan-500 hover-lift animate-fade-in-up delay-200">
               <div className="flex items-center justify-between mb-4">
                 <Flame className="w-8 h-8 text-orange-400" />
                 <span className="text-xs text-zinc-500">Last 7 days</span>
@@ -273,7 +329,7 @@ export default function TeacherDashboard() {
             </div>
 
             {/* Total Students */}
-            <div className="bg-zinc-900 rounded-xl p-6 border border-cyan-800 hover-lift animate-fade-in-up delay-300">
+            <div className="bg-teal-900/30 rounded-xl p-6 border border-cyan-500 hover-lift animate-fade-in-up delay-300">
               <div className="flex items-center justify-between mb-4">
                 <GraduationCap className="w-8 h-8 text-blue-400" />
                 <span className="text-xs text-zinc-500">Total</span>
@@ -303,16 +359,16 @@ export default function TeacherDashboard() {
                 placeholder="Search by student ID or email..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-lg border border-cyan-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
+                className="w-full pl-10 pr-4 py-3 rounded-lg border border-cyan-400 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
               />
             </div>
           </div>
 
           {/* Student List */}
-          <div className="bg-zinc-900 rounded-xl border border-cyan-800 overflow-hidden">
+          <div className="bg-teal-900/30 rounded-xl border border-cyan-500 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-zinc-800">
+                <thead className="bg-teal-900/50">
                   <tr className="text-left text-zinc-400">
                     <th className="px-6 py-4">Student</th>
                     <th className="px-6 py-4">Progress</th>
@@ -331,14 +387,14 @@ export default function TeacherDashboard() {
                     </tr>
                   ) : (
                     filteredStudents.map((student) => {
-                      const quizScores = Object.values(student.quiz_scores);
-                      const avgQuiz = quizScores.length > 0 ? (quizScores.reduce((a: number, b: any) => a + b.score, 0) / quizScores.length).toFixed(1) : 'N/A';
-                      const daysSinceActivity = Math.floor((Date.now() - new Date(student.last_activity).getTime()) / (1000 * 60 * 60 * 24));
+                      const quizScores = Object.values(student.quiz_scores || {});
+                      const avgQuiz = quizScores.length > 0 ? (quizScores.reduce((a: number, b: any) => a + (b?.score || 0), 0) / quizScores.length).toFixed(1) : 'N/A';
+                      const daysSinceActivity = isClient && student.last_activity ? Math.floor((Date.now() - new Date(student.last_activity).getTime()) / (1000 * 60 * 60 * 24)) : null;
                       const isExpanded = expandedStudent === student.id;
 
                       return (
-                        <React.Fragment key={student.id}>
-                          <tr className="border-b border-cyan-800 hover:bg-zinc-800/50 transition-colors">
+                        <Fragment key={student.id}>
+                          <tr className="border-b border-cyan-500 hover:bg-zinc-800/50 transition-colors">
                             <td className="px-6 py-4">
                               <div>
                                 <p className="text-white font-medium">{student.email}</p>
@@ -350,22 +406,22 @@ export default function TeacherDashboard() {
                                 <div className="w-24 bg-zinc-800 rounded-full h-2">
                                   <div
                                     className={`h-2 rounded-full ${
-                                      student.progress.completion_percentage >= 80 ? 'bg-cyan-500' :
-                                      student.progress.completion_percentage >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+                                      (student.progress?.completion_percentage || 0) >= 80 ? 'bg-cyan-500' :
+                                      (student.progress?.completion_percentage || 0) >= 50 ? 'bg-yellow-500' : 'bg-red-500'
                                     }`}
-                                    style={{ width: `${student.progress.completion_percentage}%` }}
+                                    style={{ width: `${student.progress?.completion_percentage || 0}%` }}
                                   />
                                 </div>
                                 <span className="text-sm text-zinc-400">
-                                  {student.progress.chapters_completed}/{student.progress.total_chapters}
+                                  {student.progress?.chapters_completed || 0}/{student.progress?.total_chapters || 6}
                                 </span>
                               </div>
                             </td>
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-2">
-                                <Flame className={`w-4 h-4 ${student.streak.current_streak >= 3 ? 'text-orange-400' : 'text-zinc-400'}`} />
-                                <span className="text-sm text-white">{student.streak.current_streak} day</span>
-                                {student.streak.current_streak >= 7 && (
+                                <Flame className={`w-4 h-4 ${(student.streak?.current_streak || 0) >= 3 ? 'text-orange-400' : 'text-zinc-400'}`} />
+                                <span className="text-sm text-white">{student.streak?.current_streak || 0} day</span>
+                                {(student.streak?.current_streak || 0) >= 7 && (
                                   <Award className="w-4 h-4 text-yellow-400" />
                                 )}
                               </div>
@@ -380,8 +436,13 @@ export default function TeacherDashboard() {
                               </span>
                             </td>
                             <td className="px-6 py-4">
-                              <span className={`text-sm ${daysSinceActivity <= 7 ? 'text-cyan-400' : daysSinceActivity <= 30 ? 'text-yellow-400' : 'text-red-400'}`}>
-                                {daysSinceActivity === 0 ? 'Today' :
+                              <span className={`text-sm ${
+                                daysSinceActivity === null ? 'text-zinc-500' :
+                                daysSinceActivity <= 7 ? 'text-cyan-400' :
+                                daysSinceActivity <= 30 ? 'text-yellow-400' : 'text-red-400'
+                              }`}>
+                                {daysSinceActivity === null ? 'N/A' :
+                                 daysSinceActivity === 0 ? 'Today' :
                                  daysSinceActivity === 1 ? 'Yesterday' :
                                  `${daysSinceActivity} days ago`}
                               </span>
@@ -418,13 +479,13 @@ export default function TeacherDashboard() {
                                       <p className="text-sm text-zinc-500">No quiz attempts yet</p>
                                     ) : (
                                       <div className="space-y-2">
-                                        {Object.entries(student.quiz_scores).map(([chapter, quizData]) => (
+                                        {Object.entries(student.quiz_scores || {}).map(([chapter, quizData]) => (
                                           <div key={chapter} className="flex items-center justify-between text-sm">
                                             <span className="text-zinc-400">{chapter}</span>
                                             <span className={`font-semibold ${
-                                              quizData.score >= 80 ? 'text-cyan-400' : quizData.score >= 60 ? 'text-yellow-400' : 'text-red-400'
+                                              (quizData?.score || 0) >= 80 ? 'text-cyan-400' : (quizData?.score || 0) >= 60 ? 'text-yellow-400' : 'text-red-400'
                                             }`}>
-                                              {quizData.score}%
+                                              {quizData?.score || 0}%
                                             </span>
                                           </div>
                                         ))}
@@ -477,7 +538,7 @@ export default function TeacherDashboard() {
                               </td>
                             </tr>
                           )}
-                        </React.Fragment>
+                        </Fragment>
                       );
                     })
                   )}
@@ -489,9 +550,9 @@ export default function TeacherDashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Topic Difficulty Analysis - Real Data */}
-          <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up">
+          <div className="bg-teal-900/30 rounded-xl p-8 border border-cyan-500 animate-fade-in-up">
             <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-              <AlertCircle className="w-6 h-6 text-red-400" />
+              <Diamond className="w-6 h-6 text-cyan-400" />
               Topic Difficulty Analysis
             </h2>
 
@@ -512,10 +573,10 @@ export default function TeacherDashboard() {
                           <div className="flex-1 bg-zinc-800 rounded-full h-6 overflow-hidden">
                             <div
                               className={`h-6 flex items-center justify-end pr-2 transition-all ${
-                                topic.incorrect_rate >= 30 ? 'bg-red-500' :
-                                topic.incorrect_rate >= 20 ? 'bg-orange-500' :
-                                topic.incorrect_rate >= 10 ? 'bg-yellow-500' :
-                                'bg-cyan-500'
+                                topic.incorrect_rate >= 30 ? 'bg-cyan-400' :
+                                topic.incorrect_rate >= 20 ? 'bg-cyan-500' :
+                                topic.incorrect_rate >= 10 ? 'bg-cyan-600' :
+                                'bg-cyan-700'
                               }`}
                               style={{ width: `${Math.max(topic.incorrect_rate, 5)}%` }}
                             >
@@ -536,13 +597,13 @@ export default function TeacherDashboard() {
                       .sort((a, b) => b.incorrect_rate - a.incorrect_rate)
                       .slice(0, 3)
                       .map((topic, index) => (
-                        <div key={index} className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center justify-between">
+                        <div key={index} className="p-4 bg-cyan-500/10 border border-cyan-400/60 rounded-lg flex items-center justify-between">
                           <div>
                             <p className="text-white font-semibold">{topic.topic}</p>
                             <p className="text-xs text-zinc-400">{topic.attempts} attempts</p>
                           </div>
                           <div className="text-right">
-                            <p className="text-red-400 font-bold">{topic.incorrect_rate}%</p>
+                            <p className="text-cyan-400 font-bold">{topic.incorrect_rate}%</p>
                             <p className="text-xs text-zinc-500">incorrect</p>
                           </div>
                         </div>
@@ -554,7 +615,7 @@ export default function TeacherDashboard() {
           </div>
 
           {/* Engagement Monitoring */}
-          <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-100">
+          <div className="bg-teal-900/30 rounded-xl p-8 border border-cyan-500 animate-fade-in-up delay-100">
             <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
               <Activity className="w-6 h-6 text-blue-400" />
               Engagement Monitoring
@@ -588,25 +649,27 @@ export default function TeacherDashboard() {
             <div>
               <h3 className="text-sm font-semibold text-white mb-4">Activity Distribution</h3>
               <div className="grid grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
+                <div className="text-center p-4 bg-cyan-500/10 border border-cyan-400/60 rounded-lg">
                   <p className="text-2xl font-bold text-cyan-400">{activeStudentsWeekly}</p>
                   <p className="text-xs text-zinc-400">Active (7d)</p>
                 </div>
-                <div className="text-center p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                <div className="text-center p-4 bg-yellow-500/10 border border-yellow-400/50 rounded-lg">
                   <p className="text-2xl font-bold text-yellow-400">
-                    {realStudents.filter((s: any) => {
+                    {isClient ? realStudents.filter((s: any) => {
+                      if (!s.last_activity) return false;
                       const days = (Date.now() - new Date(s.last_activity).getTime()) / (1000 * 60 * 60 * 24);
                       return days > 7 && days <= 30;
-                    }).length}
+                    }).length : 0}
                   </p>
                   <p className="text-xs text-zinc-400">At Risk (7-30d)</p>
                 </div>
-                <div className="text-center p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+                <div className="text-center p-4 bg-red-500/10 border border-red-400/50 rounded-lg">
                   <p className="text-2xl font-bold text-red-400">
-                    {realStudents.filter((s: any) => {
+                    {isClient ? realStudents.filter((s: any) => {
+                      if (!s.last_activity) return false;
                       const days = (Date.now() - new Date(s.last_activity).getTime()) / (1000 * 60 * 60 * 24);
                       return days > 30;
-                    }).length}
+                    }).length : 0}
                   </p>
                   <p className="text-xs text-zinc-400">Inactive (&gt;30d)</p>
                 </div>
@@ -624,7 +687,7 @@ export default function TeacherDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Adaptive Path Usage */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up">
+            <div className="bg-teal-900/30 rounded-xl p-8 border border-cyan-500 animate-fade-in-up">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-purple-500/20 rounded-lg">
@@ -658,7 +721,7 @@ export default function TeacherDashboard() {
             </div>
 
             {/* Assessment Usage */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-100">
+            <div className="bg-teal-900/30 rounded-xl p-8 border border-cyan-500 animate-fade-in-up delay-100">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-blue-500/20 rounded-lg">
@@ -692,7 +755,7 @@ export default function TeacherDashboard() {
             </div>
 
             {/* Total Premium Students */}
-            <div className="bg-zinc-900 rounded-xl p-8 border border-cyan-800 animate-fade-in-up delay-200">
+            <div className="bg-teal-900/30 rounded-xl p-8 border border-cyan-500 animate-fade-in-up delay-200">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-cyan-500/20 rounded-lg">
@@ -750,7 +813,7 @@ export default function TeacherDashboard() {
             {/* CSV Export */}
             <Button
               onClick={handleExportCSV}
-              className="bg-zinc-900 hover:bg-zinc-800 border border-cyan-800 p-6 text-left hover-lift animate-fade-in-up"
+              className="bg-teal-900/30 hover:bg-teal-900/40 border border-cyan-500 p-6 text-left hover-lift animate-fade-in-up"
             >
               <div className="flex items-center gap-4 mb-2">
                 <Download className="w-8 h-8 text-blue-400" />
@@ -767,7 +830,7 @@ export default function TeacherDashboard() {
                 setRefreshKey(prev => prev + 1);
                 refetch();
               }}
-              className="bg-zinc-900 hover:bg-zinc-800 border border-cyan-800 p-6 text-left hover-lift animate-fade-in-up delay-100"
+              className="bg-zinc-900 hover:bg-zinc-800 border border-cyan-500 p-6 text-left hover-lift animate-fade-in-up delay-100"
             >
               <div className="flex items-center gap-4 mb-2">
                 <RefreshCw className="w-8 h-8 text-cyan-400" />
@@ -779,7 +842,7 @@ export default function TeacherDashboard() {
             </Button>
 
             {/* Student Count */}
-            <div className="bg-zinc-900 border border-cyan-800 p-6 hover-lift animate-fade-in-up delay-200">
+            <div className="bg-teal-900/30 border border-cyan-500 p-6 hover-lift animate-fade-in-up delay-200">
               <div className="flex items-center gap-4 mb-2">
                 <Users className="w-8 h-8 text-purple-400" />
                 <div>
