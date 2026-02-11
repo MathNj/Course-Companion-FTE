@@ -563,14 +563,27 @@ async def get_all_students(
     - Quiz scores
     - Streak information
     - Last activity timestamp
+
+    Requires teacher privileges.
     """
+    # Verify user is a teacher
+    if not current_user.is_teacher:
+        raise HTTPException(
+            status_code=403,
+            detail="Access denied. Teacher privileges required."
+        )
+
     from app.models.progress import ChapterProgress
     from app.models.quiz import QuizAttempt
     from app.models.streak import Streak
 
-    # Get all students (non-admin users)
+    # Get all students (active users who are NOT teachers)
+    # Use .is_() to properly check for NULL/False values
     result = await db.execute(
-        select(User).where(User.is_active == True)
+        select(User).where(
+            User.is_active == True,
+            (User.is_teacher == False) | (User.is_teacher == None)  # Handle NULL values
+        )
     )
     students = result.scalars().all()
 

@@ -110,6 +110,10 @@ async def login(
     - **email**: User's email address
     - **password**: User's password
     """
+    # Debug logging
+    print(f"[DEBUG] Login attempt for email: {credentials.email}")
+    print(f"[DEBUG] Password length: {len(credentials.password)}")
+
     # Find user by email
     result = await db.execute(
         select(User).where(User.email == credentials.email)
@@ -118,13 +122,19 @@ async def login(
 
     # Check user exists and password is correct
     if not user or not user.password_hash:
+        print(f"[DEBUG] User not found or no password hash")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    if not verify_password(credentials.password, user.password_hash):
+    # Debug password verification
+    password_valid = verify_password(credentials.password, user.password_hash)
+    print(f"[DEBUG] Password verification result: {password_valid}")
+
+    if not password_valid:
+        print(f"[DEBUG] Password verification failed")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
