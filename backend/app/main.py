@@ -16,7 +16,7 @@ from app.routers.chapters import router as chapters_router
 from app.routers.quizzes import router as quizzes_router
 from app.routers.progress import router as progress_router
 from app.routers.payments import router as payments_router
-# from app.routers.chat import router as chat_router  # TODO: Create chat router
+from app.routers.chat import router as chat_router
 from app.routers.milestones import router as milestones_router
 from app.utils.cache import cache_client
 
@@ -143,7 +143,7 @@ app.include_router(quizzes_router, prefix=settings.api_v1_prefix)
 app.include_router(progress_router, prefix=settings.api_v1_prefix)
 app.include_router(milestones_router, prefix=settings.api_v1_prefix)
 app.include_router(payments_router, prefix=settings.api_v1_prefix)
-# app.include_router(chat_router, prefix="/api/v1/chat")  # TODO: Create chat router
+app.include_router(chat_router, prefix="/api/v1/chat")
 from app.api.v1.bookmarks import router as bookmarks_router
 app.include_router(bookmarks_router, prefix=settings.api_v1_prefix)
 

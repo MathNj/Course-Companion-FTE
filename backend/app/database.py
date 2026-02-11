@@ -18,6 +18,13 @@ from app.config import settings
 
 
 # Create async engine
+# For asyncpg with SSL on Fly.io/Neon, we need to pass SSL via connect_args
+# The DATABASE_URL contains sslmode which asyncpg doesn't recognize in query string
+connect_args = {}
+if settings.app_env == "production" or "neon.tech" in settings.database_url:
+    # Enable SSL for production databases (Fly.io, Neon, etc.)
+    connect_args = {"ssl": "require"}
+
 engine: AsyncEngine = create_async_engine(
     settings.database_url,
     echo=settings.debug,  # Log SQL queries in debug mode
@@ -25,6 +32,7 @@ engine: AsyncEngine = create_async_engine(
     max_overflow=settings.database_max_overflow,
     pool_pre_ping=True,  # Verify connections before using
     poolclass=NullPool if settings.app_env == "test" else None,  # Disable pooling in tests
+    connect_args=connect_args,
 )
 
 # Create async session factory
