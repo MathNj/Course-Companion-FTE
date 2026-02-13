@@ -183,11 +183,12 @@ async def get_quiz(
     }
 
 
-@router.post("/{quiz_id}/submit", response_model=Dict[str, Any], openapi_extra={"security": []})
+@router.post("/{quiz_id}/submit", response_model=Dict[str, Any])
 async def submit_quiz(
     quiz_id: str,
     submission: QuizAttemptCreate,
     request: Request,
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     """
@@ -200,26 +201,9 @@ async def submit_quiz(
     4. Create QuizAttempt record
     5. Update ChapterProgress if quiz passed
     6. Return graded results with explanations
+
+    Requires authentication.
     """
-    from app.utils.auth import verify_token
-
-    # Manually get optional user from request
-    current_user = None
-    auth_header = request.headers.get("Authorization")
-    if auth_header and auth_header.startswith("Bearer "):
-        try:
-            token = auth_header.split(" ")[1]
-            payload = verify_token(token, token_type="access")
-            if payload and payload.get("sub"):
-                from uuid import UUID
-                user_id = UUID(payload["sub"])
-                result = await db.execute(
-                    select(User).where(User.id == user_id)
-                )
-                current_user = result.scalar_one_or_none()
-        except:
-            current_user = None
-
     # Validate quiz exists
     quiz_meta = next((q for q in QUIZ_METADATA if q["id"] == quiz_id), None)
 
